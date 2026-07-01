@@ -1,0 +1,6 @@
+{
+  "name": "Infomate Newsletter Builder",
+  "description": "A premium newsletter designer and PDF exporter for Infomate, featuring clean typography, custom brand accents, pre-loaded slides, and live interactive print formatting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body, #root, [class*="min-h-screen"], [class*="flex-1"], main {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide non-printable app UI */
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .print\:p-0 {
+    padding: 0 !important;
+  }
+
+  .print\:shadow-none {
+    box-shadow: none !important;
+  }
+
+  /* Target page structures specifically for paper breaks */
+  .print-page-container {
+    width: 210mm !important;
+    height: 297mm !important;
+    page-break-inside: avoid !important;
+    page-break-after: always !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* CSS Theme Variable Skins for Newsletter Canvas & PDF Output */
+.print-page-container,
+div[style*="contentVisibility"] {
+  background-color: var(--page-bg, #ffffff) !important;
+  color: var(--text-color, #1e293b) !important;
+}
+
+.print-page-container .bg-white,
+div[style*="contentVisibility"] .bg-white {
+  background-color: var(--page-bg, #ffffff) !important;
+}
+
+.print-page-container .text-slate-800,
+div[style*="contentVisibility"] .text-slate-800,
+.print-page-container .text-slate-700,
+div[style*="contentVisibility"] .text-slate-700 {
+  color: var(--text-color, #1e293b) !important;
+}
+
+.print-page-container .text-slate-600,
+div[style*="contentVisibility"] .text-slate-600,
+.print-page-container .text-slate-500,
+div[style*="contentVisibility"] .text-slate-500,
+.print-page-container .text-slate-400,
+div[style*="contentVisibility"] .text-slate-400 {
+  color: color-mix(in srgb, var(--text-color, #1e293b) 60%, transparent) !important;
+}
+
+.print-page-container .bg-slate-50,
+div[style*="contentVisibility"] .bg-slate-50,
+.print-page-container .bg-slate-100\/50,
+div[style*="contentVisibility"] .bg-slate-100\/50 {
+  background-color: var(--card-bg, #f8fafc) !important;
+}
+
+.print-page-container .border-slate-100,
+div[style*="contentVisibility"] .border-slate-100,
+.print-page-container .border-slate-150,
+div[style*="contentVisibility"] .border-slate-150,
+.print-page-container .border-slate-200,
+div[style*="contentVisibility"] .border-slate-200 {
+  border-color: color-mix(in srgb, var(--text-color, #1e293b) 12%, transparent) !important;
+}
+
+/* Scoped Overrides for Dark Pages (Page 1 Cover Page & Page 6 matrix) */
+.print-page-container .bg-slate-950,
+div[style*="contentVisibility"] .bg-slate-950 {
+  background-color: var(--dark-page-bg, #020617) !important;
+  color: var(--dark-text-color, #ffffff) !important;
+}
+
+.print-page-container .bg-slate-950 *,
+div[style*="contentVisibility"] .bg-slate-950 * {
+  --text-color: var(--dark-text-color, #ffffff);
+}
+
+
