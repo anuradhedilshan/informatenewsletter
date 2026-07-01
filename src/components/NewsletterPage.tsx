@@ -42,12 +42,12 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
   // Icon mapper helper
   const getIconComponent = (name: string) => {
     switch (name) {
-      case "Ship": return <Ship className="w-5 h-5 text-sky-600" />;
+      case "Ship": return <Ship className="w-5 h-5 text-sky-600" style={{ color: primaryColor }} />;
       case "ShieldAlert": return <ShieldAlert className="w-5 h-5 text-rose-500" />;
       case "ShoppingCart": return <ShoppingCart className="w-5 h-5 text-emerald-600" />;
       case "HelpCircle": return <HelpCircle className="w-5 h-5 text-indigo-500" />;
-      case "PhoneCall": return <PhoneCall className="w-5 h-5 text-amber-500" />;
-      case "Target": return <Target className="w-5 h-5 text-orange-500" />;
+      case "PhoneCall": return <PhoneCall className="w-5 h-5 text-amber-500" style={{ color: accentColor }} />;
+      case "Target": return <Target className="w-5 h-5 text-orange-500" style={{ color: accentColor }} />;
       case "FileText": return <FileText className="w-5 h-5 text-blue-500" />;
       case "GitMerge": return <GitMerge className="w-5 h-5 text-purple-600" />;
       case "Users": return <Users className="w-5 h-5 text-teal-600" />;
@@ -233,29 +233,29 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               
               <div className="space-y-3 text-xs">
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]">01</span>
-                  <span className="font-semibold text-slate-700">Sri Lanka Macro Horizona</span>
+                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>01</span>
+                  <span className="font-semibold text-slate-700">Sri Lanka Macro Horizon</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]">02</span>
+                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>02</span>
                   <span className="font-semibold text-slate-700">Global Financial Tectonics</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]">03</span>
+                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>03</span>
                   <span className="font-semibold text-slate-700">John Keells Performance</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]">04</span>
+                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>04</span>
                   <span className="font-semibold text-slate-700">Everest Peak Matrix 2025</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]">05</span>
+                  <span className="w-6 h-6 rounded-lg bg-sky-100 text-sky-800 font-extrabold flex items-center justify-center text-[11px]" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>05</span>
                   <span className="font-semibold text-slate-700">Service Portfolios &amp; Team</span>
                 </div>
               </div>
 
-              <div className="bg-sky-50 p-3.5 rounded-xl border border-sky-100/50">
-                <span className="text-[10px] font-bold text-sky-800 uppercase tracking-widest block mb-1">Corporate Office</span>
+              <div className="bg-sky-50 p-3.5 rounded-xl border" style={{ backgroundColor: `${accentColor}10`, borderColor: `${accentColor}20` }}>
+                <span className="text-[10px] font-bold uppercase tracking-widest block mb-1" style={{ color: accentColor }}>Corporate Office</span>
                 <p className="text-[10px] text-slate-500 leading-relaxed font-medium">
                   No. 4 Layden Bastian Road, Colombo 01, Sri Lanka.
                 </p>
@@ -271,25 +271,34 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 3: SRI LANKA HORIZON (MACRO FOCUS)
     // ----------------------------------------------------
     case 3:
+      const p3 = data.page3 || {
+        subtitle: "01 · Regional Horizon",
+        title: "Sri Lankan Economy Gathering Historic Momentum",
+        description: "Sri Lanka's turnaround remains one of Asia's most growth narratives...",
+        accolades: [],
+        commentaryTitle: "Export Explosion",
+        commentaryText: "",
+        tagline: ""
+      };
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-white">
+        <div className="h-full flex flex-col justify-between p-10">
           <PageHeader sectionName="Macro Environment" />
 
           <div className="space-y-6 my-auto">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>01 · Regional Horizon</span>
-              <h2 className="text-3xl font-black text-slate-800 tracking-tight leading-none">
-                Sri Lankan Economy Gathering Historic Momentum
+              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p3.subtitle}</span>
+              <h2 className="text-3xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                {p3.title}
               </h2>
-              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-3xl">
-                Sri Lanka's turnaround remains one of Asia's most compelling growth narratives. With strong policy support and expanding services trade, the country positions itself as an optimal, secure global hub.
+              <p className="text-xs sm:text-sm leading-relaxed max-w-3xl" style={{ color: `${data.general.textColor}99` }}>
+                {p3.description}
               </p>
             </div>
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-4">
               {data.stats.filter(s => s.category === "sri-lanka").map((stat) => (
-                <div key={stat.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 relative overflow-hidden group hover:border-sky-300 transition-all">
+                <div key={stat.id} className="p-4 rounded-2xl border relative overflow-hidden group hover:border-sky-300 transition-all" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
                   <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-sky-500/10 to-transparent rounded-tr-2xl" />
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">{stat.label}</span>
                   <span className="text-2xl font-black block tracking-tight" style={{ color: primaryColor }}>{stat.value}</span>
@@ -301,42 +310,39 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
             {/* Accolades & Commentary */}
             <div className="grid grid-cols-2 gap-6 pt-2">
               <div className="space-y-3">
-                <h4 className="text-xs font-black uppercase text-slate-700 tracking-widest flex items-center gap-1">
-                  <Globe className="w-4 h-4 text-sky-600" />
+                <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-1" style={{ color: data.general.textColor }}>
+                  <Globe className="w-4 h-4 text-sky-600" style={{ color: primaryColor }} />
                   Island Accolades (2025/2026)
                 </h4>
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-3 border border-slate-100 rounded-xl bg-slate-50/50">
-                    <span className="font-extrabold text-slate-800 block">#1 Most Beautiful</span>
-                    <span className="text-[10px] text-slate-400">Island - Big 7 Travel</span>
-                  </div>
-                  <div className="p-3 border border-slate-100 rounded-xl bg-slate-50/50">
-                    <span className="font-extrabold text-slate-800 block">Most Family Friendly</span>
-                    <span className="text-[10px] text-slate-400">Remitly Global Survey</span>
-                  </div>
-                  <div className="p-3 border border-slate-100 rounded-xl bg-slate-50/50">
-                    <span className="font-extrabold text-slate-800 block">#7 Friendliest Country</span>
-                    <span className="text-[10px] text-slate-400">Condé Nast Traveler</span>
-                  </div>
-                  <div className="p-3 border border-slate-100 rounded-xl bg-slate-50/50">
-                    <span className="font-extrabold text-slate-800 block">Jaffna - Top Destination</span>
-                    <span className="text-[10px] text-slate-400">Lonely Planet</span>
-                  </div>
+                  {(p3.accolades && p3.accolades.length > 0 ? p3.accolades : [
+                    { title: "#1 Most Beautiful", subtitle: "Island - Big 7 Travel" },
+                    { title: "Most Family Friendly", subtitle: "Remitly Global Survey" },
+                    { title: "#7 Friendliest Country", subtitle: "Condé Nast Traveler" },
+                    { title: "Jaffna - Top Destination", subtitle: "Lonely Planet" }
+                  ]).map((accolade, idx) => (
+                    <div key={idx} className="p-3 border rounded-xl" style={{ backgroundColor: `${data.general.cardBgColor}80`, borderColor: `${data.general.textColor}10` }}>
+                      <span className="font-extrabold block" style={{ color: data.general.textColor }}>{accolade.title}</span>
+                      <span className="text-[10px] text-slate-400">{accolade.subtitle}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <div className="bg-slate-50 rounded-2xl border border-slate-100 p-5 flex flex-col justify-between">
-                <h4 className="text-xs font-black uppercase text-slate-700 tracking-widest mb-2 flex items-center gap-1">
+              <div className="rounded-2xl border p-5 flex flex-col justify-between" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+                <h4 className="text-xs font-black uppercase tracking-widest mb-2 flex items-center gap-1" style={{ color: data.general.textColor }}>
                   <TrendingUp className="w-4 h-4 text-emerald-600" />
-                  ICT/BPM Export Explosion
+                  {p3.commentaryTitle}
                 </h4>
-                <p className="text-slate-600 text-xs leading-relaxed">
-                  Overall services exports shot up by 24.59% in early 2026, driven directly by a stunning <strong>60.21% year-on-year surge</strong> in ICT and business process management services. Colombo remains the regional nucleus for specialized finance outsourcing.
+                <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}cc` }}>
+                  {p3.commentaryText}
                 </p>
-                <div className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg w-max">
-                  <CheckCircle2 className="w-3.5 h-3.5" />
-                  <span>Zero-rated VAT compliance for exporters in place</span>
-                </div>
+                {p3.tagline && (
+                  <div className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg w-max" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
+                    <CheckCircle2 className="w-3.5 h-3.5" style={{ color: primaryColor }} />
+                    <span>{p3.tagline}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -349,58 +355,59 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 4: GLOBAL FINANCE TECTONICS
     // ----------------------------------------------------
     case 4:
+      const p4 = data.page4 || {
+        subtitle: "02 · Financial Horizons",
+        title: "Tectonic Shifts in the Global Financial Arena",
+        description: "",
+        trends: [],
+        takeawayTitle: "",
+        takeawayText: "",
+        takeawayLink: ""
+      };
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-white">
+        <div className="h-full flex flex-col justify-between p-10">
           <PageHeader sectionName="Global Trends" />
 
           <div className="space-y-6 my-auto">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>02 · Financial Horizons</span>
-              <h2 className="text-3xl font-black text-slate-800 tracking-tight leading-none">
-                Tectonic Shifts in the Global Financial Arena
+              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p4.subtitle}</span>
+              <h2 className="text-3xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                {p4.title}
               </h2>
-              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-3xl">
-                CFOs and treasury heads are managing three dramatic transitions that require increased compliance, deep analytical support, and back-office agility.
+              <p className="text-xs sm:text-sm leading-relaxed max-w-3xl" style={{ color: `${data.general.textColor}99` }}>
+                {p4.description}
               </p>
             </div>
 
             {/* Three key trends block cards */}
             <div className="grid grid-cols-3 gap-4">
-              <div className="p-4 border border-slate-100 bg-slate-50 rounded-2xl relative space-y-3">
-                <div className="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-xs">A</div>
-                <h3 className="font-bold text-slate-800 text-sm tracking-tight">The $256T Shadow Banking Shift</h3>
-                <p className="text-slate-600 text-xs leading-relaxed">
-                  Non-bank financial institutions (NBFIs) now manage over half of global financial assets, peaking at <strong>USD 256.8 Trillion</strong>. Higher leverage increases the demand for strict risk modeling and compliance auditing.
-                </p>
-              </div>
-
-              <div className="p-4 border border-slate-100 bg-slate-50 rounded-2xl relative space-y-3">
-                <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-black text-xs">B</div>
-                <h3 className="font-bold text-slate-800 text-sm tracking-tight">Surging Private Credit</h3>
-                <p className="text-slate-600 text-xs leading-relaxed">
-                  Private credit continues to swell, matching USD 2.1 Trillion globally. CFOs seek rapid-origination capital to manage USD 620B of maturing corporate high-yield bonds due through 2027.
-                </p>
-              </div>
-
-              <div className="p-4 border border-slate-100 bg-slate-50 rounded-2xl relative space-y-3">
-                <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xs">C</div>
-                <h3 className="font-bold text-slate-800 text-sm tracking-tight">Agentic AI as Operating System</h3>
-                <p className="text-slate-600 text-xs leading-relaxed">
-                  <strong>70% of financial firms</strong> have transitioned from basic pilots to agentic AI workflows. 16% are fully automated in key compliance lines, leveraging human-in-the-loop oversight to ensure strict ledger safety.
-                </p>
-              </div>
+              {(p4.trends && p4.trends.length > 0 ? p4.trends : [
+                { title: "Shadow Banking", text: "" },
+                { title: "Private Credit", text: "" },
+                { title: "Agentic AI", text: "" }
+              ]).map((trend, idx) => (
+                <div key={idx} className="p-4 border rounded-2xl relative space-y-3" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
+                    {String.fromCharCode(65 + idx)}
+                  </div>
+                  <h3 className="font-bold text-sm tracking-tight" style={{ color: data.general.textColor }}>{trend.title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}b3` }}>
+                    {trend.text}
+                  </p>
+                </div>
+              ))}
             </div>
 
             {/* Quick takeaway */}
-            <div className="p-4 rounded-2xl bg-slate-900 text-white flex items-center justify-between gap-4">
+            <div className="p-4 rounded-2xl text-white flex items-center justify-between gap-4" style={{ backgroundColor: primaryColor }}>
               <div className="space-y-1">
-                <span className="text-[10px] text-orange-400 font-bold uppercase tracking-wider block">HOW INFOMATE RESPONDS</span>
-                <p className="text-xs text-slate-300">
-                  We blend deep human accounting talent with specialized Robotic Process Automation (RPA) to help your treasury absorb these shifts with minimal friction.
+                <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: accentColor }}>{p4.takeawayTitle}</span>
+                <p className="text-xs text-white/90">
+                  {p4.takeawayText}
                 </p>
               </div>
-              <div className="inline-flex items-center gap-1 text-xs font-bold text-sky-400 shrink-0">
-                <span>View F&amp;A stacks on page 7</span>
+              <div className="inline-flex items-center gap-1 text-xs font-bold text-white shrink-0">
+                <span>{p4.takeawayLink}</span>
                 <ChevronRight className="w-4 h-4" />
               </div>
             </div>
@@ -414,68 +421,88 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 5: JKH HOLDINGS GROUP HIGHLIGHTS
     // ----------------------------------------------------
     case 5:
+      const p5 = data.page5 || {
+        subtitle: "03 · Solid Corporate Backing",
+        title: "John Keells Holdings PLC",
+        description: "",
+        projects: [],
+        commitmentsTitle: "",
+        commitmentsText: "",
+        commitmentsTag: "",
+        imageUrl: ""
+      };
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-white">
+        <div className="h-full flex flex-col justify-between p-10">
           <PageHeader sectionName="Parent Group" />
 
           <div className="space-y-6 my-auto">
             <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>03 · Solid Corporate Backing</span>
-              <h2 className="text-3xl font-black text-slate-800 tracking-tight leading-none">
-                John Keells Holdings PLC: Sri Lanka's Pre-eminent Corporate
+              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p5.subtitle}</span>
+              <h2 className="text-3xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                {p5.title}
               </h2>
-              <p className="text-slate-500 text-xs sm:text-sm leading-relaxed max-w-3xl">
-                Infomate is a wholly-owned subsidiary of JKH, the largest listed conglomerate on the Colombo Stock Exchange. This backing provides unmatched financial stability and enterprise-grade governance.
+              <p className="text-xs sm:text-sm leading-relaxed max-w-3xl" style={{ color: `${data.general.textColor}99` }}>
+                {p5.description}
               </p>
             </div>
 
             {/* Stats Row */}
             <div className="grid grid-cols-3 gap-4">
               {data.stats.filter(s => s.category === "jkh").map((stat) => (
-                <div key={stat.id} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 relative overflow-hidden group hover:border-sky-300 transition-all">
+                <div key={stat.id} className="p-4 rounded-2xl border relative overflow-hidden group hover:border-sky-300 transition-all" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
                   <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-orange-500/10 to-transparent rounded-tr-2xl" />
                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">{stat.label}</span>
-                  <span className="text-2xl font-black block tracking-tight text-slate-800">{stat.value}</span>
+                  <span className="text-2xl font-black block tracking-tight text-slate-800" style={{ color: data.general.textColor }}>{stat.value}</span>
                   <span className="text-[10px] text-slate-500 font-semibold block mt-1 leading-tight">{stat.subtext}</span>
                 </div>
               ))}
             </div>
 
             {/* Strategic Projects Grid */}
-            <div className="grid grid-cols-2 gap-6 pt-2">
-              <div className="bg-slate-50 rounded-2xl border border-slate-100 p-5 space-y-3">
-                <h4 className="text-xs font-black uppercase text-slate-700 tracking-widest flex items-center gap-1.5">
-                  <Building2 className="w-4 h-4 text-sky-600" />
+            <div className="grid grid-cols-12 gap-6 pt-2">
+              <div 
+                className={`rounded-2xl border p-5 space-y-3 ${p5.imageUrl ? "col-span-5" : "col-span-6"}`}
+                style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}
+              >
+                <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-1.5" style={{ color: data.general.textColor }}>
+                  <Building2 className="w-4 h-4 text-sky-600" style={{ color: primaryColor }} />
                   Group Flagship Developments
                 </h4>
-                <ul className="space-y-2.5 text-xs text-slate-600">
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-500 font-bold mt-0.5">·</span>
-                    <span><strong>CWIT Deep Terminal:</strong> Strategic USD 840M port project in Colombo handling over 717,000 TEUs in its debut year.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-500 font-bold mt-0.5">·</span>
-                    <span><strong>Cinnamon Life Mixed-Use:</strong> Colombo's landmark luxury destination, transforming regional luxury tourism and gaming/leisure.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-500 font-bold mt-0.5">·</span>
-                    <span><strong>BYD New Energy Vehicles:</strong> Strong partnership launched to spearhead sustainable EV vehicle distribution.</span>
-                  </li>
+                <ul className="space-y-2.5 text-xs">
+                  {(p5.projects && p5.projects.length > 0 ? p5.projects : []).map((proj, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <span className="font-bold mt-0.5" style={{ color: accentColor }}>·</span>
+                      <span style={{ color: `${data.general.textColor}cc` }}>
+                        <strong>{proj.title}:</strong> {proj.text}
+                      </span>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
-              <div className="bg-slate-50 rounded-2xl border border-slate-100 p-5 space-y-3 flex flex-col justify-between">
-                <h4 className="text-xs font-black uppercase text-slate-700 tracking-widest flex items-center gap-1.5">
+              <div 
+                className={`rounded-2xl border p-5 space-y-3 flex flex-col justify-between ${p5.imageUrl ? "col-span-4" : "col-span-6"}`}
+                style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}
+              >
+                <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-1.5" style={{ color: data.general.textColor }}>
                   <Heart className="w-4 h-4 text-rose-500" />
-                  Carbon &amp; Environment Commitments
+                  {p5.commitmentsTitle}
                 </h4>
-                <p className="text-slate-600 text-xs leading-relaxed">
-                  John Keells Holdings' commitment to sustainability translates directly to Infomate. Across our combined operations, carbon footprint per million rupees of revenue declined by <strong>8.3%</strong>, and water withdrawal declined by <strong>9.5%</strong> over the fiscal quarters.
+                <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}cc` }}>
+                  {p5.commitmentsText}
                 </p>
-                <div className="inline-flex items-center gap-1 text-[10px] font-bold text-sky-800 uppercase tracking-wider bg-sky-50 px-2.5 py-1 rounded-lg w-max mt-2">
-                  <span>Adhering to UN Global Compact values</span>
-                </div>
+                {p5.commitmentsTag && (
+                  <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-sky-50 px-2.5 py-1 rounded-lg w-max mt-2" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
+                    <span>{p5.commitmentsTag}</span>
+                  </div>
+                )}
               </div>
+
+              {p5.imageUrl && (
+                <div className="col-span-3 rounded-2xl overflow-hidden border shadow-sm relative h-full bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
+                  <img src={p5.imageUrl} className="w-full h-full object-cover" alt="JKH flagship" />
+                </div>
+              )}
             </div>
           </div>
 
@@ -487,53 +514,80 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 6: PEAK MATRIX RECOGNITION
     // ----------------------------------------------------
     case 6:
+      const p6 = data.page6 || {
+        badge: "Historic Achievement in FAO BPM",
+        title: "The First Sri Lankan-Origin BPO Featured in Everest Group's PEAK Matrix®",
+        description: "Everest Group named Infomate...",
+        quote: "",
+        quoteAuthor: "",
+        quoteAuthorTitle: "",
+        quoteCategory: "",
+        bullet1: "",
+        bullet2: "",
+        imageUrl: ""
+      };
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-slate-950 text-white relative">
-          <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900/50 to-slate-950 z-0" />
+        <div 
+          className="h-full flex flex-col justify-between p-10 relative"
+          style={{ 
+            backgroundColor: data.general.darkPageBgColor || "#020617",
+            color: data.general.darkTextColor || "#ffffff"
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900/50 to-slate-950 z-0" style={{ opacity: 0.15 }} />
           
           <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-6 select-none relative z-10">
-            <Logo primaryColor="#FFFFFF" accentColor={accentColor} size="lg" />
+            <Logo primaryColor="#FFFFFF" accentColor={accentColor} size="lg" logoUrl={data.general.logoUrl} />
             <div className="text-right">
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{data.general.edition}</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-orange-400">
+              <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-orange-400" style={{ color: accentColor }}>
                 Global Recognition
               </span>
             </div>
           </div>
 
           <div className="space-y-6 my-auto relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-sky-400">
-              <Award className="w-4 h-4 text-orange-400" />
-              <span>Historic Achievement in FAO BPM</span>
-            </div>
-            
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-none text-white">
-              The First Sri Lankan-Origin BPO Featured in Everest Group's PEAK Matrix®
-            </h2>
+            <div className="flex gap-6 items-start justify-between">
+              <div className="space-y-4 flex-1">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-sky-400">
+                  <Award className="w-4 h-4 text-orange-400" style={{ color: accentColor }} />
+                  <span>{p6.badge}</span>
+                </div>
+                
+                <h2 className="text-3xl sm:text-4xl font-black tracking-tight leading-none text-white">
+                  {p6.title}
+                </h2>
 
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-              In their 2025 Finance and Accounting Outsourcing (FAO) Services PEAK Matrix Assessment, Everest Group named Infomate as an outstanding provider in the SMB and mid-market-focused segment.
-            </p>
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                  {p6.description}
+                </p>
+              </div>
+              {p6.imageUrl && (
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 shrink-0 self-center">
+                  <img src={p6.imageUrl} className="h-24 w-auto object-contain rounded" alt="PEAK Matrix Recognition Badge" />
+                </div>
+              )}
+            </div>
 
             <div className="bg-white/5 border border-white/10 rounded-2xl p-6 relative">
-              <Quote className="absolute -top-3 left-4 w-8 h-8 text-orange-400/20 fill-orange-400/10" />
+              <Quote className="absolute -top-3 left-4 w-8 h-8 text-orange-400/20 fill-orange-400/10" style={{ color: `${accentColor}30` }} />
               <p className="text-slate-300 text-xs sm:text-sm italic leading-relaxed pl-4">
-                "Infomate is an SMB and mid-market-focused provider with strong expertise in delivering end-to-end transactional F&amp;A services such as AP, AR, and general accounting, along with industry-contextualized services... Its strong document management and supplier portal capabilities, combined with positive client feedback, contributed to its position."
+                "{p6.quote}"
               </p>
               <div className="pt-4 mt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-400 font-bold pl-4">
-                <span>Shirley Hung, Partner, Everest Group</span>
-                <span className="text-orange-400">Aspirant Category Listed</span>
+                <span>{p6.quoteAuthor}, {p6.quoteAuthorTitle}</span>
+                <span className="text-orange-400" style={{ color: accentColor }}>{p6.quoteCategory}</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-xs">
+            <div className="grid grid-cols-2 gap-4 text-xs text-slate-300">
               <div className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span><strong>SSA 18 Type II</strong> and <strong>ISO 27001</strong> controls verified.</span>
+                <span>{p6.bullet1}</span>
               </div>
               <div className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                <span>Over 20 years of continuous global F&amp;A delivery.</span>
+                <span>{p6.bullet2}</span>
               </div>
             </div>
           </div>
@@ -543,7 +597,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
             <span className="flex items-center gap-1">
               <span>Page</span>
               <span className="flex items-center justify-center w-5 h-5 rounded-full text-slate-900 font-black text-[9px] bg-white">
-                6
+                {(data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).indexOf(6) + 1}
               </span>
             </span>
           </div>
@@ -555,16 +609,16 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // ----------------------------------------------------
     case 7:
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-white">
+        <div className="h-full flex flex-col justify-between p-10">
           <PageHeader sectionName="Core Services" />
 
           <div className="space-y-4 my-auto">
             <div className="space-y-1">
               <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>04 · Functional Mastery</span>
-              <h2 className="text-2xl font-black text-slate-800 tracking-tight leading-none">
+              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
                 Finance &amp; Accounting Service Portfolio
               </h2>
-              <p className="text-slate-500 text-xs leading-relaxed">
+              <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
                 With deep specialized talent pools, we manage end-to-end accounting processes with strict accuracy SLAs.
               </p>
             </div>
@@ -572,16 +626,16 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
             {/* Service Pillars Grid (Horizontal Cards) */}
             <div className="space-y-3">
               {data.services.map((service) => (
-                <div key={service.id} className="p-3.5 rounded-xl border border-slate-100 bg-slate-50 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-black text-xs shrink-0 mt-1">
+                <div key={service.id} className="p-3.5 rounded-xl border flex items-start gap-4" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0 mt-1" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
                     {service.id.toUpperCase()}
                   </div>
                   <div className="space-y-1.5 flex-1">
-                    <h3 className="font-bold text-slate-800 text-xs sm:text-sm">{service.title}</h3>
-                    <p className="text-slate-500 text-[11px] leading-relaxed">{service.description}</p>
+                    <h3 className="font-bold text-xs sm:text-sm" style={{ color: data.general.textColor }}>{service.title}</h3>
+                    <p className="text-[11px] leading-relaxed" style={{ color: `${data.general.textColor}b3` }}>{service.description}</p>
                     <div className="flex flex-wrap gap-1.5 pt-1">
                       {service.items.map((item, idx) => (
-                        <span key={idx} className="px-2 py-0.5 rounded bg-white border border-slate-100 text-[9px] text-slate-600 font-semibold">
+                        <span key={idx} className="px-2 py-0.5 rounded border text-[9px] font-semibold" style={{ backgroundColor: data.general.pageBgColor, borderColor: `${data.general.textColor}10`, color: `${data.general.textColor}cc` }}>
                           {item}
                         </span>
                       ))}
@@ -592,15 +646,12 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
             </div>
 
             {/* Systems and ERP Competency */}
-            <div className="p-3 bg-slate-100/50 rounded-xl border border-slate-200/50 flex flex-wrap items-center justify-between gap-2 text-xs">
-              <span className="font-extrabold text-slate-600 uppercase tracking-widest text-[9px]">Systems and ERP Competency:</span>
-              <div className="flex flex-wrap gap-2 text-[10px] font-bold text-slate-700">
-                <span className="px-2.5 py-1 rounded bg-white border border-slate-200">SAP ERP</span>
-                <span className="px-2.5 py-1 rounded bg-white border border-slate-200">Microsoft Dynamics</span>
-                <span className="px-2.5 py-1 rounded bg-white border border-slate-200">Xero</span>
-                <span className="px-2.5 py-1 rounded bg-white border border-slate-200">QuickBooks</span>
-                <span className="px-2.5 py-1 rounded bg-white border border-slate-200">Sage</span>
-                <span className="px-2.5 py-1 rounded bg-white border border-slate-200">MYOB</span>
+            <div className="p-3 rounded-xl border flex flex-wrap items-center justify-between gap-2 text-xs" style={{ backgroundColor: `${primaryColor}08`, borderColor: `${primaryColor}15` }}>
+              <span className="font-extrabold uppercase tracking-widest text-[9px]" style={{ color: `${data.general.textColor}a0` }}>Systems and ERP Competency:</span>
+              <div className="flex flex-wrap gap-2 text-[10px] font-bold">
+                {["SAP ERP", "Microsoft Dynamics", "Xero", "QuickBooks", "Sage", "MYOB"].map((erp) => (
+                  <span key={erp} className="px-2.5 py-1 rounded border bg-white" style={{ borderColor: `${data.general.textColor}15`, color: data.general.textColor }}>{erp}</span>
+                ))}
               </div>
             </div>
           </div>
@@ -613,34 +664,43 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 8: BACK OFFICE & PROCESS EXCELLENCE
     // ----------------------------------------------------
     case 8:
+      const p8 = data.page8 || {
+        subtitle: "05 · Extended Operations",
+        title: "Back Office Portfolios & Automation DRIVE",
+        description: "",
+        servicesTitle: "",
+        automationTitle: "",
+        complianceText: "",
+        imageUrl: ""
+      };
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-white">
+        <div className="h-full flex flex-col justify-between p-10">
           <PageHeader sectionName="Operational Excellence" />
 
           <div className="space-y-5 my-auto">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>05 · Extended Operations</span>
-              <h2 className="text-2xl font-black text-slate-800 tracking-tight leading-none">
-                Back Office Portfolios &amp; Automation DRIVE
+              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p8.subtitle}</span>
+              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                {p8.title}
               </h2>
-              <p className="text-slate-500 text-xs leading-relaxed">
-                Beyond core finance, we optimize your wider business operations using process mapping and automated workflows.
+              <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
+                {p8.description}
               </p>
             </div>
 
             <div className="grid grid-cols-12 gap-6">
               {/* Back Office List (8 cols) */}
               <div className="col-span-8 space-y-2">
-                <h4 className="text-[10px] font-black uppercase text-slate-500 tracking-wider mb-1">Portfolio of Back Office Services</h4>
+                <h4 className="text-[10px] font-black uppercase tracking-wider mb-1" style={{ color: `${data.general.textColor}80` }}>{p8.servicesTitle}</h4>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {data.backOffice.map((item) => (
-                    <div key={item.id} className="p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-start gap-2.5">
-                      <div className="p-1 rounded bg-white shadow-sm shrink-0">
+                    <div key={item.id} className="p-2.5 rounded-xl border flex items-start gap-2.5" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+                      <div className="p-1 rounded bg-white shadow-sm shrink-0 border" style={{ borderColor: `${data.general.textColor}10` }}>
                         {getIconComponent(item.iconName)}
                       </div>
                       <div className="leading-tight">
-                        <span className="font-extrabold text-slate-800 block text-[11px]">{item.title}</span>
-                        <span className="text-[10px] text-slate-500 leading-tight block mt-0.5">{item.description}</span>
+                        <span className="font-extrabold block text-[11px]" style={{ color: data.general.textColor }}>{item.title}</span>
+                        <span className="text-[10px] leading-tight block mt-0.5" style={{ color: `${data.general.textColor}99` }}>{item.description}</span>
                       </div>
                     </div>
                   ))}
@@ -648,28 +708,30 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </div>
 
               {/* Automation Pillars (4 cols) */}
-              <div className="col-span-4 bg-slate-50 rounded-2xl border border-slate-100 p-4 flex flex-col justify-between">
+              <div className="col-span-4 rounded-2xl border p-4 flex flex-col justify-between" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
                 <div className="space-y-3">
-                  <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest block">Process Excellence DRIVE</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: `${data.general.textColor}80` }}>{p8.automationTitle}</span>
                   
-                  <div className="space-y-2 text-xs">
-                    <div className="p-2 bg-white rounded-xl border border-slate-100">
-                      <span className="font-bold text-slate-800 block">RPA Automation</span>
-                      <span className="text-[10px] text-slate-500">Deploying Power Automate and custom VBA macros to eliminate high-volume keystrokes.</span>
+                  {p8.imageUrl ? (
+                    <div className="rounded-xl overflow-hidden border shadow-sm h-28 my-1 bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
+                      <img src={p8.imageUrl} className="w-full h-full object-cover" alt="Process Work Culture" />
                     </div>
-                    <div className="p-2 bg-white rounded-xl border border-slate-100">
-                      <span className="font-bold text-slate-800 block">Intelligent Integrations</span>
-                      <span className="text-[10px] text-slate-500">Utilizing n8n node-based mapping to weave legacy systems together seamlessly.</span>
+                  ) : (
+                    <div className="space-y-2 text-xs">
+                      <div className="p-2 bg-white rounded-xl border" style={{ borderColor: `${data.general.textColor}10` }}>
+                        <span className="font-bold block" style={{ color: data.general.textColor }}>RPA Automation</span>
+                        <span className="text-[10px] text-slate-500">Deploying Power Automate and custom VBA macros.</span>
+                      </div>
+                      <div className="p-2 bg-white rounded-xl border" style={{ borderColor: `${data.general.textColor}10` }}>
+                        <span className="font-bold block" style={{ color: data.general.textColor }}>Intelligent Integrations</span>
+                        <span className="text-[10px] text-slate-500">Utilizing n8n node-based mapping tools.</span>
+                      </div>
                     </div>
-                    <div className="p-2 bg-white rounded-xl border border-slate-100">
-                      <span className="font-bold text-slate-800 block">Power BI Dashboards</span>
-                      <span className="text-[10px] text-slate-500">Developing real-time pipeline visualizers for deep management insight.</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
 
-                <div className="p-2 bg-sky-50 rounded-lg text-[10px] text-sky-800 font-bold text-center border border-sky-100 mt-2">
-                  SSAE 18 and GDPR Compliant Workflows
+                <div className="p-2 rounded-lg text-[10px] font-bold text-center border mt-2" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor, borderColor: `${primaryColor}20` }}>
+                  {p8.complianceText}
                 </div>
               </div>
             </div>
@@ -683,38 +745,46 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 9: TEAM & GLOBAL OPERATIONS
     // ----------------------------------------------------
     case 9:
+      const p9 = data.page9 || {
+        subtitle: "06 · Professional Roster",
+        title: "Infomate Team Structure",
+        description: "",
+        hubsTitle: "",
+        hubs: [],
+        imageUrl: ""
+      };
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-white">
+        <div className="h-full flex flex-col justify-between p-10">
           <PageHeader sectionName="Global Team" />
 
           <div className="space-y-5 my-auto">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>06 · Professional Roster</span>
-              <h2 className="text-2xl font-black text-slate-800 tracking-tight leading-none">
-                Infomate Team Structure &amp; Global Footprint
+              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p9.subtitle}</span>
+              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                {p9.title}
               </h2>
-              <p className="text-slate-500 text-xs leading-relaxed">
-                Operating securely across prime international markets, backed by qualified chartered, management, and cost accountants.
+              <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
+                {p9.description}
               </p>
             </div>
 
             <div className="grid grid-cols-12 gap-6 items-start">
               {/* Table of Ranks (7 columns) */}
-              <div className="col-span-7 bg-slate-50 rounded-2xl border border-slate-150 overflow-hidden">
+              <div className="col-span-7 rounded-2xl border overflow-hidden" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}15` }}>
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-100 text-slate-600 font-bold uppercase text-[9px] tracking-wider border-b border-slate-200">
+                  <thead className="bg-slate-100 text-slate-600 font-bold uppercase text-[9px] tracking-wider border-b" style={{ backgroundColor: `${data.general.textColor}08`, borderColor: `${data.general.textColor}15` }}>
                     <tr>
-                      <th className="p-2.5 pl-4">Role / Rank</th>
-                      <th className="p-2.5 text-center">Trained Pool</th>
-                      <th className="p-2.5 pl-4">Qualifications</th>
+                      <th className="p-2.5 pl-4" style={{ color: data.general.textColor }}>Role / Rank</th>
+                      <th className="p-2.5 text-center" style={{ color: data.general.textColor }}>Trained Pool</th>
+                      <th className="p-2.5 pl-4" style={{ color: data.general.textColor }}>Qualifications</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-150">
+                  <tbody className="divide-y" style={{ borderColor: `${data.general.textColor}10` }}>
                     {data.team.map((row, idx) => (
                       <tr key={idx} className="hover:bg-slate-100/50">
-                        <td className="p-2.5 pl-4 font-bold text-slate-800">{row.role}</td>
-                        <td className="p-2.5 text-center font-black text-sky-700">{row.count}</td>
-                        <td className="p-2.5 pl-4 text-slate-500 font-medium text-[11px]">{row.qualifications}</td>
+                        <td className="p-2.5 pl-4 font-bold" style={{ color: data.general.textColor }}>{row.role}</td>
+                        <td className="p-2.5 text-center font-black" style={{ color: primaryColor }}>{row.count}</td>
+                        <td className="p-2.5 pl-4 font-medium text-[11px]" style={{ color: `${data.general.textColor}a0` }}>{row.qualifications}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -724,35 +794,41 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               {/* Geo coverage & Diversity (5 columns) */}
               <div className="col-span-5 space-y-4">
                 {/* Global Markets Chip */}
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
-                  <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest block">Primary Global Hubs</span>
-                  <div className="space-y-1.5 text-xs font-semibold text-slate-700">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-sky-500" />
-                      <span><strong>United Kingdom:</strong> Financial &amp; BPO Services Hub</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-orange-500" />
-                      <span><strong>United States &amp; Canada:</strong> Tech &amp; Analytics Talent</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                      <span><strong>Australia:</strong> Operations, logistics &amp; finance support</span>
-                    </div>
+                <div className="p-4 rounded-2xl border space-y-2" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+                  <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: `${data.general.textColor}80` }}>{p9.hubsTitle}</span>
+                  <div className="space-y-1.5 text-xs font-semibold">
+                    {(p9.hubs && p9.hubs.length > 0 ? p9.hubs : [
+                      { title: "United Kingdom", desc: "Financial & BPO Services Hub" },
+                      { title: "United States", desc: "Tech & Analytics Talent" },
+                      { title: "Australia", desc: "Operations support" }
+                    ]).map((hub, idx) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: idx === 0 ? primaryColor : idx === 1 ? accentColor : "#10b981" }} />
+                        <span style={{ color: `${data.general.textColor}dd` }}>
+                          <strong>{hub.title}:</strong> {hub.desc}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Diversity stats */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                    <span className="text-xl font-black block text-sky-700 leading-none">60:40</span>
-                    <span className="text-[9px] text-slate-400 font-bold block mt-1 uppercase">Female : Male</span>
+                {/* Diversity stats / Image display */}
+                {p9.imageUrl ? (
+                  <div className="rounded-xl overflow-hidden border shadow-sm h-24 relative bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
+                    <img src={p9.imageUrl} className="w-full h-full object-cover" alt="Infomate work team culture" />
                   </div>
-                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 text-center">
-                    <span className="text-xl font-black block text-sky-700 leading-none">90%</span>
-                    <span className="text-[9px] text-slate-400 font-bold block mt-1 uppercase">AM+ Retention</span>
+                ) : (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl border text-center" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+                      <span className="text-xl font-black block leading-none" style={{ color: primaryColor }}>60:40</span>
+                      <span className="text-[9px] text-slate-400 font-bold block mt-1 uppercase">Female : Male</span>
+                    </div>
+                    <div className="p-3 rounded-xl border text-center" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+                      <span className="text-xl font-black block leading-none" style={{ color: primaryColor }}>90%</span>
+                      <span className="text-[9px] text-slate-400 font-bold block mt-1 uppercase">AM+ Retention</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>
@@ -765,22 +841,28 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 10: VALUE PROPS & SOCIAL RESPONSIBILITY
     // ----------------------------------------------------
     case 10:
+      const p10 = data.page10 || {
+        subtitle: "07 · Why Partner With Us",
+        title: "Our Eight-Fold Value Proposition",
+        socialTitle: "ESG & Social Initiatives",
+        imageUrl: ""
+      };
       return (
-        <div className="h-full flex flex-col justify-between p-10 bg-white">
+        <div className="h-full flex flex-col justify-between p-10">
           <PageHeader sectionName="Value Proposition" />
 
           <div className="space-y-4 my-auto">
             <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>07 · Why Partner With Us</span>
-              <h2 className="text-2xl font-black text-slate-800 tracking-tight leading-none">
-                Our Eight-Fold Value Proposition
+              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p10.subtitle}</span>
+              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                {p10.title}
               </h2>
             </div>
 
             {/* Bento Grid of 8 value propositions */}
             <div className="grid grid-cols-4 gap-3">
               {data.valueProps.map((prop) => (
-                <div key={prop.number} className="p-3 rounded-xl border border-slate-100 bg-slate-50 flex flex-col justify-between space-y-1 relative group hover:border-sky-300 hover:shadow-sm transition-all duration-300">
+                <div key={prop.number} className="p-3 rounded-xl border flex flex-col justify-between space-y-1 relative group hover:border-sky-300 hover:shadow-sm transition-all duration-300" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
                   <div className="flex items-center justify-between">
                     <span className="w-5 h-5 rounded-full text-white font-extrabold text-[10px] flex items-center justify-center" style={{ backgroundColor: primaryColor }}>
                       {prop.number}
@@ -788,27 +870,36 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                     <span className="text-[9px] font-bold text-slate-300 uppercase">VALUE</span>
                   </div>
                   <div>
-                    <h4 className="font-extrabold text-slate-800 text-[11px] leading-tight mt-1">{prop.title}</h4>
-                    <p className="text-slate-500 text-[10px] leading-tight mt-1 font-medium">{prop.description}</p>
+                    <h4 className="font-extrabold text-[11px] leading-tight mt-1" style={{ color: data.general.textColor }}>{prop.title}</h4>
+                    <p className="text-[10px] leading-tight mt-1 font-medium" style={{ color: `${data.general.textColor}99` }}>{prop.description}</p>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Social Initiatives banner */}
-            <div className="bg-slate-50 rounded-2xl border border-slate-100 p-4 space-y-3">
-              <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest block">ESG &amp; Social Initiatives</span>
-              <div className="grid grid-cols-3 gap-3 text-xs">
-                {data.social.map((soc) => (
-                  <div key={soc.id} className="p-2.5 rounded-xl border border-slate-150 bg-white space-y-1">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-[9px] font-extrabold text-amber-600 uppercase tracking-widest">{soc.badge}</span>
-                      <span className="text-[9px] text-slate-300">Infomate Core</span>
+            <div className="p-4 rounded-2xl border space-y-3" style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}>
+              <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: `${data.general.textColor}80` }}>
+                {p10.socialTitle}
+              </span>
+              <div className="grid grid-cols-12 gap-3">
+                <div className={p10.imageUrl ? "col-span-9 grid grid-cols-3 gap-3 text-xs" : "col-span-12 grid grid-cols-3 gap-3 text-xs"}>
+                  {data.social.map((soc) => (
+                    <div key={soc.id} className="p-2.5 rounded-xl bg-white space-y-1 border" style={{ borderColor: `${data.general.textColor}10`, backgroundColor: data.general.pageBgColor }}>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-[9px] font-extrabold text-amber-600 uppercase tracking-widest" style={{ color: accentColor }}>{soc.badge}</span>
+                        <span className="text-[9px] text-slate-300">Infomate Core</span>
+                      </div>
+                      <h5 className="font-bold text-[11px]" style={{ color: data.general.textColor }}>{soc.title}</h5>
+                      <p className="text-[10px] leading-relaxed font-medium" style={{ color: `${data.general.textColor}a0` }}>{soc.description}</p>
                     </div>
-                    <h5 className="font-bold text-slate-800 text-[11px]">{soc.title}</h5>
-                    <p className="text-slate-500 text-[10px] leading-relaxed font-medium">{soc.description}</p>
+                  ))}
+                </div>
+                {p10.imageUrl && (
+                  <div className="col-span-3 rounded-xl overflow-hidden border shadow-sm relative h-full bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
+                    <img src={p10.imageUrl} className="w-full h-full object-cover" alt="ESG Social Work" />
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

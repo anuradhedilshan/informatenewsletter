@@ -13,7 +13,12 @@ import {
   Layers,
   FileText,
   Image,
-  X
+  X,
+  Plus,
+  Globe,
+  Heart,
+  Award,
+  BookOpen
 } from "lucide-react";
 
 interface CustomizerProps {
@@ -24,7 +29,8 @@ interface CustomizerProps {
 }
 
 export function Customizer({ data, onChange, onReset, onApplyPreset }: CustomizerProps) {
-  const [activeTab, setActiveTab] = useState<"general" | "branding" | "pages" | "stats" | "quotes" | "services">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "branding" | "pages" | "content">("general");
+  const [selectedContentPage, setSelectedContentPage] = useState<"page2" | "page3" | "page4" | "page5" | "page6" | "page7" | "page8" | "page9" | "page10">("page2");
 
   const handleGeneralChange = (key: keyof NewsletterData["general"], value: string) => {
     onChange({
@@ -56,7 +62,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
     });
   };
 
-  const handleServiceChange = (id: string, field: "title" | "description", value: string) => {
+  const handleServiceChange = (id: string, field: "title" | "description" | "items", value: any) => {
     const updatedServices = data.services.map((s) => 
       s.id === id ? { ...s, [field]: value } : s
     );
@@ -70,7 +76,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
     const currentList = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     let newList: number[];
     if (currentList.includes(pageNum)) {
-      if (pageNum === 1 || pageNum === 2) return; // Keep cover and CEO greeting enabled
+      if (pageNum === 1 || pageNum === 2) return;
       newList = currentList.filter((p) => p !== pageNum);
     } else {
       newList = [...currentList, pageNum].sort((a, b) => a - b);
@@ -83,7 +89,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
 
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: "logoUrl" | "coverImageUrl" | "ceoImageUrl"
+    field: "logoUrl" | "coverImageUrl" | "ceoImageUrl" | "page5Url" | "page6Url" | "page8Url" | "page9Url" | "page10Url"
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -95,25 +101,113 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      onChange({
-        ...data,
-        general: {
-          ...data.general,
-          [field]: reader.result as string,
-        },
-      });
+      const resultStr = reader.result as string;
+      if (field === "logoUrl" || field === "coverImageUrl" || field === "ceoImageUrl") {
+        onChange({
+          ...data,
+          general: {
+            ...data.general,
+            [field]: resultStr,
+          },
+        });
+      } else {
+        const pageKey = field.replace("Url", "") as "page5" | "page6" | "page8" | "page9" | "page10";
+        onChange({
+          ...data,
+          [pageKey]: {
+            ...(data[pageKey] || {}),
+            imageUrl: resultStr,
+          },
+        });
+      }
     };
     reader.readAsDataURL(file);
   };
 
-  const handleClearImage = (field: "logoUrl" | "coverImageUrl" | "ceoImageUrl") => {
-    onChange({
-      ...data,
-      general: {
-        ...data.general,
-        [field]: "",
-      },
-    });
+  const handleClearImage = (field: "logoUrl" | "coverImageUrl" | "ceoImageUrl" | "page5Url" | "page6Url" | "page8Url" | "page9Url" | "page10Url") => {
+    if (field === "logoUrl" || field === "coverImageUrl" || field === "ceoImageUrl") {
+      onChange({
+        ...data,
+        general: {
+          ...data.general,
+          [field]: "",
+        },
+      });
+    } else {
+      const pageKey = field.replace("Url", "") as "page5" | "page6" | "page8" | "page9" | "page10";
+      onChange({
+        ...data,
+        [pageKey]: {
+          ...(data[pageKey] || {}),
+          imageUrl: "",
+        },
+      });
+    }
+  };
+
+  // Page Specific Content Handlers
+  const handlePage3Change = (key: keyof NonNullable<NewsletterData["page3"]>, value: any) => {
+    onChange({ ...data, page3: { ...(data.page3 || {}), [key]: value } as any });
+  };
+  const handlePage3AccoladeChange = (idx: number, field: "title" | "subtitle", value: string) => {
+    const list = data.page3?.accolades || [];
+    const newList = list.map((a, i) => i === idx ? { ...a, [field]: value } : a);
+    handlePage3Change("accolades", newList);
+  };
+
+  const handlePage4Change = (key: keyof NonNullable<NewsletterData["page4"]>, value: any) => {
+    onChange({ ...data, page4: { ...(data.page4 || {}), [key]: value } as any });
+  };
+  const handlePage4TrendChange = (idx: number, field: "title" | "text", value: string) => {
+    const list = data.page4?.trends || [];
+    const newList = list.map((t, i) => i === idx ? { ...t, [field]: value } : t);
+    handlePage4Change("trends", newList);
+  };
+
+  const handlePage5Change = (key: keyof NonNullable<NewsletterData["page5"]>, value: any) => {
+    onChange({ ...data, page5: { ...(data.page5 || {}), [key]: value } as any });
+  };
+  const handlePage5ProjectChange = (idx: number, field: "title" | "text", value: string) => {
+    const list = data.page5?.projects || [];
+    const newList = list.map((p, i) => i === idx ? { ...p, [field]: value } : p);
+    handlePage5Change("projects", newList);
+  };
+
+  const handlePage6Change = (key: keyof NonNullable<NewsletterData["page6"]>, value: any) => {
+    onChange({ ...data, page6: { ...(data.page6 || {}), [key]: value } as any });
+  };
+
+  const handlePage8Change = (key: keyof NonNullable<NewsletterData["page8"]>, value: any) => {
+    onChange({ ...data, page8: { ...(data.page8 || {}), [key]: value } as any });
+  };
+  const handleBackOfficeChange = (id: string, field: "title" | "description", value: string) => {
+    const list = data.backOffice.map((item) => item.id === id ? { ...item, [field]: value } : item);
+    onChange({ ...data, backOffice: list });
+  };
+
+  const handlePage9Change = (key: keyof NonNullable<NewsletterData["page9"]>, value: any) => {
+    onChange({ ...data, page9: { ...(data.page9 || {}), [key]: value } as any });
+  };
+  const handlePage9HubChange = (idx: number, field: "title" | "desc", value: string) => {
+    const list = data.page9?.hubs || [];
+    const newList = list.map((h, i) => i === idx ? { ...h, [field]: value } : h);
+    handlePage9Change("hubs", newList);
+  };
+  const handleTeamRoleChange = (idx: number, field: "role" | "count" | "qualifications", value: string) => {
+    const list = data.team.map((row, i) => i === idx ? { ...row, [field]: value } : row);
+    onChange({ ...data, team: list });
+  };
+
+  const handlePage10Change = (key: keyof NonNullable<NewsletterData["page10"]>, value: any) => {
+    onChange({ ...data, page10: { ...(data.page10 || {}), [key]: value } as any });
+  };
+  const handleValuePropChange = (num: number, field: "title" | "description", value: string) => {
+    const list = data.valueProps.map((p) => p.number === num ? { ...p, [field]: value } : p);
+    onChange({ ...data, valueProps: list });
+  };
+  const handleSocialInitiativeChange = (id: string, field: "title" | "description" | "badge", value: string) => {
+    const list = data.social.map((s) => s.id === id ? { ...s, [field]: value } : s);
+    onChange({ ...data, social: list });
   };
 
   const colorPresets = [
@@ -141,7 +235,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
   return (
     <div id="customizer-panel" className="w-full bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col h-full overflow-hidden select-none">
       {/* Header */}
-      <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+      <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
           <Sliders className="w-5 h-5 text-sky-600" />
           <h2 className="font-bold text-slate-800 text-sm tracking-wide uppercase">Newsletter Editor</h2>
@@ -151,18 +245,16 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
           className="flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-sky-600 bg-white border border-slate-200 px-2 py-1.5 rounded shadow-sm hover:border-sky-200 transition-colors cursor-pointer"
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          Reset Defaults
+          Reset
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-slate-100 bg-slate-50/50 text-xs overflow-x-auto scrollbar-none snap-x">
+      <div className="flex border-b border-slate-100 bg-slate-50/50 text-xs overflow-x-auto scrollbar-none">
         <button
           onClick={() => setActiveTab("general")}
-          className={`px-4 py-3 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
-            activeTab === "general"
-              ? "border-sky-500 text-sky-600 bg-white"
-              : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+          className={`flex-1 py-3 text-center font-bold border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 ${
+            activeTab === "general" ? "border-sky-500 text-sky-600 bg-white" : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
           }`}
         >
           <User className="w-3.5 h-3.5" />
@@ -170,98 +262,47 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
         </button>
         <button
           onClick={() => setActiveTab("branding")}
-          className={`px-4 py-3 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
-            activeTab === "branding"
-              ? "border-sky-500 text-sky-600 bg-white"
-              : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+          className={`flex-1 py-3 text-center font-bold border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 ${
+            activeTab === "branding" ? "border-sky-500 text-sky-600 bg-white" : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
           }`}
         >
           <Palette className="w-3.5 h-3.5" />
-          Branding &amp; Colors
+          Branding
         </button>
         <button
           onClick={() => setActiveTab("pages")}
-          className={`px-4 py-3 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
-            activeTab === "pages"
-              ? "border-sky-500 text-sky-600 bg-white"
-              : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+          className={`flex-1 py-3 text-center font-bold border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 ${
+            activeTab === "pages" ? "border-sky-500 text-sky-600 bg-white" : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
           }`}
         >
           <Layers className="w-3.5 h-3.5" />
-          Manage Blocks
+          Blocks
         </button>
         <button
-          onClick={() => setActiveTab("stats")}
-          className={`px-4 py-3 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
-            activeTab === "stats"
-              ? "border-sky-500 text-sky-600 bg-white"
-              : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
+          onClick={() => setActiveTab("content")}
+          className={`flex-1 py-3 text-center font-bold border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1 shrink-0 ${
+            activeTab === "content" ? "border-sky-500 text-sky-600 bg-white" : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
           }`}
         >
-          <TrendingUp className="w-3.5 h-3.5" />
-          Stats
-        </button>
-        <button
-          onClick={() => setActiveTab("quotes")}
-          className={`px-4 py-3 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
-            activeTab === "quotes"
-              ? "border-sky-500 text-sky-600 bg-white"
-              : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
-          }`}
-        >
-          <MessageSquare className="w-3.5 h-3.5" />
-          Quotes
-        </button>
-        <button
-          onClick={() => setActiveTab("services")}
-          className={`px-4 py-3 text-center font-medium border-b-2 transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
-            activeTab === "services"
-              ? "border-sky-500 text-sky-600 bg-white"
-              : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50"
-          }`}
-        >
-          <Briefcase className="w-3.5 h-3.5" />
-          Services
+          <BookOpen className="w-3.5 h-3.5" />
+          Content
         </button>
       </div>
 
       {/* Content scroll area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-5 text-sm">
-        {/* Preset Selector (Only on General/Branding tabs) */}
+        {/* Preset Selector */}
         {(activeTab === "general" || activeTab === "branding") && (
           <div className="bg-gradient-to-r from-sky-500/10 to-orange-500/10 p-3 rounded-xl border border-sky-100/50 space-y-2">
             <div className="flex items-center gap-1.5 text-xs font-bold text-sky-800 uppercase">
               <Sparkles className="w-3.5 h-3.5 text-orange-500 animate-pulse" />
-              Quick Story Presets
+              Quick Presets
             </div>
-            <p className="text-[11px] text-slate-500">
-              Switch narrative presets to instantly load targeted financial, automation, or general content.
-            </p>
             <div className="grid grid-cols-2 gap-1.5 pt-1">
-              <button
-                onClick={() => onApplyPreset("standard")}
-                className="px-2 py-1.5 text-[11px] font-bold rounded-lg border border-sky-200 bg-white text-sky-700 hover:bg-sky-50 transition-colors text-left truncate cursor-pointer"
-              >
-                💼 Q2 Standard Update
-              </button>
-              <button
-                onClick={() => onApplyPreset("tech")}
-                className="px-2 py-1.5 text-[11px] font-bold rounded-lg border border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-50 transition-colors text-left truncate cursor-pointer"
-              >
-                🤖 Automation &amp; RPA Drive
-              </button>
-              <button
-                onClick={() => onApplyPreset("finance")}
-                className="px-2 py-1.5 text-[11px] font-bold rounded-lg border border-purple-200 bg-white text-purple-700 hover:bg-purple-50 transition-colors text-left truncate cursor-pointer"
-              >
-                📈 Global Finance focus
-              </button>
-              <button
-                onClick={() => onApplyPreset("esg")}
-                className="px-2 py-1.5 text-[11px] font-bold rounded-lg border border-orange-200 bg-white text-orange-700 hover:bg-orange-50 transition-colors text-left truncate cursor-pointer"
-              >
-                🌱 ESG &amp; Rural Impact
-              </button>
+              <button onClick={() => onApplyPreset("standard")} className="px-2 py-1.5 text-[10px] font-bold rounded-lg border bg-white text-sky-700 hover:bg-sky-50 cursor-pointer truncate">💼 Standard</button>
+              <button onClick={() => onApplyPreset("tech")} className="px-2 py-1.5 text-[10px] font-bold rounded-lg border bg-white text-emerald-700 hover:bg-emerald-50 cursor-pointer truncate">🤖 Automation</button>
+              <button onClick={() => onApplyPreset("finance")} className="px-2 py-1.5 text-[10px] font-bold rounded-lg border bg-white text-purple-700 hover:bg-purple-50 cursor-pointer truncate">📈 Global Finance</button>
+              <button onClick={() => onApplyPreset("esg")} className="px-2 py-1.5 text-[10px] font-bold rounded-lg border bg-white text-orange-700 hover:bg-orange-50 cursor-pointer truncate">🌱 ESG &amp; Social</button>
             </div>
           </div>
         )}
@@ -270,70 +311,16 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
         {activeTab === "general" && (
           <div className="space-y-4">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-600 uppercase">Newsletter Edition</label>
-              <input
-                type="text"
-                value={data.general.edition}
-                onChange={(e) => handleGeneralChange("edition", e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800"
-              />
+              <label className="text-xs font-bold text-slate-600 uppercase">Publishing Edition</label>
+              <input type="text" value={data.general.edition} onChange={(e) => handleGeneralChange("edition", e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 text-xs focus:ring-1 focus:ring-sky-500" />
             </div>
-
             <div className="space-y-1">
               <label className="text-xs font-bold text-slate-600 uppercase">Publish Date</label>
-              <input
-                type="text"
-                value={data.general.date}
-                onChange={(e) => handleGeneralChange("date", e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800"
-              />
+              <input type="text" value={data.general.date} onChange={(e) => handleGeneralChange("date", e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 text-xs focus:ring-1 focus:ring-sky-500" />
             </div>
-
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-600 uppercase">Newsletter Title</label>
-              <input
-                type="text"
-                value={data.general.title}
-                onChange={(e) => handleGeneralChange("title", e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800"
-              />
-            </div>
-
-            <div className="border-t border-slate-100 pt-4 space-y-3">
-              <h3 className="font-bold text-slate-700 text-xs uppercase flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-slate-400" />
-                CEO Corner Text
-              </h3>
-              
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 uppercase">CEO Name</label>
-                <input
-                  type="text"
-                  value={data.general.ceoName}
-                  onChange={(e) => handleGeneralChange("ceoName", e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 uppercase">CEO Role/Title</label>
-                <input
-                  type="text"
-                  value={data.general.ceoTitle}
-                  onChange={(e) => handleGeneralChange("ceoTitle", e.target.value)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 uppercase">CEO Greeting Message</label>
-                <textarea
-                  value={data.general.ceoMessage}
-                  onChange={(e) => handleGeneralChange("ceoMessage", e.target.value)}
-                  rows={5}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 text-xs leading-relaxed"
-                />
-              </div>
+              <label className="text-xs font-bold text-slate-600 uppercase">Newsletter Main Title</label>
+              <input type="text" value={data.general.title} onChange={(e) => handleGeneralChange("title", e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 text-xs focus:ring-1 focus:ring-sky-500" />
             </div>
           </div>
         )}
@@ -341,7 +328,6 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
         {/* Tab 2: Branding & Colors */}
         {activeTab === "branding" && (
           <div className="space-y-5">
-            {/* Color Presets */}
             <div className="space-y-1">
               <label className="text-xs font-bold text-slate-600 uppercase block mb-1">Color Presets</label>
               <div className="grid grid-cols-2 gap-2">
@@ -358,11 +344,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                         }
                       });
                     }}
-                    className={`p-2 rounded-lg border text-left flex items-center gap-2 transition-all text-xs cursor-pointer ${
-                      data.general.primaryColor === preset.primary
-                        ? "border-sky-500 bg-sky-50/50"
-                        : "border-slate-200 bg-white hover:bg-slate-50"
-                    }`}
+                    className={`p-2 rounded-lg border text-left flex items-center gap-2 transition-all text-xs cursor-pointer ${data.general.primaryColor === preset.primary ? "border-sky-500 bg-sky-50/50" : "border-slate-200 bg-white hover:bg-slate-50"}`}
                   >
                     <span className="w-4 h-4 rounded-full flex overflow-hidden border border-slate-300 shrink-0">
                       <span className="w-1/2 h-full" style={{ backgroundColor: preset.primary }} />
@@ -374,234 +356,153 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
               </div>
             </div>
 
-            {/* Custom Brand Colors */}
             <div className="space-y-3 pt-3 border-t border-slate-100">
-              <label className="text-xs font-bold text-slate-600 uppercase block">Custom Colors</label>
-              
-              {/* Primary & Accent */}
+              <label className="text-xs font-bold text-slate-600 uppercase block">Custom Color Scheme</label>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <span className="text-[10px] text-slate-500 font-bold block uppercase">Primary Color</span>
                   <div className="flex gap-1.5 items-center">
-                    <input
-                      type="color"
-                      value={data.general.primaryColor}
-                      onChange={(e) => handleGeneralChange("primaryColor", e.target.value)}
-                      className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={data.general.primaryColor}
-                      onChange={(e) => handleGeneralChange("primaryColor", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded text-slate-700 font-mono"
-                    />
+                    <input type="color" value={data.general.primaryColor} onChange={(e) => handleGeneralChange("primaryColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
+                    <input type="text" value={data.general.primaryColor} onChange={(e) => handleGeneralChange("primaryColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
                   </div>
                 </div>
                 <div className="space-y-1">
                   <span className="text-[10px] text-slate-500 font-bold block uppercase">Accent Color</span>
                   <div className="flex gap-1.5 items-center">
-                    <input
-                      type="color"
-                      value={data.general.accentColor}
-                      onChange={(e) => handleGeneralChange("accentColor", e.target.value)}
-                      className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={data.general.accentColor}
-                      onChange={(e) => handleGeneralChange("accentColor", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded text-slate-700 font-mono"
-                    />
+                    <input type="color" value={data.general.accentColor} onChange={(e) => handleGeneralChange("accentColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
+                    <input type="text" value={data.general.accentColor} onChange={(e) => handleGeneralChange("accentColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
                   </div>
                 </div>
               </div>
 
-              {/* Page Bg & Text Colors */}
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <span className="text-[10px] text-slate-500 font-bold block uppercase">Page Background</span>
                   <div className="flex gap-1.5 items-center">
-                    <input
-                      type="color"
-                      value={data.general.pageBgColor || "#ffffff"}
-                      onChange={(e) => handleGeneralChange("pageBgColor", e.target.value)}
-                      className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={data.general.pageBgColor || "#ffffff"}
-                      onChange={(e) => handleGeneralChange("pageBgColor", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded text-slate-700 font-mono"
-                    />
+                    <input type="color" value={data.general.pageBgColor || "#ffffff"} onChange={(e) => handleGeneralChange("pageBgColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
+                    <input type="text" value={data.general.pageBgColor || "#ffffff"} onChange={(e) => handleGeneralChange("pageBgColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Page Text Color</span>
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Text Color</span>
                   <div className="flex gap-1.5 items-center">
-                    <input
-                      type="color"
-                      value={data.general.textColor || "#1e293b"}
-                      onChange={(e) => handleGeneralChange("textColor", e.target.value)}
-                      className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={data.general.textColor || "#1e293b"}
-                      onChange={(e) => handleGeneralChange("textColor", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded text-slate-700 font-mono"
-                    />
+                    <input type="color" value={data.general.textColor || "#1e293b"} onChange={(e) => handleGeneralChange("textColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
+                    <input type="text" value={data.general.textColor || "#1e293b"} onChange={(e) => handleGeneralChange("textColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
                   </div>
                 </div>
               </div>
 
-              {/* Card Background Color */}
               <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold block uppercase">Card/Stats Background</span>
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Card Background</span>
                 <div className="flex gap-1.5 items-center">
-                  <input
-                    type="color"
-                    value={data.general.cardBgColor || "#f8fafc"}
-                    onChange={(e) => handleGeneralChange("cardBgColor", e.target.value)}
-                    className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer"
-                  />
-                  <input
-                    type="text"
-                    value={data.general.cardBgColor || "#f8fafc"}
-                    onChange={(e) => handleGeneralChange("cardBgColor", e.target.value)}
-                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded text-slate-700 font-mono"
-                  />
-                </div>
-              </div>
-
-              {/* Dark Pages Bg & Text */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Dark Page Bg</span>
-                  <div className="flex gap-1.5 items-center">
-                    <input
-                      type="color"
-                      value={data.general.darkPageBgColor || "#020617"}
-                      onChange={(e) => handleGeneralChange("darkPageBgColor", e.target.value)}
-                      className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={data.general.darkPageBgColor || "#020617"}
-                      onChange={(e) => handleGeneralChange("darkPageBgColor", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded text-slate-700 font-mono"
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Dark Page Text</span>
-                  <div className="flex gap-1.5 items-center">
-                    <input
-                      type="color"
-                      value={data.general.darkTextColor || "#ffffff"}
-                      onChange={(e) => handleGeneralChange("darkTextColor", e.target.value)}
-                      className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer"
-                    />
-                    <input
-                      type="text"
-                      value={data.general.darkTextColor || "#ffffff"}
-                      onChange={(e) => handleGeneralChange("darkTextColor", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded text-slate-700 font-mono"
-                    />
-                  </div>
+                  <input type="color" value={data.general.cardBgColor || "#f8fafc"} onChange={(e) => handleGeneralChange("cardBgColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
+                  <input type="text" value={data.general.cardBgColor || "#f8fafc"} onChange={(e) => handleGeneralChange("cardBgColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
                 </div>
               </div>
             </div>
 
-            {/* Custom Images Upload Section */}
+            {/* Media Upload Section */}
             <div className="space-y-3 pt-3 border-t border-slate-100">
-              <label className="text-xs font-bold text-slate-600 uppercase block">Media &amp; Custom Images</label>
+              <label className="text-xs font-bold text-slate-600 uppercase block">Media &amp; Images</label>
               
-              {/* Logo Upload */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Brand Logo</span>
+              {/* Logo */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Brand Logo Image</span>
                 {data.general.logoUrl ? (
                   <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.general.logoUrl} alt="Logo preview" className="h-8 object-contain max-w-[150px]" />
-                    <button 
-                      onClick={() => handleClearImage("logoUrl")}
-                      className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    <img src={data.general.logoUrl} className="h-8 object-contain" />
+                    <button onClick={() => handleClearImage("logoUrl")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
                   </div>
                 ) : (
-                  <div>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => handleImageUpload(e, "logoUrl")}
-                      className="text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer w-full"
-                    />
-                  </div>
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "logoUrl")} className="text-xs w-full" />
                 )}
               </div>
 
-              {/* Cover Page Background Upload */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Cover Background Image</span>
+              {/* Cover Bg */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Cover Background</span>
                 {data.general.coverImageUrl ? (
                   <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.general.coverImageUrl} alt="Cover preview" className="h-10 w-16 object-cover rounded" />
-                    <button 
-                      onClick={() => handleClearImage("coverImageUrl")}
-                      className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    <img src={data.general.coverImageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("coverImageUrl")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
                   </div>
                 ) : (
-                  <div>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => handleImageUpload(e, "coverImageUrl")}
-                      className="text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer w-full"
-                    />
-                  </div>
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "coverImageUrl")} className="text-xs w-full" />
                 )}
               </div>
 
-              {/* CEO Portrait Upload */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                <span className="text-xs font-bold text-slate-700 block uppercase">CEO Portrait (Page 2)</span>
-                {data.general.ceoImageUrl ? (
+              {/* Page 5 Flagship */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 5: parent Flagship Image</span>
+                {data.page5?.imageUrl ? (
                   <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.general.ceoImageUrl} alt="CEO preview" className="h-10 w-10 object-cover rounded-full" />
-                    <button 
-                      onClick={() => handleClearImage("ceoImageUrl")}
-                      className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-600"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
+                    <img src={data.page5.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page5Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
                   </div>
                 ) : (
-                  <div>
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => handleImageUpload(e, "ceoImageUrl")}
-                      className="text-xs text-slate-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 cursor-pointer w-full"
-                    />
-                  </div>
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page5Url")} className="text-xs w-full" />
                 )}
               </div>
 
+              {/* Page 6 Recognition */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 6: PEAK Matrix Badge</span>
+                {data.page6?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page6.imageUrl} className="h-10 w-10 object-contain rounded" />
+                    <button onClick={() => handleClearImage("page6Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page6Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 8 Automation */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 8: Process/DRIVE Image</span>
+                {data.page8?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page8.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page8Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page8Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 9 Team */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 9: Team/Work Culture Photo</span>
+                {data.page9?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page9.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page9Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page9Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 10 Social */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 10: Social Responsibility Photo</span>
+                {data.page10?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page10.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page10Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page10Url")} className="text-xs w-full" />
+                )}
+              </div>
             </div>
           </div>
         )}
 
-        {/* Tab 3: Manage Pages */}
+        {/* Tab 3: Pages Block Visibility */}
         {activeTab === "pages" && (
           <div className="space-y-4">
-            <p className="text-xs text-slate-500 italic leading-relaxed">
-              Show or hide specific content pages in the newsletter. Pages that are unticked will be excluded from the print layouts and the page index completely, and consecutive page numbers will adjust automatically.
-            </p>
-
+            <p className="text-xs text-slate-500 italic leading-relaxed">Show/Hide specific sections dynamically. Excluded pages won't be exported, and pagination numbers will automatically adjust.</p>
             <div className="space-y-2">
               {pagesConfig.map((page) => {
                 const isChecked = visiblePages.includes(page.num);
@@ -609,27 +510,13 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <div 
                     key={page.num} 
                     onClick={() => !page.required && handlePageToggle(page.num)}
-                    className={`p-3 rounded-xl border flex items-start gap-3 transition-all ${
-                      page.required 
-                        ? "bg-slate-50 border-slate-200 opacity-80 cursor-not-allowed" 
-                        : isChecked
-                          ? "bg-sky-50/40 border-sky-200 hover:bg-sky-50/70 cursor-pointer"
-                          : "bg-white border-slate-200 hover:bg-slate-50 cursor-pointer"
-                    }`}
+                    className={`p-3 rounded-xl border flex items-start gap-3 transition-all ${page.required ? "bg-slate-50 border-slate-200 opacity-80 cursor-not-allowed" : isChecked ? "bg-sky-50/40 border-sky-200 hover:bg-sky-50/70 cursor-pointer" : "bg-white border-slate-200 hover:bg-slate-50 cursor-pointer"}`}
                   >
-                    <input 
-                      type="checkbox" 
-                      checked={isChecked}
-                      disabled={page.required}
-                      onChange={() => {}} // Controlled via container onClick
-                      className="mt-1 cursor-pointer accent-sky-600 shrink-0" 
-                    />
+                    <input type="checkbox" checked={isChecked} disabled={page.required} onChange={() => {}} className="mt-1 cursor-pointer accent-sky-600 shrink-0" />
                     <div className="leading-tight">
                       <span className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
                         Page {page.num}: {page.title}
-                        {page.required && (
-                          <span className="text-[9px] font-black text-slate-400 border border-slate-200 px-1 rounded uppercase tracking-wider scale-90">Required</span>
-                        )}
+                        {page.required && <span className="text-[9px] font-black text-slate-400 border border-slate-200 px-1 rounded uppercase tracking-wider scale-90">Required</span>}
                       </span>
                       <p className="text-[10px] text-slate-500 leading-normal mt-0.5">{page.description}</p>
                     </div>
@@ -640,212 +527,299 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
           </div>
         )}
 
-        {/* Tab 4: Stats */}
-        {activeTab === "stats" && (
+        {/* Tab 4: Content Editor (100% editable fields) */}
+        {activeTab === "content" && (
           <div className="space-y-4">
-            <p className="text-xs text-slate-500 italic leading-relaxed">
-              Updating these key indicators will reflect instantly in the statistics layout sections of the newsletter pages.
-            </p>
-
-            {/* Sri Lanka Category */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-bold text-sky-700 border-b border-sky-100 pb-1 uppercase">🇱🇰 Sri Lanka Indicators</h3>
-              {data.stats.filter(s => s.category === "sri-lanka").map((stat) => (
-                <div key={stat.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 space-y-2">
-                  <span className="text-[10px] font-bold text-slate-400 block">{stat.label}</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-[9px] text-slate-400 font-semibold block uppercase">Val / Metric</label>
-                      <input
-                        type="text"
-                        value={stat.value}
-                        onChange={(e) => handleStatChange(stat.id, "value", e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800 font-bold"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] text-slate-400 font-semibold block uppercase">Label</label>
-                      <input
-                        type="text"
-                        value={stat.label}
-                        onChange={(e) => handleStatChange(stat.id, "label", e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-[9px] text-slate-400 font-semibold block uppercase">Supporting context</label>
-                    <input
-                      type="text"
-                      value={stat.subtext}
-                      onChange={(e) => handleStatChange(stat.id, "subtext", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-600"
-                    />
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-600 uppercase block mb-1">Select Page to Edit Content</label>
+              <select 
+                value={selectedContentPage} 
+                onChange={(e) => setSelectedContentPage(e.target.value as any)}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white"
+              >
+                <option value="page2">Page 2: CEO Corner &amp; Greeting</option>
+                <option value="page3">Page 3: Sri Lanka Macro Focus</option>
+                <option value="page4">Page 4: Global Finance Tectonics</option>
+                <option value="page5">Page 5: Parent Group Conglomerate</option>
+                <option value="page6">Page 6: PEAK Matrix Recognition</option>
+                <option value="page7">Page 7: F&amp;A Service Pillars</option>
+                <option value="page8">Page 8: Back Office &amp; automation</option>
+                <option value="page9">Page 9: Global Team Ranks</option>
+                <option value="page10">Page 10: Value Props &amp; Social</option>
+              </select>
             </div>
 
-            {/* JKH Category */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-bold text-sky-700 border-b border-sky-100 pb-1 uppercase">🏢 JKH Performance</h3>
-              {data.stats.filter(s => s.category === "jkh").map((stat) => (
-                <div key={stat.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 space-y-2">
-                  <span className="text-[10px] font-bold text-slate-400 block">{stat.label}</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-[9px] text-slate-400 font-semibold block uppercase">Val / Metric</label>
-                      <input
-                        type="text"
-                        value={stat.value}
-                        onChange={(e) => handleStatChange(stat.id, "value", e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800 font-bold"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] text-slate-400 font-semibold block uppercase">Label</label>
-                      <input
-                        type="text"
-                        value={stat.label}
-                        onChange={(e) => handleStatChange(stat.id, "label", e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800"
-                      />
-                    </div>
+            <div className="border-t border-slate-100 pt-4 space-y-4">
+              {/* PAGE 2 CEO CORNER */}
+              {selectedContentPage === "page2" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">CEO Corner Settings</h3>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-400 font-bold uppercase">CEO Portrait Image</label>
+                    {data.general.ceoImageUrl ? (
+                      <div className="flex items-center justify-between bg-white p-2 rounded border">
+                        <img src={data.general.ceoImageUrl} className="h-10 w-10 rounded-full object-cover" />
+                        <button onClick={() => handleClearImage("ceoImageUrl")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                      </div>
+                    ) : (
+                      <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "ceoImageUrl")} className="text-xs w-full" />
+                    )}
                   </div>
-                  <div>
-                    <label className="text-[9px] text-slate-400 font-semibold block uppercase">Supporting context</label>
-                    <input
-                      type="text"
-                      value={stat.subtext}
-                      onChange={(e) => handleStatChange(stat.id, "subtext", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-600"
-                    />
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">CEO Name</label>
+                    <input type="text" value={data.general.ceoName} onChange={(e) => handleGeneralChange("ceoName", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded" />
                   </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">CEO Title</label>
+                    <input type="text" value={data.general.ceoTitle} onChange={(e) => handleGeneralChange("ceoTitle", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">CEO Message</label>
+                    <textarea value={data.general.ceoMessage} onChange={(e) => handleGeneralChange("ceoMessage", e.target.value)} rows={6} className="w-full px-2 py-1 text-xs border border-slate-200 rounded leading-normal" />
+                  </div>
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Testimonials &amp; Quotes</h4>
+                  {data.testimonials.map((test, index) => (
+                    <div key={test.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                      <span className="text-[10px] font-bold text-sky-700 uppercase">Quote #{index+1} ({test.location})</span>
+                      <input type="text" value={test.author} onChange={(e) => handleTestimonialChange(test.id, "author", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Author name" />
+                      <input type="text" value={test.company} onChange={(e) => handleTestimonialChange(test.id, "company", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Company" />
+                      <textarea value={test.quote} onChange={(e) => handleTestimonialChange(test.id, "quote", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" />
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
+
+              {/* PAGE 3 SRI LANKA MACRO */}
+              {selectedContentPage === "page3" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Sri Lanka Macro Focus</h3>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">Subtitle</label>
+                    <input type="text" value={data.page3?.subtitle || ""} onChange={(e) => handlePage3Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">Main Title</label>
+                    <input type="text" value={data.page3?.title || ""} onChange={(e) => handlePage3Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">Description</label>
+                    <textarea value={data.page3?.description || ""} onChange={(e) => handlePage3Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" />
+                  </div>
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Macro Stats Indicators</h4>
+                  {data.stats.filter(s => s.category === "sri-lanka").map((stat) => (
+                    <div key={stat.id} className="p-3 bg-slate-50 rounded-lg border space-y-2">
+                      <span className="text-[10px] font-bold text-slate-400 block">{stat.label}</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input type="text" value={stat.value} onChange={(e) => handleStatChange(stat.id, "value", e.target.value)} className="px-2 py-1 text-xs border rounded bg-white font-bold" placeholder="Value" />
+                        <input type="text" value={stat.label} onChange={(e) => handleStatChange(stat.id, "label", e.target.value)} className="px-2 py-1 text-xs border rounded bg-white" placeholder="Label" />
+                      </div>
+                      <input type="text" value={stat.subtext} onChange={(e) => handleStatChange(stat.id, "subtext", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Supporting text" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Island Accolades</h4>
+                  {(data.page3?.accolades || []).map((accolade, idx) => (
+                    <div key={idx} className="grid grid-cols-2 gap-2 p-2 bg-slate-50 rounded border">
+                      <input type="text" value={accolade.title} onChange={(e) => handlePage3AccoladeChange(idx, "title", e.target.value)} className="px-2 py-1 text-xs border rounded bg-white font-bold" />
+                      <input type="text" value={accolade.subtitle} onChange={(e) => handlePage3AccoladeChange(idx, "subtitle", e.target.value)} className="px-2 py-1 text-xs border rounded bg-white" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Commentary &amp; Tag</h4>
+                  <input type="text" value={data.page3?.commentaryTitle || ""} onChange={(e) => handlePage3Change("commentaryTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" placeholder="Commentary title" />
+                  <textarea value={data.page3?.commentaryText || ""} onChange={(e) => handlePage3Change("commentaryText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" placeholder="Commentary description" />
+                  <input type="text" value={data.page3?.tagline || ""} onChange={(e) => handlePage3Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline text" />
+                </div>
+              )}
+
+              {/* PAGE 4 GLOBAL FINANCE */}
+              {selectedContentPage === "page4" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Global Finance Tectonics</h3>
+                  <input type="text" value={data.page4?.subtitle || ""} onChange={(e) => handlePage4Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
+                  <input type="text" value={data.page4?.title || ""} onChange={(e) => handlePage4Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page4?.description || ""} onChange={(e) => handlePage4Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" placeholder="Description" />
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Three Financial Trends</h4>
+                  {(data.page4?.trends || []).map((trend, idx) => (
+                    <div key={idx} className="p-3 bg-slate-50 rounded border space-y-2">
+                      <input type="text" value={trend.title} onChange={(e) => handlePage4TrendChange(idx, "title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white font-bold" placeholder="Trend Title" />
+                      <textarea value={trend.text} onChange={(e) => handlePage4TrendChange(idx, "text", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Trend description" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Takeaway Responses</h4>
+                  <input type="text" value={data.page4?.takeawayTitle || ""} onChange={(e) => handlePage4Change("takeawayTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Takeaway title" />
+                  <textarea value={data.page4?.takeawayText || ""} onChange={(e) => handlePage4Change("takeawayText", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded" placeholder="Takeaway text" />
+                  <input type="text" value={data.page4?.takeawayLink || ""} onChange={(e) => handlePage4Change("takeawayLink", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Reference link page" />
+                </div>
+              )}
+
+              {/* PAGE 5 PARENT GROUP */}
+              {selectedContentPage === "page5" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">John Keells Holdings PLC</h3>
+                  <input type="text" value={data.page5?.subtitle || ""} onChange={(e) => handlePage5Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <input type="text" value={data.page5?.title || ""} onChange={(e) => handlePage5Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <textarea value={data.page5?.description || ""} onChange={(e) => handlePage5Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" />
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">JKH Financial Stats</h4>
+                  {data.stats.filter(s => s.category === "jkh").map((stat) => (
+                    <div key={stat.id} className="p-3 bg-slate-50 rounded-lg border space-y-2">
+                      <span className="text-[10px] font-bold text-slate-400 block">{stat.label}</span>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input type="text" value={stat.value} onChange={(e) => handleStatChange(stat.id, "value", e.target.value)} className="px-2 py-1 text-xs border rounded bg-white font-bold" />
+                        <input type="text" value={stat.label} onChange={(e) => handleStatChange(stat.id, "label", e.target.value)} className="px-2 py-1 text-xs border rounded bg-white" />
+                      </div>
+                      <input type="text" value={stat.subtext} onChange={(e) => handleStatChange(stat.id, "subtext", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Flagship Projects</h4>
+                  {(data.page5?.projects || []).map((proj, idx) => (
+                    <div key={idx} className="p-3 bg-slate-50 rounded border space-y-2">
+                      <input type="text" value={proj.title} onChange={(e) => handlePage5ProjectChange(idx, "title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white font-bold" />
+                      <textarea value={proj.text} onChange={(e) => handlePage5ProjectChange(idx, "text", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded bg-white" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Environment commitments</h4>
+                  <input type="text" value={data.page5?.commitmentsTitle || ""} onChange={(e) => handlePage5Change("commitmentsTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" />
+                  <textarea value={data.page5?.commitmentsText || ""} onChange={(e) => handlePage5Change("commitmentsText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" />
+                  <input type="text" value={data.page5?.commitmentsTag || ""} onChange={(e) => handlePage5Change("commitmentsTag", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-semibold" />
+                </div>
+              )}
+
+              {/* PAGE 6 PEAK MATRIX */}
+              {selectedContentPage === "page6" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">PEAK Matrix Recognition</h3>
+                  <input type="text" value={data.page6?.badge || ""} onChange={(e) => handlePage6Change("badge", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Badge text" />
+                  <input type="text" value={data.page6?.title || ""} onChange={(e) => handlePage6Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page6?.description || ""} onChange={(e) => handlePage6Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" placeholder="Description" />
+                  
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Everest Quote</h4>
+                  <textarea value={data.page6?.quote || ""} onChange={(e) => handlePage6Change("quote", e.target.value)} rows={5} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Quote" />
+                  <input type="text" value={data.page6?.quoteAuthor || ""} onChange={(e) => handlePage6Change("quoteAuthor", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" placeholder="Author" />
+                  <input type="text" value={data.page6?.quoteAuthorTitle || ""} onChange={(e) => handlePage6Change("quoteAuthorTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Author Title" />
+                  <input type="text" value={data.page6?.quoteCategory || ""} onChange={(e) => handlePage6Change("quoteCategory", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Category status" />
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Check Bullet Points</h4>
+                  <input type="text" value={data.page6?.bullet1 || ""} onChange={(e) => handlePage6Change("bullet1", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <input type="text" value={data.page6?.bullet2 || ""} onChange={(e) => handlePage6Change("bullet2", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                </div>
+              )}
+
+              {/* PAGE 7 SERVICE PILLARS */}
+              {selectedContentPage === "page7" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Core Service Pillars</h3>
+                  {data.services.map((service) => (
+                    <div key={service.id} className="p-3 bg-slate-50 rounded border space-y-2">
+                      <span className="text-[10px] font-bold text-slate-400 block uppercase">Pillar {service.id.toUpperCase()}</span>
+                      <input type="text" value={service.title} onChange={(e) => handleServiceChange(service.id, "title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white font-bold" />
+                      <textarea value={service.description} onChange={(e) => handleServiceChange(service.id, "description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" />
+                      
+                      <div>
+                        <label className="text-[8px] text-slate-400 font-bold block uppercase">Capabilities (Comma-separated)</label>
+                        <input 
+                          type="text" 
+                          value={service.items.join(", ")} 
+                          onChange={(e) => handleServiceChange(service.id, "items", e.target.value.split(",").map((s: string) => s.trim()))} 
+                          className="w-full px-2 py-1 text-xs border rounded bg-white"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* PAGE 8 BACK OFFICE & AUTOMATION */}
+              {selectedContentPage === "page8" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Back Office Excellence</h3>
+                  <input type="text" value={data.page8?.subtitle || ""} onChange={(e) => handlePage8Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <input type="text" value={data.page8?.title || ""} onChange={(e) => handlePage8Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <textarea value={data.page8?.description || ""} onChange={(e) => handlePage8Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" />
+                  
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Individual Services</h4>
+                  {data.backOffice.map((item) => (
+                    <div key={item.id} className="p-3 bg-slate-50 rounded border space-y-2">
+                      <span className="text-[10px] font-bold text-slate-400 block uppercase">{item.id}</span>
+                      <input type="text" value={item.title} onChange={(e) => handleBackOfficeChange(item.id, "title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white font-bold" />
+                      <input type="text" value={item.description} onChange={(e) => handleBackOfficeChange(item.id, "description", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Automation DRIVE Settings</h4>
+                  <input type="text" value={data.page8?.automationTitle || ""} onChange={(e) => handlePage8Change("automationTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" />
+                  <input type="text" value={data.page8?.complianceText || ""} onChange={(e) => handlePage8Change("complianceText", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                </div>
+              )}
+
+              {/* PAGE 9 GLOBAL TEAM */}
+              {selectedContentPage === "page9" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Global Team structure</h3>
+                  <input type="text" value={data.page9?.subtitle || ""} onChange={(e) => handlePage9Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <input type="text" value={data.page9?.title || ""} onChange={(e) => handlePage9Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <textarea value={data.page9?.description || ""} onChange={(e) => handlePage9Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" />
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Primary Hubs</h4>
+                  <input type="text" value={data.page9?.hubsTitle || ""} onChange={(e) => handlePage9Change("hubsTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" />
+                  {(data.page9?.hubs || []).map((hub, idx) => (
+                    <div key={idx} className="p-2.5 bg-slate-50 rounded border space-y-1">
+                      <input type="text" value={hub.title} onChange={(e) => handlePage9HubChange(idx, "title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white font-bold" />
+                      <input type="text" value={hub.desc} onChange={(e) => handlePage9HubChange(idx, "desc", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Table of Ranks Pool</h4>
+                  {data.team.map((row, idx) => (
+                    <div key={idx} className="p-2.5 bg-slate-50 rounded border space-y-1">
+                      <span className="text-[9px] font-bold text-slate-400 block">{row.role}</span>
+                      <div className="grid grid-cols-3 gap-1">
+                        <input type="text" value={row.role} onChange={(e) => handleTeamRoleChange(idx, "role", e.target.value)} className="px-2 py-1 text-[10px] border rounded bg-white font-bold col-span-2" />
+                        <input type="text" value={row.count} onChange={(e) => handleTeamRoleChange(idx, "count", e.target.value)} className="px-2 py-1 text-[10px] border rounded bg-white text-center" />
+                      </div>
+                      <input type="text" value={row.qualifications} onChange={(e) => handleTeamRoleChange(idx, "qualifications", e.target.value)} className="w-full px-2 py-1 text-[10px] border rounded bg-white" />
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* PAGE 10 VALUE PROPS & ESG */}
+              {selectedContentPage === "page10" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Value Props &amp; ESG</h3>
+                  <input type="text" value={data.page10?.subtitle || ""} onChange={(e) => handlePage10Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  <input type="text" value={data.page10?.title || ""} onChange={(e) => handlePage10Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">8 Value Propositions</h4>
+                  {data.valueProps.map((prop) => (
+                    <div key={prop.number} className="p-2.5 bg-slate-50 rounded border space-y-1.5">
+                      <span className="text-[9px] font-bold text-slate-400">Value #{prop.number}</span>
+                      <input type="text" value={prop.title} onChange={(e) => handleValuePropChange(prop.number, "title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white font-bold" />
+                      <input type="text" value={prop.description} onChange={(e) => handleValuePropChange(prop.number, "description", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" />
+                    </div>
+                  ))}
+
+                  <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">ESG Initiatives Banner</h4>
+                  <input type="text" value={data.page10?.socialTitle || ""} onChange={(e) => handlePage10Change("socialTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" />
+                  {data.social.map((soc) => (
+                    <div key={soc.id} className="p-2.5 bg-slate-50 rounded border space-y-1.5">
+                      <div className="flex gap-2">
+                        <input type="text" value={soc.badge} onChange={(e) => handleSocialInitiativeChange(soc.id, "badge", e.target.value)} className="px-2 py-1 text-[10px] border rounded bg-white font-bold w-1/3" />
+                        <input type="text" value={soc.title} onChange={(e) => handleSocialInitiativeChange(soc.id, "title", e.target.value)} className="px-2 py-1 text-[10px] border rounded bg-white font-bold w-2/3" />
+                      </div>
+                      <textarea value={soc.description} onChange={(e) => handleSocialInitiativeChange(soc.id, "description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-
-            {/* Infomate Team Category */}
-            <div className="space-y-3">
-              <h3 className="text-xs font-bold text-sky-700 border-b border-sky-100 pb-1 uppercase">⚙️ Infomate Operations</h3>
-              {data.stats.filter(s => s.category === "infomate").map((stat) => (
-                <div key={stat.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 space-y-2">
-                  <span className="text-[10px] font-bold text-slate-400 block">{stat.label}</span>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
-                      <label className="text-[9px] text-slate-400 font-semibold block uppercase">Val / Metric</label>
-                      <input
-                        type="text"
-                        value={stat.value}
-                        onChange={(e) => handleStatChange(stat.id, "value", e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800 font-bold"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[9px] text-slate-400 font-semibold block uppercase">Label</label>
-                      <input
-                        type="text"
-                        value={stat.label}
-                        onChange={(e) => handleStatChange(stat.id, "label", e.target.value)}
-                        className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-[9px] text-slate-400 font-semibold block uppercase">Supporting context</label>
-                    <input
-                      type="text"
-                      value={stat.subtext}
-                      onChange={(e) => handleStatChange(stat.id, "subtext", e.target.value)}
-                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-600"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 5: Quotes */}
-        {activeTab === "quotes" && (
-          <div className="space-y-4">
-            <p className="text-xs text-slate-500 italic leading-relaxed">
-              Below are the actual client quotes extracted from Infomate's partner portfolio presentation. You can edit them to customize for specific proposals.
-            </p>
-
-            {data.testimonials.map((test, index) => (
-              <div key={test.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-xs font-bold text-sky-700">Quote {index + 1}</span>
-                  <span className="text-[10px] text-slate-400 font-medium">{test.location || "Global"}</span>
-                </div>
-                
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-500 font-bold block uppercase">Author / Role</label>
-                  <input
-                    type="text"
-                    value={test.author}
-                    onChange={(e) => handleTestimonialChange(test.id, "author", e.target.value)}
-                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800 font-semibold"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-500 font-bold block uppercase">Company</label>
-                  <input
-                    type="text"
-                    value={test.company}
-                    onChange={(e) => handleTestimonialChange(test.id, "company", e.target.value)}
-                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-500 font-bold block uppercase">Quote Text</label>
-                  <textarea
-                    value={test.quote}
-                    onChange={(e) => handleTestimonialChange(test.id, "quote", e.target.value)}
-                    rows={4}
-                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-700 leading-relaxed"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Tab 6: Services */}
-        {activeTab === "services" && (
-          <div className="space-y-4">
-            <p className="text-xs text-slate-500 italic leading-relaxed">
-              Infomate's core F&amp;A (Finance &amp; Accounting) service pillars. Customize the headlines or descriptions as needed.
-            </p>
-
-            {data.services.map((service) => (
-              <div key={service.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
-                <span className="text-xs font-bold text-sky-700 block uppercase">{service.title}</span>
-                
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-500 font-bold block uppercase">Pillar Title</label>
-                  <input
-                    type="text"
-                    value={service.title}
-                    onChange={(e) => handleServiceChange(service.id, "title", e.target.value)}
-                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-800 font-bold"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-[10px] text-slate-500 font-bold block uppercase">Description</label>
-                  <textarea
-                    value={service.description}
-                    onChange={(e) => handleServiceChange(service.id, "description", e.target.value)}
-                    rows={3}
-                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white text-slate-700 leading-relaxed"
-                  />
-                </div>
-              </div>
-            ))}
           </div>
         )}
       </div>

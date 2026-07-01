@@ -347,5 +347,85 @@ export const initialNewsletterData: NewsletterData = {
       title: "Cost Efficiency & Variabilization",
       description: "Convert fixed staffing overheads into variable, transaction-linked costs to preserve cash flow."
     }
-  ]
+  ],
+  page3: {
+    subtitle: "01 · Regional Horizon",
+    title: "Sri Lankan Economy Gathering Historic Momentum",
+    description: "Sri Lanka's turnaround remains one of Asia's most compelling growth narratives. With strong policy support and expanding services trade, the country positions itself as an optimal, secure global hub.",
+    accolades: [
+      { title: "#1 Most Beautiful", subtitle: "Island - Big 7 Travel" },
+      { title: "Most Family Friendly", subtitle: "Remitly Global Survey" },
+      { title: "#7 Friendliest Country", subtitle: "Condé Nast Traveler" },
+      { title: "Jaffna - Top Destination", subtitle: "Lonely Planet" }
+    ],
+    commentaryTitle: "ICT/BPM Export Explosion",
+    commentaryText: "Overall services exports shot up by 24.59% in early 2026, driven directly by a stunning 60.21% year-on-year surge in ICT and business process management services. Colombo remains the regional nucleus for specialized finance outsourcing.",
+    tagline: "Zero-rated VAT compliance for exporters in place"
+  },
+  page4: {
+    subtitle: "02 · Financial Horizons",
+    title: "Tectonic Shifts in the Global Financial Arena",
+    description: "CFOs and treasury heads are managing three dramatic transitions that require increased compliance, deep analytical support, and back-office agility.",
+    trends: [
+      { title: "The $256T Shadow Banking Shift", text: "Non-bank financial institutions (NBFIs) now manage over half of global financial assets, peaking at USD 256.8 Trillion. Higher leverage increases the demand for strict risk modeling and compliance auditing." },
+      { title: "Surging Private Credit", text: "Private credit continues to swell, matching USD 2.1 Trillion globally. CFOs seek rapid-origination capital to manage USD 620B of maturing corporate high-yield bonds due through 2027." },
+      { title: "Agentic AI as Operating System", text: "70% of financial firms have transitioned from basic pilots to agentic AI workflows. 16% are fully automated in key compliance lines, leveraging human-in-the-loop oversight to ensure strict ledger safety." }
+    ],
+    takeawayTitle: "HOW INFOMATE RESPONDS",
+    takeawayText: "We blend deep human accounting talent with specialized Robotic Process Automation (RPA) to help your treasury absorb these shifts with minimal friction.",
+    takeawayLink: "View F&A stacks on page 7"
+  },
+  page5: {
+    subtitle: "03 · Solid Corporate Backing",
+    title: "John Keells Holdings PLC: Sri Lanka's Pre-eminent Corporate",
+    description: "Infomate is a wholly-owned subsidiary of JKH, the largest listed conglomerate on the Colombo Stock Exchange. This backing provides unmatched financial stability and enterprise-grade governance.",
+    projects: [
+      { title: "CWIT Deep Terminal", text: "Strategic USD 840M port project in Colombo handling over 717,000 TEUs in its debut year." },
+      { title: "Cinnamon Life mixed-use", text: "Colombo's landmark luxury destination, transforming regional luxury tourism and gaming/leisure." },
+      { title: "BYD New Energy Vehicles", text: "Strong partnership launched to spearhead sustainable EV vehicle distribution." }
+    ],
+    commitmentsTitle: "Carbon & Environment Commitments",
+    commitmentsText: "John Keells Holdings' commitment to sustainability translates directly to Infomate. Across our combined operations, carbon footprint per million rupees of revenue declined by 8.3%, and water withdrawal declined by 9.5% over the fiscal quarters.",
+    commitmentsTag: "Adhering to UN Global Compact values",
+    imageUrl: ""
+  },
+  page6: {
+    badge: "Historic Achievement in FAO BPM",
+    title: "The First Sri Lankan-Origin BPO Featured in Everest Group's PEAK Matrix®",
+    description: "In their 2025 Finance and Accounting Outsourcing (FAO) Services PEAK Matrix Assessment, Everest Group named Infomate as an outstanding provider in the SMB and mid-market-focused segment.",
+    quote: "Infomate is an SMB and mid-market-focused provider with strong expertise in delivering end-to-end transactional F&A services such as AP, AR, and general accounting, along with industry-contextualized services... Its strong document management and supplier portal capabilities, combined with positive client feedback, contributed to its position.",
+    quoteAuthor: "Shirley Hung",
+    quoteAuthorTitle: "Partner, Everest Group",
+    quoteCategory: "Aspirant Category Listed",
+    bullet1: "SSA 18 Type II and ISO 27001 controls verified.",
+    bullet2: "Over 20 years of continuous global F&A delivery.",
+    imageUrl: ""
+  },
+  page8: {
+    subtitle: "05 · Extended Operations",
+    title: "Back Office Portfolios & Automation DRIVE",
+    description: "Beyond core finance, we optimize your wider business operations using process mapping and automated workflows.",
+    servicesTitle: "Portfolio of Back Office Services",
+    automationTitle: "Process Excellence DRIVE",
+    complianceText: "SSAE 18 and GDPR Compliant Workflows",
+    imageUrl: ""
+  },
+  page9: {
+    subtitle: "06 · Professional Roster",
+    title: "Infomate Team Structure & Global Footprint",
+    description: "Operating securely across prime international markets, backed by qualified chartered, management, and cost accountants.",
+    hubsTitle: "Primary Global Hubs",
+    hubs: [
+      { title: "United Kingdom", desc: "Financial & BPO Services Hub" },
+      { title: "United States & Canada", desc: "Tech & Analytics Talent" },
+      { title: "Australia", desc: "Operations, logistics & finance support" }
+    ],
+    imageUrl: ""
+  },
+  page10: {
+    subtitle: "07 · Why Partner With Us",
+    title: "Our Eight-Fold Value Proposition",
+    socialTitle: "ESG & Social Initiatives",
+    imageUrl: ""
+  }
 };
