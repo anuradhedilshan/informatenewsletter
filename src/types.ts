@@ -113,6 +113,10 @@ export interface Page6Content {
   bullet1: string;
   bullet2: string;
   imageUrl?: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  imagePosition?: "top" | "bottom" | "left" | "right";
+  imageFit?: "contain" | "cover";
 }
 
 export interface Page8Content {
@@ -141,6 +145,93 @@ export interface Page10Content {
   imageUrl?: string;
 }
 
+export interface Page11Content {
+  subtitle: string;
+  title: string;
+  description: string;
+  bullet1: string;
+  bullet2: string;
+  bullet3: string;
+  tagline: string;
+  imageUrl?: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  imagePosition?: "top" | "bottom" | "left" | "right";
+  imageFit?: "contain" | "cover";
+}
+
+export interface Page12Content {
+  subtitle: string;
+  title: string;
+  description: string;
+  highlights: string;
+  tagline: string;
+  imageUrl?: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  imagePosition?: "top" | "bottom" | "left" | "right";
+  imageFit?: "contain" | "cover";
+}
+
+export interface Page13Content {
+  subtitle: string;
+  title: string;
+  description: string;
+  panelTitle: string;
+  panelText: string;
+  tagline: string;
+  imageUrl?: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  imagePosition?: "top" | "bottom" | "left" | "right";
+  imageFit?: "contain" | "cover";
+}
+
+export interface Page14Content {
+  subtitle: string;
+  title: string;
+  description: string;
+  speaker1Name: string;
+  speaker1Title: string;
+  speaker1Desc: string;
+  speaker2Name: string;
+  speaker2Title: string;
+  speaker2Desc: string;
+  takeaway: string;
+  imageUrl?: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  imagePosition?: "top" | "bottom" | "left" | "right";
+  imageFit?: "contain" | "cover";
+}
+
+export interface Page15Content {
+  subtitle: string;
+  title: string;
+  description: string;
+  details: string;
+  tagline: string;
+  imageUrl?: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  imagePosition?: "top" | "bottom" | "left" | "right";
+  imageFit?: "contain" | "cover";
+}
+
+export interface Page16Content {
+  subtitle: string;
+  title: string;
+  description: string;
+  teamPageroText: string;
+  teamFinanceText: string;
+  tagline: string;
+  imageUrl?: string;
+  imageHeight?: number;
+  imageWidth?: number;
+  imagePosition?: "top" | "bottom" | "left" | "right";
+  imageFit?: "contain" | "cover";
+}
+
 export interface NewsletterData {
   general: GeneralInfo;
   stats: StatCard[];
@@ -158,4 +249,10 @@ export interface NewsletterData {
   page8?: Page8Content;
   page9?: Page9Content;
   page10?: Page10Content;
+  page11?: Page11Content;
+  page12?: Page12Content;
+  page13?: Page13Content;
+  page14?: Page14Content;
+  page15?: Page15Content;
+  page16?: Page16Content;
 }

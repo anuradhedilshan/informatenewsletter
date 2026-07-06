@@ -30,7 +30,7 @@ interface CustomizerProps {
 
 export function Customizer({ data, onChange, onReset, onApplyPreset }: CustomizerProps) {
   const [activeTab, setActiveTab] = useState<"general" | "branding" | "pages" | "content">("general");
-  const [selectedContentPage, setSelectedContentPage] = useState<"page2" | "page3" | "page4" | "page5" | "page6" | "page7" | "page8" | "page9" | "page10">("page2");
+  const [selectedContentPage, setSelectedContentPage] = useState<"page2" | "page3" | "page4" | "page5" | "page6" | "page7" | "page8" | "page9" | "page10" | "page11" | "page12" | "page13" | "page14" | "page15" | "page16">("page2");
 
   const handleGeneralChange = (key: keyof NewsletterData["general"], value: string) => {
     onChange({
@@ -73,7 +73,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
   };
 
   const handlePageToggle = (pageNum: number) => {
-    const currentList = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const currentList = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
     let newList: number[];
     if (currentList.includes(pageNum)) {
       if (pageNum === 1 || pageNum === 2) return;
@@ -89,7 +89,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
 
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: "logoUrl" | "coverImageUrl" | "ceoImageUrl" | "page5Url" | "page6Url" | "page8Url" | "page9Url" | "page10Url"
+    field: "logoUrl" | "coverImageUrl" | "ceoImageUrl" | "page5Url" | "page6Url" | "page8Url" | "page9Url" | "page10Url" | "page11Url" | "page12Url" | "page13Url" | "page14Url" | "page15Url" | "page16Url"
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -111,7 +111,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
           },
         });
       } else {
-        const pageKey = field.replace("Url", "") as "page5" | "page6" | "page8" | "page9" | "page10";
+        const pageKey = field.replace("Url", "") as "page5" | "page6" | "page8" | "page9" | "page10" | "page11" | "page12" | "page13" | "page14" | "page15" | "page16";
         onChange({
           ...data,
           [pageKey]: {
@@ -124,7 +124,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
     reader.readAsDataURL(file);
   };
 
-  const handleClearImage = (field: "logoUrl" | "coverImageUrl" | "ceoImageUrl" | "page5Url" | "page6Url" | "page8Url" | "page9Url" | "page10Url") => {
+  const handleClearImage = (field: "logoUrl" | "coverImageUrl" | "ceoImageUrl" | "page5Url" | "page6Url" | "page8Url" | "page9Url" | "page10Url" | "page11Url" | "page12Url" | "page13Url" | "page14Url" | "page15Url" | "page16Url") => {
     if (field === "logoUrl" || field === "coverImageUrl" || field === "ceoImageUrl") {
       onChange({
         ...data,
@@ -134,7 +134,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
         },
       });
     } else {
-      const pageKey = field.replace("Url", "") as "page5" | "page6" | "page8" | "page9" | "page10";
+      const pageKey = field.replace("Url", "") as "page5" | "page6" | "page8" | "page9" | "page10" | "page11" | "page12" | "page13" | "page14" | "page15" | "page16";
       onChange({
         ...data,
         [pageKey]: {
@@ -201,6 +201,24 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
   const handlePage10Change = (key: keyof NonNullable<NewsletterData["page10"]>, value: any) => {
     onChange({ ...data, page10: { ...(data.page10 || {}), [key]: value } as any });
   };
+  const handlePage11Change = (key: keyof NonNullable<NewsletterData["page11"]>, value: any) => {
+    onChange({ ...data, page11: { ...(data.page11 || {}), [key]: value } as any });
+  };
+  const handlePage12Change = (key: keyof NonNullable<NewsletterData["page12"]>, value: any) => {
+    onChange({ ...data, page12: { ...(data.page12 || {}), [key]: value } as any });
+  };
+  const handlePage13Change = (key: keyof NonNullable<NewsletterData["page13"]>, value: any) => {
+    onChange({ ...data, page13: { ...(data.page13 || {}), [key]: value } as any });
+  };
+  const handlePage14Change = (key: keyof NonNullable<NewsletterData["page14"]>, value: any) => {
+    onChange({ ...data, page14: { ...(data.page14 || {}), [key]: value } as any });
+  };
+  const handlePage15Change = (key: keyof NonNullable<NewsletterData["page15"]>, value: any) => {
+    onChange({ ...data, page15: { ...(data.page15 || {}), [key]: value } as any });
+  };
+  const handlePage16Change = (key: keyof NonNullable<NewsletterData["page16"]>, value: any) => {
+    onChange({ ...data, page16: { ...(data.page16 || {}), [key]: value } as any });
+  };
   const handleValuePropChange = (num: number, field: "title" | "description", value: string) => {
     const list = data.valueProps.map((p) => p.number === num ? { ...p, [field]: value } : p);
     onChange({ ...data, valueProps: list });
@@ -208,6 +226,71 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
   const handleSocialInitiativeChange = (id: string, field: "title" | "description" | "badge", value: string) => {
     const list = data.social.map((s) => s.id === id ? { ...s, [field]: value } : s);
     onChange({ ...data, social: list });
+  };
+
+  const renderImageAdjustmentControls = (
+    pageData: { imageHeight?: number; imageWidth?: number; imagePosition?: "top" | "bottom" | "left" | "right"; imageFit?: "contain" | "cover"; imageUrl?: string } | undefined,
+    onFieldChange: (field: string, value: any) => void
+  ) => {
+    if (!pageData?.imageUrl) return null;
+
+    return (
+      <div className="p-3 bg-slate-50 border rounded-lg space-y-3 mt-3 shadow-inner">
+        <h4 className="text-[10px] font-bold text-sky-800 uppercase tracking-wider">Image Layout Adjustments</h4>
+        
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Height (px)</label>
+            <input 
+              type="number" 
+              min={80} 
+              max={400} 
+              value={pageData.imageHeight || 192} 
+              onChange={(e) => onFieldChange("imageHeight", parseInt(e.target.value) || 192)} 
+              className="w-full px-2 py-1 text-xs border rounded bg-white"
+            />
+          </div>
+          <div>
+            <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Width (%)</label>
+            <input 
+              type="number" 
+              min={10} 
+              max={100} 
+              value={pageData.imageWidth || 40} 
+              onChange={(e) => onFieldChange("imageWidth", parseInt(e.target.value) || 40)} 
+              className="w-full px-2 py-1 text-xs border rounded bg-white"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Position</label>
+            <select 
+              value={pageData.imagePosition || "right"} 
+              onChange={(e) => onFieldChange("imagePosition", e.target.value)} 
+              className="w-full px-2 py-1 text-xs border rounded bg-white"
+            >
+              <option value="right">Right (Side-by-Side)</option>
+              <option value="left">Left (Side-by-Side)</option>
+              <option value="top">Top (Stack)</option>
+              <option value="bottom">Bottom (Stack)</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Fit Mode</label>
+            <select 
+              value={pageData.imageFit || "cover"} 
+              onChange={(e) => onFieldChange("imageFit", e.target.value)} 
+              className="w-full px-2 py-1 text-xs border rounded bg-white"
+            >
+              <option value="cover">Crop/Cover</option>
+              <option value="contain">Fit/Contain</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const colorPresets = [
@@ -228,9 +311,15 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
     { num: 8, title: "Back Office Excellence", description: "DRIVE workflow automations and integrations", required: false },
     { num: 9, title: "Team & Global Operations", description: "Qualified accountant ranks & geo coverage", required: false },
     { num: 10, title: "Value Propositions & ESG", description: "8-fold value statement and social initiatives", required: false },
+    { num: 11, title: "Staff Wellness", description: "Wellness in Focus & Holistic Health session", required: false },
+    { num: 12, title: "Office Vibrancy", description: "Valentine's Day Karaoke event write-up", required: false },
+    { num: 13, title: "Diversity & Inclusion", description: "Women's Career Growth panel discussion", required: false },
+    { num: 14, title: "MATE Talk Series", description: "Beyond the Ladder career path panel", required: false },
+    { num: 15, title: "Vesak Office Decoration", description: "Vesak office decoration competition highlights", required: false },
+    { num: 16, title: "Vesak Dansala Initiatives", description: "Popsicle & Kimbula Bun dansala community work", required: false },
   ];
 
-  const visiblePages = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const visiblePages = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
   return (
     <div id="customizer-panel" className="w-full bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col h-full overflow-hidden select-none">
@@ -495,6 +584,84 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page10Url")} className="text-xs w-full" />
                 )}
               </div>
+
+              {/* Page 11 Wellness */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 11: Staff Wellness Photo</span>
+                {data.page11?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page11.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page11Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page11Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 12 Karaoke */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 12: Karaoke Night Photo</span>
+                {data.page12?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page12.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page12Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page12Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 13 Women's Growth */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 13: Women's Career Growth Photo</span>
+                {data.page13?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page13.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page13Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page13Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 14 MATE Talk */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 14: MATE Talk Photo</span>
+                {data.page14?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page14.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page14Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page14Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 15 Vesak Decoration */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 15: Vesak Decoration Photo</span>
+                {data.page15?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page15.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page15Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page15Url")} className="text-xs w-full" />
+                )}
+              </div>
+
+              {/* Page 16 Vesak Dansala */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Page 16: Vesak Dansala Photo</span>
+                {data.page16?.imageUrl ? (
+                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+                    <img src={data.page16.imageUrl} className="h-10 w-16 object-cover rounded" />
+                    <button onClick={() => handleClearImage("page16Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
+                  </div>
+                ) : (
+                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page16Url")} className="text-xs w-full" />
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -546,6 +713,12 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                 <option value="page8">Page 8: Back Office &amp; automation</option>
                 <option value="page9">Page 9: Global Team Ranks</option>
                 <option value="page10">Page 10: Value Props &amp; Social</option>
+                <option value="page11">Page 11: Staff Wellness</option>
+                <option value="page12">Page 12: Valentine's Karaoke</option>
+                <option value="page13">Page 13: Women's Career Growth</option>
+                <option value="page14">Page 14: MATE Talk Series</option>
+                <option value="page15">Page 15: Vesak Decoration</option>
+                <option value="page16">Page 16: Vesak Dansala</option>
               </select>
             </div>
 
@@ -709,6 +882,8 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Check Bullet Points</h4>
                   <input type="text" value={data.page6?.bullet1 || ""} onChange={(e) => handlePage6Change("bullet1", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
                   <input type="text" value={data.page6?.bullet2 || ""} onChange={(e) => handlePage6Change("bullet2", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  
+                  {renderImageAdjustmentControls(data.page6, handlePage6Change)}
                 </div>
               )}
 
@@ -817,6 +992,102 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                       <textarea value={soc.description} onChange={(e) => handleSocialInitiativeChange(soc.id, "description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" />
                     </div>
                   ))}
+                </div>
+              )}
+
+              {/* PAGE 11 STAFF WELLNESS */}
+              {selectedContentPage === "page11" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Staff Wellness Settings</h3>
+                  <input type="text" value={data.page11?.subtitle || ""} onChange={(e) => handlePage11Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
+                  <input type="text" value={data.page11?.title || ""} onChange={(e) => handlePage11Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page11?.description || ""} onChange={(e) => handlePage11Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
+                  <input type="text" value={data.page11?.bullet1 || ""} onChange={(e) => handlePage11Change("bullet1", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 1" />
+                  <input type="text" value={data.page11?.bullet2 || ""} onChange={(e) => handlePage11Change("bullet2", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 2" />
+                  <input type="text" value={data.page11?.bullet3 || ""} onChange={(e) => handlePage11Change("bullet3", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 3" />
+                  <input type="text" value={data.page11?.tagline || ""} onChange={(e) => handlePage11Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
+                  {renderImageAdjustmentControls(data.page11, handlePage11Change)}
+                </div>
+              )}
+
+              {/* PAGE 12 VALENTINE'S KARAOKE */}
+              {selectedContentPage === "page12" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Valentine's Day Karaoke Settings</h3>
+                  <input type="text" value={data.page12?.subtitle || ""} onChange={(e) => handlePage12Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
+                  <input type="text" value={data.page12?.title || ""} onChange={(e) => handlePage12Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page12?.description || ""} onChange={(e) => handlePage12Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
+                  <textarea value={data.page12?.highlights || ""} onChange={(e) => handlePage12Change("highlights", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Highlights" />
+                  <input type="text" value={data.page12?.tagline || ""} onChange={(e) => handlePage12Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
+                  {renderImageAdjustmentControls(data.page12, handlePage12Change)}
+                </div>
+              )}
+
+              {/* PAGE 13 WOMEN'S DAY PANEL */}
+              {selectedContentPage === "page13" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Women's Career Growth Settings</h3>
+                  <input type="text" value={data.page13?.subtitle || ""} onChange={(e) => handlePage13Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
+                  <input type="text" value={data.page13?.title || ""} onChange={(e) => handlePage13Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page13?.description || ""} onChange={(e) => handlePage13Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
+                  <input type="text" value={data.page13?.panelTitle || ""} onChange={(e) => handlePage13Change("panelTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" placeholder="Panel Title" />
+                  <textarea value={data.page13?.panelText || ""} onChange={(e) => handlePage13Change("panelText", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Panel discussion details" />
+                  <input type="text" value={data.page13?.tagline || ""} onChange={(e) => handlePage13Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
+                  {renderImageAdjustmentControls(data.page13, handlePage13Change)}
+                </div>
+              )}
+
+              {/* PAGE 14 MATE TALK */}
+              {selectedContentPage === "page14" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">MATE Talk Series Settings</h3>
+                  <input type="text" value={data.page14?.subtitle || ""} onChange={(e) => handlePage14Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
+                  <input type="text" value={data.page14?.title || ""} onChange={(e) => handlePage14Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page14?.description || ""} onChange={(e) => handlePage14Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
+                  
+                  <div className="p-2.5 bg-slate-50 rounded border space-y-1.5">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">Panelist 1</span>
+                    <input type="text" value={data.page14?.speaker1Name || ""} onChange={(e) => handlePage14Change("speaker1Name", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold bg-white" placeholder="Name" />
+                    <input type="text" value={data.page14?.speaker1Title || ""} onChange={(e) => handlePage14Change("speaker1Title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Title" />
+                    <textarea value={data.page14?.speaker1Desc || ""} onChange={(e) => handlePage14Change("speaker1Desc", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" placeholder="Brief bio/points" />
+                  </div>
+
+                  <div className="p-2.5 bg-slate-50 rounded border space-y-1.5">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase">Panelist 2</span>
+                    <input type="text" value={data.page14?.speaker2Name || ""} onChange={(e) => handlePage14Change("speaker2Name", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold bg-white" placeholder="Name" />
+                    <input type="text" value={data.page14?.speaker2Title || ""} onChange={(e) => handlePage14Change("speaker2Title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Title" />
+                    <textarea value={data.page14?.speaker2Desc || ""} onChange={(e) => handlePage14Change("speaker2Desc", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" placeholder="Brief bio/points" />
+                  </div>
+
+                  <textarea value={data.page14?.takeaway || ""} onChange={(e) => handlePage14Change("takeaway", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Takeaway message" />
+                  {renderImageAdjustmentControls(data.page14, handlePage14Change)}
+                </div>
+              )}
+
+              {/* PAGE 15 VESAK OFFICE DECORATION */}
+              {selectedContentPage === "page15" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Vesak Decoration Competition</h3>
+                  <input type="text" value={data.page15?.subtitle || ""} onChange={(e) => handlePage15Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
+                  <input type="text" value={data.page15?.title || ""} onChange={(e) => handlePage15Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page15?.description || ""} onChange={(e) => handlePage15Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
+                  <textarea value={data.page15?.details || ""} onChange={(e) => handlePage15Change("details", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Competition details" />
+                  <input type="text" value={data.page15?.tagline || ""} onChange={(e) => handlePage15Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
+                  {renderImageAdjustmentControls(data.page15, handlePage15Change)}
+                </div>
+              )}
+
+              {/* PAGE 16 VESAK DANSALA INITIATIVES */}
+              {selectedContentPage === "page16" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Vesak Dansala Settings</h3>
+                  <input type="text" value={data.page16?.subtitle || ""} onChange={(e) => handlePage16Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
+                  <input type="text" value={data.page16?.title || ""} onChange={(e) => handlePage16Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
+                  <textarea value={data.page16?.description || ""} onChange={(e) => handlePage16Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
+                  <textarea value={data.page16?.teamPageroText || ""} onChange={(e) => handlePage16Change("teamPageroText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Team Pagero Popsicle Dansala details" />
+                  <textarea value={data.page16?.teamFinanceText || ""} onChange={(e) => handlePage16Change("teamFinanceText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Ultimate Finance Bun Dansala details" />
+                  <input type="text" value={data.page16?.tagline || ""} onChange={(e) => handlePage16Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
+                  {renderImageAdjustmentControls(data.page16, handlePage16Change)}
                 </div>
               )}
             </div>

@@ -20,7 +20,7 @@ export const initialNewsletterData: NewsletterData = {
     ceoTitle: "Chief Executive Officer, Infomate (Pvt) Ltd",
     ceoMessage: "As we enter the second half of 2026, Infomate continues to go from strength to strength. Our partnership is founded on trust, transparency, and a relentless pursuit of process excellence. The BPM landscape is in the midst of a profound shift—driven by agentic AI, automation, and a global quest for high-caliber talent. We are not just adapting to these changes; we are leading them. As the first Sri Lankan-origin BPO featured in the Everest Group FAO PEAK Matrix®, and backed by the financial strength of John Keells Holdings PLC, we stand ready to serve as your smart extended workforce. This newsletter highlights the macro environment in Sri Lanka, key insights in the global financial arena, JKH Group performance, and our latest technological investments and social initiatives."
   },
-  visiblePages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  visiblePages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
   stats: [
     {
       id: "sl-gdp",
@@ -397,9 +397,13 @@ export const initialNewsletterData: NewsletterData = {
     quoteAuthor: "Shirley Hung",
     quoteAuthorTitle: "Partner, Everest Group",
     quoteCategory: "Aspirant Category Listed",
-    bullet1: "SSA 18 Type II and ISO 27001 controls verified.",
+    bullet1: "SSAE 18 Type II and ISO 27001 controls verified.",
     bullet2: "Over 20 years of continuous global F&A delivery.",
-    imageUrl: ""
+    imageUrl: "/FAO2025.jpeg",
+    imageHeight: 180,
+    imageWidth: 100,
+    imagePosition: "bottom",
+    imageFit: "contain"
   },
   page8: {
     subtitle: "05 · Extended Operations",
@@ -427,5 +431,86 @@ export const initialNewsletterData: NewsletterData = {
     title: "Our Eight-Fold Value Proposition",
     socialTitle: "ESG & Social Initiatives",
     imageUrl: ""
+  },
+  page11: {
+    subtitle: "08 · Employee Wellness",
+    title: "Wellness in Focus: A Holistic Approach to Health",
+    description: "Infomate recently conducted an insightful Wellness Program for our staff, focusing on building awareness and promoting healthier lifestyles.",
+    bullet1: "Non-Communicable Diseases (NCDs) such as diabetes and heart disease.",
+    bullet2: "Effective recovery modalities including rest, movement, and stress management.",
+    bullet3: "A 360-degree holistic approach to wellness, addressing physical, mental, emotional, and lifestyle aspects.",
+    tagline: "Inspiring everyone to prioritize their health and well-being.",
+    imageUrl: "",
+    imageHeight: 192,
+    imageWidth: 40,
+    imagePosition: "right",
+    imageFit: "cover"
+  },
+  page12: {
+    subtitle: "09 · Office Vibrancy",
+    title: "Valentine’s Day Karaoke Night – Event Write-Up",
+    description: "Love was in the air everywhere we turned… and so were the high notes!",
+    highlights: "Our Valentine’s Day Karaoke Evening at Infomate turned into a stage full of stars! From power ballads to classic sing-alongs and everyone’s all-time favorite hits, the evening was filled with laughter, music, and unforgettable performances. Whether hitting the high notes perfectly or just singing their hearts out, our team truly brought the energy and vibes.",
+    tagline: "More than just karaoke - a celebration of fun, friendship, and fearless singing!",
+    imageUrl: "",
+    imageHeight: 200,
+    imageWidth: 40,
+    imagePosition: "left",
+    imageFit: "cover"
+  },
+  page13: {
+    subtitle: "10 · Diversity & Inclusion",
+    title: "Women’s Career Growth (International Women’s Day 2026)",
+    description: "In celebration of International Women’s Day 2026, Infomate organized an engaging panel discussion titled “Navigating Career Growth as a Woman: Challenges, Choices & Confidence.”",
+    panelTitle: "Navigating Career Growth as a Woman",
+    panelText: "The session brought together inspiring female leaders and male leaders who shared their personal career journeys, the challenges they have encountered, and the choices that have shaped their professional growth. Through open and insightful discussions, the panel encouraged participants to embrace confidence, pursue opportunities, and support one another in their career paths.",
+    tagline: "Empowering women and fostering inclusive workplaces where individuals can grow and thrive.",
+    imageUrl: "",
+    imageHeight: 192,
+    imageWidth: 35,
+    imagePosition: "right",
+    imageFit: "cover"
+  },
+  page14: {
+    subtitle: "11 · Learning & Development",
+    title: "Infomate Commences the 2026 MATE Talk Series",
+    description: "We kicked off the first MATE Talk Series for the year with an inspiring and thought-provoking panel discussion on “Beyond the Ladder: Crafting Meaningful Careers.”",
+    speaker1Name: "Yolan Seimon",
+    speaker1Title: "Head of Data and Advanced Analytics, OCTAVE",
+    speaker1Desc: "Yolan's journey from an intern to leading Data and Advanced Analytics at OCTAVE shows the power of continuous learning.",
+    speaker2Name: "Yasasi Perera",
+    speaker2Title: "Assistant Director – Finance, Cinnamon Life Integrated Resort",
+    speaker2Desc: "Yasasi's progression from a non-executive role to Assistant Director demonstrates resilience and dedication.",
+    takeaway: "The discussion went beyond the traditional notion of climbing the corporate ladder, encouraging participants to reflect on personal growth, adaptability, and defining success on their own terms. The panelists also shared valuable advice on embracing opportunities, navigating challenges, and staying committed to long-term career development.",
+    imageUrl: "",
+    imageHeight: 100,
+    imageWidth: 35,
+    imagePosition: "right",
+    imageFit: "cover"
+  },
+  page15: {
+    subtitle: "12 · Cultural Celebrations",
+    title: "Vesak Office Decoration Competition",
+    description: "In celebration of Vesak, Infomate organized an engaging Vesak Decoration Competition across our office floors, encouraging teams to showcase their creativity while embracing the spirit of the season.",
+    details: "The initiative brought employees together to design and decorate their respective spaces with meaningful Vesak themes, reflecting values of peace, compassion, and togetherness. From traditional lanterns and thematic displays to thoughtfully crafted decorations, each team contributed to making the celebration truly special and transforming their floors into vibrant displays of cultural artistry.",
+    tagline: "Strengthening team spirit, collaboration, and cultural appreciation among employees.",
+    imageUrl: "",
+    imageHeight: 192,
+    imageWidth: 40,
+    imagePosition: "right",
+    imageFit: "cover"
+  },
+  page16: {
+    subtitle: "13 · Community Spirit",
+    title: "Vesak Celebrations with Meaningful Dansala Initiatives",
+    description: "As part of the Vesak celebrations, Infomate employees came together to embrace the spirit of generosity, sharing, and community through two special Dansala initiatives.",
+    teamPageroText: "Team Pagero organized a refreshing Popsicle Ice Cream Dansala, sharing refreshing treats to bring a festive and welcoming atmosphere.",
+    teamFinanceText: "The Ultimate Finance Team hosted a traditional Kimbula Bun Dansala, creating opportunities for employees to experience the joy of giving and togetherness.",
+    tagline: "A wonderful reminder of the importance of giving back and coming together as one Infomate family.",
+    imageUrl: "",
+    imageHeight: 192,
+    imageWidth: 40,
+    imagePosition: "right",
+    imageFit: "cover"
   }
 };
