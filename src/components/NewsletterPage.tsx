@@ -30,14 +30,391 @@ import {
   Check
 } from "lucide-react";
 
+const renderDynamicEventContent = (
+  layoutMode: string,
+  items: any[] | undefined | null,
+  legacyImage: React.ReactNode,
+  legacyBody: React.ReactNode,
+  legacyPos: string,
+  legacyImageUrl: string | undefined,
+  primaryColor: string,
+  accentColor: string,
+  textColor: string,
+  cardBgColor: string,
+  configs?: {
+    gridCols?: 2 | 3;
+    cardImageSize?: "small" | "medium" | "large";
+    imageRounded?: "none" | "sm" | "md" | "lg" | "xl" | "full";
+    imageShadow?: "none" | "sm" | "md" | "lg";
+    imageBorderWidth?: number;
+    imageBorderColor?: string;
+    imageFit?: "cover" | "contain";
+    imageBorderStyle?: "solid" | "dashed" | "dotted";
+    imageGrayscale?: boolean;
+    cardStyle?: React.CSSProperties;
+  }
+) => {
+  if (!items || items.length === 0) {
+    return legacyImageUrl ? (
+      legacyPos === "left" ? (
+        <div className="flex gap-6 items-center w-full">{legacyImage}{legacyBody}</div>
+      ) : legacyPos === "right" ? (
+        <div className="flex gap-6 items-center w-full">{legacyBody}{legacyImage}</div>
+      ) : legacyPos === "top" ? (
+        <div className="space-y-4 flex flex-col items-center w-full">{legacyImage}{legacyBody}</div>
+      ) : (
+        <div className="space-y-4 flex flex-col items-center w-full">{legacyBody}{legacyImage}</div>
+      )
+    ) : legacyBody;
+  }
+
+  const count = items.length;
+
+  const getCardImageStyle = (isCircle: boolean = false): React.CSSProperties => {
+    const rounded = configs?.imageRounded || "xl";
+    const shadow = configs?.imageShadow || "sm";
+    const borderWidth = configs?.imageBorderWidth !== undefined ? configs.imageBorderWidth : 0;
+    const borderColor = configs?.imageBorderColor || "#cbd5e1";
+    const fit = configs?.imageFit || "cover";
+    const borderStyle = configs?.imageBorderStyle || "solid";
+    const filter = configs?.imageGrayscale ? "grayscale(100%)" : "none";
+
+    let borderRadius = "0.75rem";
+    if (isCircle) {
+      borderRadius = "9999px";
+    } else {
+      switch (rounded) {
+        case "none": borderRadius = "0px"; break;
+        case "sm": borderRadius = "0.125rem"; break;
+        case "md": borderRadius = "0.375rem"; break;
+        case "lg": borderRadius = "0.5rem"; break;
+        case "xl": borderRadius = "0.75rem"; break;
+        case "full": borderRadius = "9999px"; break;
+      }
+    }
+
+    let boxShadow = "none";
+    switch (shadow) {
+      case "sm": boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"; break;
+      case "md": boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"; break;
+      case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"; break;
+    }
+
+    return {
+      borderRadius,
+      boxShadow,
+      border: borderWidth > 0 ? `${borderWidth}px ${borderStyle} ${borderColor}` : "none",
+      filter
+    };
+  };
+
+  const getCardStyle = (): React.CSSProperties => {
+    return configs?.cardStyle || {
+      backgroundColor: cardBgColor,
+      borderColor: `${textColor}10`,
+      borderRadius: "1rem",
+      padding: "1rem"
+    };
+  };
+
+  if (layoutMode === "grid") {
+    const colsVal = configs?.gridCols || (count <= 2 ? 2 : 3);
+    const gridColsClass = colsVal === 2 ? "grid-cols-2" : "grid-cols-3";
+    
+    const size = configs?.cardImageSize || (count > 4 ? "medium" : "large");
+    let imgHeightClass = "h-26";
+    let cardHeightClass = "h-64";
+    if (size === "small") {
+      imgHeightClass = "h-20";
+      cardHeightClass = colsVal === 2 ? "h-56" : "h-[195px]";
+    } else if (size === "medium") {
+      imgHeightClass = "h-26";
+      cardHeightClass = colsVal === 2 ? "h-64" : "h-[225px]";
+    } else { // large
+      imgHeightClass = "h-32";
+      cardHeightClass = colsVal === 2 ? "h-72" : "h-[250px]";
+    }
+    
+    return (
+      <div className={`grid ${gridColsClass} gap-4 my-auto`}>
+        {items.map((item, idx) => (
+          <div 
+            key={item.id} 
+            className={`flex flex-col justify-between ${cardHeightClass} relative overflow-hidden group hover:border-sky-300 hover:shadow-md transition-all duration-300`}
+            style={getCardStyle()}
+          >
+            <div className="space-y-1.5 h-full flex flex-col justify-between">
+              <div>
+                {item.imageUrl && (
+                  <div 
+                    className={`${imgHeightClass} w-full overflow-hidden mb-2 bg-slate-50 shrink-0`}
+                    style={getCardImageStyle()}
+                  >
+                    <img 
+                      src={item.imageUrl} 
+                      className="w-full h-full" 
+                      style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+                      alt={item.title} 
+                    />
+                  </div>
+                )}
+                <h4 className="font-extrabold text-[11px] sm:text-[12px] leading-tight flex items-center gap-1.5" style={{ color: textColor }}>
+                  <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
+                    {idx + 1}
+                  </span>
+                  {item.title}
+                </h4>
+              </div>
+              <p className="text-[10px] leading-normal font-medium line-clamp-3" style={{ color: `${textColor}99` }}>
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (layoutMode === "list") {
+    const spacingClass = count > 4 ? "space-y-2" : "space-y-3";
+    
+    const size = configs?.cardImageSize || (count > 4 ? "medium" : "large");
+    let imgSizeClass = "w-36 h-24";
+    if (size === "small") {
+      imgSizeClass = "w-20 h-14";
+    } else if (size === "medium") {
+      imgSizeClass = "w-28 h-20";
+    } else { // large
+      imgSizeClass = "w-36 h-24";
+    }
+    
+    return (
+      <div className={`${spacingClass} my-auto`}>
+        {items.map((item, idx) => {
+          const isEven = idx % 2 === 0;
+          const imgEl = item.imageUrl && (
+            <div 
+              className={`${imgSizeClass} overflow-hidden shrink-0 bg-slate-50`} 
+              style={getCardImageStyle()}
+            >
+              <img 
+                src={item.imageUrl} 
+                className="w-full h-full" 
+                style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+                alt={item.title} 
+              />
+            </div>
+          );
+          const textEl = (
+            <div className="space-y-0.5 flex-1">
+              <h4 className="font-extrabold text-[11px] sm:text-xs flex items-center gap-1.5" style={{ color: textColor }}>
+                <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
+                  {idx + 1}
+                </span>
+                {item.title}
+              </h4>
+              <p className="text-[10px] leading-normal font-medium line-clamp-2" style={{ color: `${textColor}cc` }}>
+                {item.description}
+              </p>
+            </div>
+          );
+          return (
+            <div 
+              key={item.id} 
+              className="flex items-center gap-3 sm:gap-4 hover:border-sky-300 transition-all duration-300"
+              style={getCardStyle()}
+            >
+              {isEven ? (
+                <>
+                  {textEl}
+                  {imgEl}
+                </>
+              ) : (
+                <>
+                  {imgEl}
+                  {textEl}
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  if (layoutMode === "three-col") {
+    const colsVal = configs?.gridCols || (count <= 2 ? 2 : 3);
+    const gridColsClass = colsVal === 2 ? "grid-cols-2" : "grid-cols-3";
+    const gapClass = count > 3 ? "gap-4" : "gap-6";
+    
+    const size = configs?.cardImageSize || (count > 3 ? "medium" : "large");
+    let imgHeightClass = "h-36";
+    if (size === "small") {
+      imgHeightClass = "h-20";
+    } else if (size === "medium") {
+      imgHeightClass = "h-28";
+    } else { // large
+      imgHeightClass = "h-36";
+    }
+    
+    return (
+      <div className={`grid ${gridColsClass} ${gapClass} my-auto`}>
+        {items.map((item, idx) => (
+          <div 
+            key={item.id} 
+            className="flex flex-col space-y-2 hover:scale-[1.01] transition-transform duration-300"
+          >
+            {item.imageUrl ? (
+              <div 
+                className={`${imgHeightClass} w-full overflow-hidden bg-slate-50`} 
+                style={getCardImageStyle()}
+              >
+                <img 
+                  src={item.imageUrl} 
+                  className="w-full h-full" 
+                  style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+                  alt={item.title} 
+                />
+              </div>
+            ) : (
+              <div 
+                className={`${imgHeightClass} w-full border border-dashed flex items-center justify-center text-slate-300 bg-slate-50/50`} 
+                style={getCardImageStyle()}
+              >
+                <span className="text-[9px] uppercase font-bold text-slate-400">Event Spotlight</span>
+              </div>
+            )}
+            <div className="space-y-0.5">
+              <h4 className="font-extrabold text-[11px] sm:text-xs flex items-center gap-1.5" style={{ color: textColor }}>
+                <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
+                  {idx + 1}
+                </span>
+                {item.title}
+              </h4>
+              <p className="text-[10px] leading-normal font-medium line-clamp-3" style={{ color: `${textColor}a0` }}>
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (layoutMode === "hero-split") {
+    const heroItem = items[0];
+    const sidebarItems = items.slice(1);
+    
+    const colsVal = configs?.gridCols || (count > 4 ? 2 : 3);
+    const leftColSpan = colsVal === 2 ? "col-span-6" : "col-span-7";
+    const rightColSpan = colsVal === 2 ? "col-span-6" : "col-span-5";
+    
+    const sidebarGapClass = sidebarItems.length > 3 ? "gap-2" : "gap-3";
+    
+    const size = configs?.cardImageSize || "medium";
+    let heroImgHeightClass = "h-36 sm:h-44";
+    let sidebarImgSizeClass = "w-16 h-16";
+    if (size === "small") {
+      heroImgHeightClass = "h-28 sm:h-32";
+      sidebarImgSizeClass = "w-12 h-12";
+    } else if (size === "medium") {
+      heroImgHeightClass = "h-36 sm:h-44";
+      sidebarImgSizeClass = "w-16 h-16";
+    } else { // large
+      heroImgHeightClass = "h-40 sm:h-52";
+      sidebarImgSizeClass = "w-20 h-20";
+    }
+    
+    return (
+      <div className="grid grid-cols-12 gap-4 sm:gap-5 my-auto items-stretch">
+        <div 
+          className={`${leftColSpan} flex flex-col justify-between space-y-3 hover:border-sky-300 transition-all duration-300`}
+          style={getCardStyle()}
+        >
+          <div className="space-y-1.5">
+            <span className="inline-block px-2 py-0.5 rounded-full text-[8px] font-black uppercase text-white" style={{ backgroundColor: primaryColor }}>
+              Spotlight Event
+            </span>
+            <h3 className="text-xs sm:text-sm font-black tracking-tight" style={{ color: textColor }}>{heroItem?.title}</h3>
+            <p className="text-[10px] leading-relaxed font-medium" style={{ color: `${textColor}cc` }}>{heroItem?.description}</p>
+          </div>
+          {heroItem?.imageUrl && (
+            <div 
+              className={`${heroImgHeightClass} w-full overflow-hidden bg-slate-50 shrink-0`} 
+              style={getCardImageStyle()}
+            >
+              <img 
+                src={heroItem.imageUrl} 
+                className="w-full h-full" 
+                style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+                alt={heroItem.title} 
+              />
+            </div>
+          )}
+        </div>
+
+        <div className={`${rightColSpan} flex flex-col ${sidebarGapClass} justify-between`}>
+          {sidebarItems.map((item, idx) => (
+            <div 
+              key={item.id} 
+              className="flex-1 flex items-center gap-2 hover:border-sky-300 transition-all duration-300"
+              style={getCardStyle()}
+            >
+              {item.imageUrl && (
+                <div 
+                  className={`${sidebarImgSizeClass} overflow-hidden shrink-0 bg-slate-50`} 
+                  style={getCardImageStyle()}
+                >
+                  <img 
+                    src={item.imageUrl} 
+                    className="w-full h-full" 
+                    style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+                    alt={item.title} 
+                  />
+                </div>
+              )}
+              <div className="space-y-0.5 flex-1 min-w-0">
+                <h4 className="font-extrabold text-[11px] flex items-center gap-1.5 truncate" style={{ color: textColor }}>
+                  <span className="w-4 h-4 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: accentColor }}>
+                    {idx + 2}
+                  </span>
+                  {item.title}
+                </h4>
+                <p className="text-[9px] leading-tight font-medium line-clamp-2" style={{ color: `${textColor}a0` }}>
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 interface NewsletterPageProps {
   pageNumber: number;
   data: NewsletterData;
 }
 
 export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
-  const primaryColor = data.general.primaryColor;
-  const accentColor = data.general.accentColor;
+  // Resolve page-specific style overrides if global theme is disabled
+  const pageStyle = !data.useGlobalTheme ? data.pageStyles?.[pageNumber] : undefined;
+  
+  const primaryColor = pageStyle?.primaryColor || data.general.primaryColor;
+  const accentColor = pageStyle?.accentColor || data.general.accentColor;
+  const textColor = pageStyle?.textColor || data.general.textColor || "#1e293b";
+  const cardBgColor = pageStyle?.cardBgColor || data.general.cardBgColor || "#f8fafc";
+  
+  const fontSizeModifier = pageStyle?.fontSizeModifier || "medium";
+  const paddingSize = pageStyle?.paddingSize || "normal";
+  
+  const imgRounded = pageStyle?.imageRounded || "xl";
+  const imgShadow = pageStyle?.imageShadow || "sm";
+  const imgBorderWidth = pageStyle?.imageBorderWidth !== undefined ? pageStyle.imageBorderWidth : 0;
+  const imgBorderColor = pageStyle?.imageBorderColor || "#cbd5e1";
 
   // Icon mapper helper
   const getIconComponent = (name: string) => {
@@ -55,12 +432,114 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     }
   };
 
+  // Font Scaling Style Helper
+  const getScaledStyle = (baseRem: number): React.CSSProperties => {
+    const scale = fontSizeModifier === "small" ? 0.85 : fontSizeModifier === "large" ? 1.15 : 1.0;
+    return { fontSize: `${baseRem * scale}rem` };
+  };
+
+  // Extended Image Styling Helper
+  const getImageStyle = (isRoundedFull: boolean = false): React.CSSProperties => {
+    const fit = pageStyle?.imageFit || "cover";
+    const borderStyle = pageStyle?.imageBorderStyle || "solid";
+    const filter = pageStyle?.imageGrayscale ? "grayscale(100%)" : "none";
+
+    let borderRadius = "0.75rem";
+    if (isRoundedFull) {
+      borderRadius = "9999px";
+    } else {
+      switch (imgRounded) {
+        case "none": borderRadius = "0px"; break;
+        case "sm": borderRadius = "0.125rem"; break;
+        case "md": borderRadius = "0.375rem"; break;
+        case "lg": borderRadius = "0.5rem"; break;
+        case "xl": borderRadius = "0.75rem"; break;
+        case "full": borderRadius = "9999px"; break;
+      }
+    }
+
+    let boxShadow = "none";
+    switch (imgShadow) {
+      case "sm": boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"; break;
+      case "md": boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"; break;
+      case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"; break;
+    }
+
+    return {
+      borderRadius,
+      boxShadow,
+      border: imgBorderWidth > 0 ? `${imgBorderWidth}px ${borderStyle} ${imgBorderColor}` : "none",
+      objectFit: fit as any,
+      filter
+    };
+  };
+
+  // Card Styling Helper
+  const getCardStyle = (): React.CSSProperties => {
+    const rounded = pageStyle?.cardRounded || "2xl";
+    const shadow = pageStyle?.cardShadow || "none";
+    const borderWidth = pageStyle?.cardBorderWidth !== undefined ? pageStyle.cardBorderWidth : 1;
+    const borderColor = pageStyle?.cardBorderColor || `${textColor}10`;
+    const padding = pageStyle?.cardPaddingSize === "compact" ? "0.75rem" :
+                    pageStyle?.cardPaddingSize === "comfortable" ? "1.5rem" :
+                    "1rem";
+                    
+    let borderRadius = "1rem";
+    switch (rounded) {
+      case "none": borderRadius = "0px"; break;
+      case "sm": borderRadius = "0.25rem"; break;
+      case "md": borderRadius = "0.375rem"; break;
+      case "lg": borderRadius = "0.5rem"; break;
+      case "xl": borderRadius = "0.75rem"; break;
+      case "2xl": borderRadius = "1rem"; break;
+    }
+    
+    let boxShadow = "none";
+    switch (shadow) {
+      case "sm": boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"; break;
+      case "md": boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"; break;
+      case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"; break;
+    }
+    
+    return {
+      backgroundColor: cardBgColor,
+      borderRadius,
+      boxShadow,
+      border: borderWidth > 0 ? `${borderWidth}px solid ${borderColor}` : "none",
+      padding
+    };
+  };
+
+  // Content Layout Gap Helper
+  const getContentGapClass = (isFlex: boolean = true) => {
+    const gapSize = pageStyle?.contentGapSize || "normal";
+    if (isFlex) {
+      return gapSize === "compact" ? "space-y-3" : gapSize === "wide" ? "space-y-7" : "space-y-5";
+    } else {
+      return gapSize === "compact" ? "gap-3" : gapSize === "wide" ? "gap-6" : "gap-4";
+    }
+  };
+
+  // Title Font Styling Helper
+  const titleFontFamily = pageStyle?.fontFamilyTitle === "outfit" ? "'Outfit', sans-serif" :
+                          pageStyle?.fontFamilyTitle === "playfair" ? "'Playfair Display', serif" :
+                          pageStyle?.fontFamilyTitle === "merriweather" ? "'Merriweather', serif" :
+                          pageStyle?.fontFamilyTitle === "inter" ? "'Inter', sans-serif" : "";
+
+  const getTitleStyle = (baseRem: number): React.CSSProperties => {
+    const styleObj = getScaledStyle(baseRem);
+    if (titleFontFamily) {
+      styleObj.fontFamily = titleFontFamily;
+    }
+    return styleObj;
+  };
+
   // Common Header of pages
   const PageHeader = ({ sectionName }: { sectionName: string }) => (
-    <div className="flex items-center justify-between pb-3 border-b mb-6 select-none" style={{ borderColor: `${data.general.textColor || "#1e293b"}15` }}>
+    <div className="flex items-center justify-between pb-3 border-b mb-6 select-none" style={{ borderColor: `${textColor}15` }}>
       <Logo primaryColor={primaryColor} accentColor={accentColor} size="lg" logoUrl={data.general.logoUrl} />
       <div className="text-right">
-        <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: `${data.general.textColor || "#1e293b"}60` }}>{data.general.edition}</span>
+        <span className="text-[10px] font-bold uppercase tracking-wider block" style={{ color: `${textColor}60` }}>{data.general.edition}</span>
         <span className="text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
           {sectionName}
         </span>
@@ -70,11 +549,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
 
   // Common Footer of pages
   const PageFooter = ({ pageNo }: { pageNo: number }) => {
-    const actualPages = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    const actualPages = data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10];
     const displayPageNo = actualPages.indexOf(pageNo) + 1;
 
     return (
-      <div className="flex items-center justify-between pt-4 border-t mt-auto text-[10px] font-bold select-none" style={{ borderColor: `${data.general.textColor || "#1e293b"}15`, color: `${data.general.textColor || "#1e293b"}60` }}>
+      <div className="flex items-center justify-between pt-4 border-t mt-auto text-[10px] font-bold select-none" style={{ borderColor: `${textColor}15`, color: `${textColor}60` }}>
         <span>© 2026 Infomate (Pvt) Ltd · Confidential Partner Portfolio</span>
         <span className="flex items-center gap-1">
           <span>Page</span>
@@ -86,6 +565,81 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     );
   };
 
+  const renderPageContainer = (
+    pageNum: number,
+    contentBgColor: string | undefined,
+    contentBgImageUrl: string | undefined,
+    children: React.ReactNode,
+    options?: { isDark?: boolean; isPage6?: boolean; paddingClass?: string }
+  ) => {
+    const isDark = options?.isDark || false;
+    const isPage6 = options?.isPage6 || false;
+    
+    // Resolve padding class
+    const padding = options?.paddingClass || (
+      paddingSize === "compact" ? "p-6" :
+      paddingSize === "comfortable" ? "p-14" : "p-10"
+    );
+
+    // Resolve bg style
+    let bgStyle: React.CSSProperties = {};
+    const bgMode = pageStyle?.bgStyleMode || (isPage6 ? "gradient" : pageNum === 1 ? "gradient" : "solid");
+    
+    if (bgMode === "gradient") {
+      const gradStart = pageStyle?.bgGradientStart || (isPage6 ? (data.page6?.bgGradientStart || "#090d16") : pageNum === 1 ? (data.general.coverBgColor || data.general.darkPageBgColor || "#020617") : "#ffffff");
+      const gradEnd = pageStyle?.bgGradientEnd || (isPage6 ? (data.page6?.bgGradientEnd || "#020617") : pageNum === 1 ? "#000000" : "#f8fafc");
+      bgStyle = {
+        backgroundImage: `linear-gradient(135deg, ${gradStart}, ${gradEnd})`
+      };
+    } else if (bgMode === "image") {
+      bgStyle = {
+        backgroundColor: "transparent"
+      };
+    } else { // solid
+      const bgCol = pageStyle?.pageBgColor || contentBgColor || (isDark ? (data.general.darkPageBgColor || "#020617") : (data.general.pageBgColor || "#ffffff"));
+      bgStyle = {
+        backgroundColor: bgCol
+      };
+    }
+
+    const resolvedBgImageUrl = pageStyle?.bgImageUrl || contentBgImageUrl;
+    const overlayOpacity = pageStyle?.bgImageOverlayOpacity !== undefined ? pageStyle.bgImageOverlayOpacity : (pageNum === 1 ? 80 : 0);
+
+    const bodyFontFamily = pageStyle?.fontFamilyBody === "outfit" ? "'Outfit', sans-serif" :
+                           pageStyle?.fontFamilyBody === "serif" ? "Georgia, serif" :
+                           pageStyle?.fontFamilyBody === "merriweather" ? "'Merriweather', serif" :
+                           pageStyle?.fontFamilyBody === "inter" ? "'Inter', sans-serif" : "";
+
+    return (
+      <div 
+        className={`h-full flex flex-col justify-between relative overflow-hidden select-none ${padding}`}
+        style={{ 
+          ...bgStyle,
+          color: isDark ? (data.general.darkTextColor || "#ffffff") : textColor,
+          fontFamily: bodyFontFamily || undefined
+        }}
+      >
+        {resolvedBgImageUrl && (
+          <>
+            <div 
+              className="absolute inset-0 bg-cover bg-center pointer-events-none z-0"
+              style={{ backgroundImage: `url(${resolvedBgImageUrl})` }}
+            />
+            {overlayOpacity > 0 && (
+              <div 
+                className="absolute inset-0 pointer-events-none z-0 bg-slate-950"
+                style={{ opacity: overlayOpacity / 100 }}
+              />
+            )}
+          </>
+        )}
+        <div className="relative z-10 h-full flex flex-col justify-between" style={{ fontSize: fontSizeModifier === "small" ? "0.9em" : fontSizeModifier === "large" ? "1.1em" : "1em" }}>
+          {children}
+        </div>
+      </div>
+    );
+  };
+
   switch (pageNumber) {
     // ----------------------------------------------------
     // PAGE 1: COVER PAGE
@@ -93,9 +647,9 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     case 1:
       return (
         <div 
-          className="h-full flex flex-col justify-between relative overflow-hidden p-12"
+          className="h-full flex flex-col justify-between relative overflow-hidden p-12 select-none"
           style={{ 
-            backgroundColor: data.general.darkPageBgColor || "#020617",
+            backgroundColor: data.general.coverBgColor || data.general.darkPageBgColor || "#020617",
             color: data.general.darkTextColor || "#ffffff"
           }}
         >
@@ -113,6 +667,12 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ backgroundColor: primaryColor }} />
               <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ backgroundColor: accentColor }} />
             </>
+          )}
+          {data.general.coverBgImageUrl && (
+            <div 
+              className="absolute inset-0 bg-cover bg-center pointer-events-none z-0"
+              style={{ backgroundImage: `url(${data.general.coverBgImageUrl})` }}
+            />
           )}
           
           {/* Brand Logo Grid Header */}
@@ -178,14 +738,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
     // PAGE 2: CEO GREETING & TABLE OF CONTENTS
     // ----------------------------------------------------
     case 2:
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10"
-          style={{ 
-            backgroundColor: data.general.pageBgColor || "#ffffff",
-            color: data.general.textColor || "#1e293b"
-          }}
-        >
+      return renderPageContainer(
+        2,
+        data.general.ceoBgColor,
+        data.general.ceoBgImageUrl,
+        <>
           <PageHeader sectionName="Executive Corner" />
           
           <div className="grid grid-cols-12 gap-8 my-auto items-center">
@@ -204,8 +761,8 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                   <img 
                     src={data.general.ceoImageUrl} 
                     alt={data.general.ceoName} 
-                    className="w-20 h-20 rounded-xl object-cover border shadow-sm shrink-0" 
-                    style={{ borderColor: `${data.general.textColor || "#1e293b"}20` }}
+                    className="w-20 h-20 object-cover shrink-0" 
+                    style={getImageStyle()}
                   />
                 )}
                 <div className="relative pl-6 border-l-4" style={{ borderColor: primaryColor }}>
@@ -264,7 +821,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={2} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -280,8 +837,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         commentaryText: "",
         tagline: ""
       };
-      return (
-        <div className="h-full flex flex-col justify-between p-10">
+      return renderPageContainer(
+        3,
+        p3.bgColor,
+        p3.bgImageUrl,
+        <>
           <PageHeader sectionName="Macro Environment" />
 
           <div className="space-y-6 my-auto">
@@ -348,7 +908,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={3} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -364,8 +924,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         takeawayText: "",
         takeawayLink: ""
       };
-      return (
-        <div className="h-full flex flex-col justify-between p-10">
+      return renderPageContainer(
+        4,
+        p4.bgColor,
+        p4.bgImageUrl,
+        <>
           <PageHeader sectionName="Global Trends" />
 
           <div className="space-y-6 my-auto">
@@ -414,7 +977,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={4} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -429,21 +992,34 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         commitmentsTitle: "",
         commitmentsText: "",
         commitmentsTag: "",
-        imageUrl: ""
       };
-      return (
-        <div className="h-full flex flex-col justify-between p-10">
+      return renderPageContainer(
+        5,
+        p5.bgColor,
+        p5.bgImageUrl,
+        <>
           <PageHeader sectionName="Parent Group" />
 
           <div className="space-y-6 my-auto">
-            <div className="space-y-2">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p5.subtitle}</span>
-              <h2 className="text-3xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
-                {p5.title}
-              </h2>
-              <p className="text-xs sm:text-sm leading-relaxed max-w-3xl" style={{ color: `${data.general.textColor}99` }}>
-                {p5.description}
-              </p>
+            <div className="flex justify-between items-start gap-6">
+              <div className="space-y-2 flex-1">
+                <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p5.subtitle}</span>
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                  {p5.title}
+                </h2>
+                <p className="text-xs sm:text-sm leading-relaxed max-w-2xl" style={{ color: `${data.general.textColor}99` }}>
+                  {p5.description}
+                </p>
+              </div>
+              {p5.imageUrl && (
+                <div className="w-32 h-20 shrink-0 bg-white rounded-2xl border border-slate-100 flex items-center justify-center p-3 shadow-sm" style={{ borderColor: `${data.general.textColor}15` }}>
+                  <img 
+                    src={p5.imageUrl} 
+                    className="max-w-full max-h-full object-contain" 
+                    alt="John Keells Holdings Logo" 
+                  />
+                </div>
+              )}
             </div>
 
             {/* Stats Row */}
@@ -461,7 +1037,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
             {/* Strategic Projects Grid */}
             <div className="grid grid-cols-12 gap-6 pt-2">
               <div 
-                className={`rounded-2xl border p-5 space-y-3 ${p5.imageUrl ? "col-span-5" : "col-span-6"}`}
+                className="rounded-2xl border p-5 space-y-3 col-span-6"
                 style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}
               >
                 <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-1.5" style={{ color: data.general.textColor }}>
@@ -481,7 +1057,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </div>
 
               <div 
-                className={`rounded-2xl border p-5 space-y-3 flex flex-col justify-between ${p5.imageUrl ? "col-span-4" : "col-span-6"}`}
+                className="rounded-2xl border p-5 space-y-3 col-span-6 flex flex-col justify-between"
                 style={{ backgroundColor: data.general.cardBgColor, borderColor: `${data.general.textColor}10` }}
               >
                 <h4 className="text-xs font-black uppercase tracking-widest flex items-center gap-1.5" style={{ color: data.general.textColor }}>
@@ -492,22 +1068,16 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                   {p5.commitmentsText}
                 </p>
                 {p5.commitmentsTag && (
-                  <div className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider bg-sky-50 px-2.5 py-1 rounded-lg w-max mt-2" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
+                  <div className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider bg-sky-50 px-2.5 py-1 rounded-lg mt-2 max-w-full break-words" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
                     <span>{p5.commitmentsTag}</span>
                   </div>
                 )}
               </div>
-
-              {p5.imageUrl && (
-                <div className="col-span-3 rounded-2xl overflow-hidden border shadow-sm relative h-full bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
-                  <img src={p5.imageUrl} className="w-full h-full object-cover" alt="JKH flagship" />
-                </div>
-              )}
             </div>
           </div>
 
           <PageFooter pageNo={5} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -538,10 +1108,10 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
 
       const p6Image = p6.imageUrl && (
         <div 
-          className="bg-white/5 border border-white/10 rounded-2xl p-2.5 flex justify-center items-center shadow-lg shrink-0"
-          style={{ height: p6Height, width: p6Width }}
+          className="flex justify-center items-center shrink-0"
+          style={{ ...getImageStyle(), height: p6Height, width: p6Width }}
         >
-          <img src={p6.imageUrl} className="w-full h-full rounded-lg" style={{ objectFit: p6Fit }} alt="PEAK Matrix Recognition Badge" />
+          <img src={p6.imageUrl} className="w-full h-full" style={{ objectFit: p6Fit, borderRadius: "inherit" }} alt="PEAK Matrix Recognition Badge" />
         </div>
       );
 
@@ -571,16 +1141,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         </div>
       );
 
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10 relative"
-          style={{ 
-            backgroundColor: data.general.darkPageBgColor || "#020617",
-            color: data.general.darkTextColor || "#ffffff"
-          }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900/50 to-slate-950 z-0" style={{ opacity: 0.15 }} />
-          
+      return renderPageContainer(
+        6,
+        p6.bgColor,
+        p6.bgImageUrl,
+        <>
           <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-6 select-none relative z-10">
             <Logo primaryColor="#FFFFFF" accentColor={accentColor} size="lg" logoUrl={data.general.logoUrl} />
             <div className="text-right">
@@ -629,15 +1194,19 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </span>
             </span>
           </div>
-        </div>
+        </>,
+        { isDark: true, isPage6: true }
       );
 
     // ----------------------------------------------------
     // PAGE 7: CORE F&A SERVICE PORTFOLIO
     // ----------------------------------------------------
     case 7:
-      return (
-        <div className="h-full flex flex-col justify-between p-10">
+      return renderPageContainer(
+        7,
+        data.page7?.bgColor,
+        data.page7?.bgImageUrl,
+        <>
           <PageHeader sectionName="Core Services" />
 
           <div className="space-y-4 my-auto">
@@ -685,7 +1254,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={7} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -701,8 +1270,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         complianceText: "",
         imageUrl: ""
       };
-      return (
-        <div className="h-full flex flex-col justify-between p-10">
+      return renderPageContainer(
+        8,
+        p8.bgColor,
+        p8.bgImageUrl,
+        <>
           <PageHeader sectionName="Operational Excellence" />
 
           <div className="space-y-5 my-auto">
@@ -741,8 +1313,8 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                   <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: `${data.general.textColor}80` }}>{p8.automationTitle}</span>
                   
                   {p8.imageUrl ? (
-                    <div className="rounded-xl overflow-hidden border shadow-sm h-28 my-1 bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
-                      <img src={p8.imageUrl} className="w-full h-full object-cover" alt="Process Work Culture" />
+                    <div className="h-28 my-1 bg-white overflow-hidden" style={getImageStyle()}>
+                      <img src={p8.imageUrl} className="w-full h-full object-cover" alt="Process Work Culture" style={{ borderRadius: "inherit" }} />
                     </div>
                   ) : (
                     <div className="space-y-2 text-xs">
@@ -766,7 +1338,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={8} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -781,8 +1353,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         hubs: [],
         imageUrl: ""
       };
-      return (
-        <div className="h-full flex flex-col justify-between p-10">
+      return renderPageContainer(
+        9,
+        p9.bgColor,
+        p9.bgImageUrl,
+        <>
           <PageHeader sectionName="Global Team" />
 
           <div className="space-y-5 my-auto">
@@ -842,8 +1417,8 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
 
                 {/* Diversity stats / Image display */}
                 {p9.imageUrl ? (
-                  <div className="rounded-xl overflow-hidden border shadow-sm h-24 relative bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
-                    <img src={p9.imageUrl} className="w-full h-full object-cover" alt="Infomate work team culture" />
+                  <div className="h-24 relative bg-white overflow-hidden" style={getImageStyle()}>
+                    <img src={p9.imageUrl} className="w-full h-full object-cover" alt="Infomate work team culture" style={{ borderRadius: "inherit" }} />
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
@@ -862,7 +1437,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={9} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -875,8 +1450,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         socialTitle: "ESG & Social Initiatives",
         imageUrl: ""
       };
-      return (
-        <div className="h-full flex flex-col justify-between p-10">
+      return renderPageContainer(
+        10,
+        p10.bgColor,
+        p10.bgImageUrl,
+        <>
           <PageHeader sectionName="Value Proposition" />
 
           <div className="space-y-4 my-auto">
@@ -924,8 +1502,8 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                   ))}
                 </div>
                 {p10.imageUrl && (
-                  <div className="col-span-3 rounded-xl overflow-hidden border shadow-sm relative h-full bg-white" style={{ borderColor: `${data.general.textColor}15` }}>
-                    <img src={p10.imageUrl} className="w-full h-full object-cover" alt="ESG Social Work" />
+                  <div className="col-span-3 relative h-full bg-white overflow-hidden" style={getImageStyle()}>
+                    <img src={p10.imageUrl} className="w-full h-full object-cover" alt="ESG Social Work" style={{ borderRadius: "inherit" }} />
                   </div>
                 )}
               </div>
@@ -933,7 +1511,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={10} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -955,17 +1533,17 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         imageFit: "cover"
       };
 
-      const p11Height = p11.imageHeight ? `${p11.imageHeight}px` : "192px";
-      const p11Width = p11.imageWidth ? `${p11.imageWidth}%` : "40%";
+      const p11Height = p11.imageHeight ? `${p11.imageHeight}px` : "240px";
+      const p11Width = p11.imageWidth ? `${p11.imageWidth}%` : "48%";
       const p11Fit = p11.imageFit || "cover";
       const p11Pos = p11.imagePosition || "right";
 
       const p11Image = p11.imageUrl && (
         <div 
-          className="rounded-2xl overflow-hidden border shadow-md relative bg-white shrink-0" 
-          style={{ height: p11Height, width: p11Width, borderColor: `${data.general.textColor || "#1e293b"}15` }}
+          className="overflow-hidden relative bg-white shrink-0" 
+          style={{ ...getImageStyle(), height: p11Height, width: p11Width }}
         >
-          <img src={p11.imageUrl} className="w-full h-full" style={{ objectFit: p11Fit }} alt="Wellness Program Session" />
+          <img src={p11.imageUrl} className="w-full h-full" style={{ objectFit: p11Fit, borderRadius: "inherit" }} alt="Wellness Program Session" />
         </div>
       );
 
@@ -984,14 +1562,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         </div>
       );
 
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10"
-          style={{ 
-            backgroundColor: data.general.pageBgColor || "#ffffff",
-            color: data.general.textColor || "#1e293b"
-          }}
-        >
+      return renderPageContainer(
+        11,
+        p11.bgColor,
+        p11.bgImageUrl,
+        <>
           <PageHeader sectionName="Staff Wellness" />
 
           <div className="space-y-5 my-auto">
@@ -1005,25 +1580,38 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </p>
             </div>
 
-            {p11.imageUrl ? (
-              p11Pos === "left" ? (
-                <div className="flex gap-6 items-center w-full">{p11Image}{p11Body}</div>
-              ) : p11Pos === "right" ? (
-                <div className="flex gap-6 items-center w-full">{p11Body}{p11Image}</div>
-              ) : p11Pos === "top" ? (
-                <div className="space-y-4 flex flex-col items-center w-full">{p11Image}{p11Body}</div>
-              ) : (
-                <div className="space-y-4 flex flex-col items-center w-full">{p11Body}{p11Image}</div>
-              )
-            ) : p11Body}
+            {renderDynamicEventContent(
+              p11.layoutMode || "grid",
+              p11.wellnessItems,
+              p11Image,
+              p11Body,
+              p11Pos,
+              p11.imageUrl,
+              primaryColor,
+              accentColor,
+              data.general.textColor || "#1e293b",
+              data.general.cardBgColor || "#f8fafc",
+              {
+                gridCols: p11.gridCols,
+                cardImageSize: p11.cardImageSize,
+                imageRounded: imgRounded,
+                imageShadow: imgShadow,
+                imageBorderWidth: imgBorderWidth,
+                imageBorderColor: imgBorderColor,
+                imageFit: pageStyle?.imageFit,
+                imageBorderStyle: pageStyle?.imageBorderStyle,
+                imageGrayscale: pageStyle?.imageGrayscale,
+                cardStyle: getCardStyle()
+              }
+            )}
 
-            <div className="p-3.5 rounded-xl border text-center text-xs font-bold" style={{ backgroundColor: `${accentColor}10`, color: accentColor, borderColor: `${accentColor}25` }}>
+            <div className="p-3.5 rounded-xl border text-center text-xs font-bold mt-4" style={{ backgroundColor: `${accentColor}10`, color: accentColor, borderColor: `${accentColor}25` }}>
               {p11.tagline}
             </div>
           </div>
 
           <PageFooter pageNo={11} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -1070,14 +1658,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         </div>
       );
 
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10"
-          style={{ 
-            backgroundColor: data.general.pageBgColor || "#ffffff",
-            color: data.general.textColor || "#1e293b"
-          }}
-        >
+      return renderPageContainer(
+        12,
+        p12.bgColor,
+        p12.bgImageUrl,
+        <>
           <PageHeader sectionName="Office Vibrancy" />
 
           <div className="space-y-5 my-auto">
@@ -1088,17 +1673,18 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </h2>
             </div>
 
-            {p12.imageUrl ? (
-              p12Pos === "left" ? (
-                <div className="flex gap-6 items-center w-full">{p12Image}{p12Body}</div>
-              ) : p12Pos === "right" ? (
-                <div className="flex gap-6 items-center w-full">{p12Body}{p12Image}</div>
-              ) : p12Pos === "top" ? (
-                <div className="space-y-4 flex flex-col items-center w-full">{p12Image}{p12Body}</div>
-              ) : (
-                <div className="space-y-4 flex flex-col items-center w-full">{p12Body}{p12Image}</div>
-              )
-            ) : p12Body}
+            {renderDynamicEventContent(
+              p12.layoutMode || "grid",
+              p12.wellnessItems,
+              p12Image,
+              p12Body,
+              p12Pos,
+              p12.imageUrl,
+              primaryColor,
+              accentColor,
+              data.general.textColor || "#1e293b",
+              data.general.cardBgColor || "#f8fafc"
+            )}
 
             <div className="p-3.5 rounded-2xl text-center text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
               <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
@@ -1108,7 +1694,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={12} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -1154,14 +1740,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         </div>
       );
 
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10"
-          style={{ 
-            backgroundColor: data.general.pageBgColor || "#ffffff",
-            color: data.general.textColor || "#1e293b"
-          }}
-        >
+      return renderPageContainer(
+        13,
+        p13.bgColor,
+        p13.bgImageUrl,
+        <>
           <PageHeader sectionName="Diversity & Inclusion" />
 
           <div className="space-y-5 my-auto">
@@ -1175,17 +1758,18 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </p>
             </div>
 
-            {p13.imageUrl ? (
-              p13Pos === "left" ? (
-                <div className="flex gap-6 items-center w-full">{p13Image}{p13Body}</div>
-              ) : p13Pos === "right" ? (
-                <div className="flex gap-6 items-center w-full">{p13Body}{p13Image}</div>
-              ) : p13Pos === "top" ? (
-                <div className="space-y-4 flex flex-col items-center w-full">{p13Image}{p13Body}</div>
-              ) : (
-                <div className="space-y-4 flex flex-col items-center w-full">{p13Body}{p13Image}</div>
-              )
-            ) : p13Body}
+            {renderDynamicEventContent(
+              p13.layoutMode || "grid",
+              p13.wellnessItems,
+              p13Image,
+              p13Body,
+              p13Pos,
+              p13.imageUrl,
+              primaryColor,
+              accentColor,
+              data.general.textColor || "#1e293b",
+              data.general.cardBgColor || "#f8fafc"
+            )}
 
             <div className="p-3 rounded-xl border text-center text-xs font-bold" style={{ backgroundColor: `${primaryColor}10`, color: primaryColor, borderColor: `${primaryColor}20` }}>
               {p13.tagline}
@@ -1193,7 +1777,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={13} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -1263,14 +1847,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         </div>
       );
 
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10"
-          style={{ 
-            backgroundColor: data.general.pageBgColor || "#ffffff",
-            color: data.general.textColor || "#1e293b"
-          }}
-        >
+      return renderPageContainer(
+        14,
+        p14.bgColor,
+        p14.bgImageUrl,
+        <>
           <PageHeader sectionName="MATE Talk Series" />
 
           <div className="space-y-4 my-auto">
@@ -1284,21 +1865,22 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </p>
             </div>
 
-            {p14.imageUrl ? (
-              p14Pos === "left" ? (
-                <div className="flex gap-6 items-center w-full">{p14Image}{p14Body}</div>
-              ) : p14Pos === "right" ? (
-                <div className="flex gap-6 items-center w-full">{p14Body}{p14Image}</div>
-              ) : p14Pos === "top" ? (
-                <div className="space-y-4 flex flex-col items-center w-full">{p14Image}{p14Body}</div>
-              ) : (
-                <div className="space-y-4 flex flex-col items-center w-full">{p14Body}{p14Image}</div>
-              )
-            ) : p14Body}
+            {renderDynamicEventContent(
+              p14.layoutMode || "grid",
+              p14.wellnessItems,
+              p14Image,
+              p14Body,
+              p14Pos,
+              p14.imageUrl,
+              primaryColor,
+              accentColor,
+              data.general.textColor || "#1e293b",
+              data.general.cardBgColor || "#f8fafc"
+            )}
           </div>
 
           <PageFooter pageNo={14} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -1341,14 +1923,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         </div>
       );
 
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10"
-          style={{ 
-            backgroundColor: data.general.pageBgColor || "#ffffff",
-            color: data.general.textColor || "#1e293b"
-          }}
-        >
+      return renderPageContainer(
+        15,
+        p15.bgColor,
+        p15.bgImageUrl,
+        <>
           <PageHeader sectionName="Vesak Festival" />
 
           <div className="space-y-4 my-auto">
@@ -1362,17 +1941,18 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </p>
             </div>
 
-            {p15.imageUrl ? (
-              p15Pos === "left" ? (
-                <div className="flex gap-6 items-center w-full">{p15Image}{p15Body}</div>
-              ) : p15Pos === "right" ? (
-                <div className="flex gap-6 items-center w-full">{p15Body}{p15Image}</div>
-              ) : p15Pos === "top" ? (
-                <div className="space-y-4 flex flex-col items-center w-full">{p15Image}{p15Body}</div>
-              ) : (
-                <div className="space-y-4 flex flex-col items-center w-full">{p15Body}{p15Image}</div>
-              )
-            ) : p15Body}
+            {renderDynamicEventContent(
+              p15.layoutMode || "grid",
+              p15.wellnessItems,
+              p15Image,
+              p15Body,
+              p15Pos,
+              p15.imageUrl,
+              primaryColor,
+              accentColor,
+              data.general.textColor || "#1e293b",
+              data.general.cardBgColor || "#f8fafc"
+            )}
 
             <div className="p-3.5 rounded-xl border text-center text-xs font-bold" style={{ backgroundColor: `${accentColor}10`, color: accentColor, borderColor: `${accentColor}25` }}>
               {p15.tagline}
@@ -1380,7 +1960,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={15} />
-        </div>
+        </>
       );
 
     // ----------------------------------------------------
@@ -1437,14 +2017,11 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
         </div>
       );
 
-      return (
-        <div 
-          className="h-full flex flex-col justify-between p-10"
-          style={{ 
-            backgroundColor: data.general.pageBgColor || "#ffffff",
-            color: data.general.textColor || "#1e293b"
-          }}
-        >
+      return renderPageContainer(
+        16,
+        p16.bgColor,
+        p16.bgImageUrl,
+        <>
           <PageHeader sectionName="Community Initiatives" />
 
           <div className="space-y-4 my-auto">
@@ -1458,17 +2035,18 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               </p>
             </div>
 
-            {p16.imageUrl ? (
-              p16Pos === "left" ? (
-                <div className="flex gap-6 items-center w-full">{p16Image}{p16Body}</div>
-              ) : p16Pos === "right" ? (
-                <div className="flex gap-6 items-center w-full">{p16Body}{p16Image}</div>
-              ) : p16Pos === "top" ? (
-                <div className="space-y-4 flex flex-col items-center w-full">{p16Image}{p16Body}</div>
-              ) : (
-                <div className="space-y-4 flex flex-col items-center w-full">{p16Body}{p16Image}</div>
-              )
-            ) : p16Body}
+            {renderDynamicEventContent(
+              p16.layoutMode || "grid",
+              p16.wellnessItems,
+              p16Image,
+              p16Body,
+              p16Pos,
+              p16.imageUrl,
+              primaryColor,
+              accentColor,
+              data.general.textColor || "#1e293b",
+              data.general.cardBgColor || "#f8fafc"
+            )}
 
             <div className="p-3 rounded-xl border text-center text-xs font-bold" style={{ backgroundColor: `${primaryColor}10`, color: primaryColor, borderColor: `${primaryColor}20` }}>
               {p16.tagline}
@@ -1476,7 +2054,7 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
           </div>
 
           <PageFooter pageNo={16} />
-        </div>
+        </>
       );
 
     default:

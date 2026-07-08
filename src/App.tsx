@@ -21,7 +21,7 @@ export default function App() {
   const [viewMode, setViewMode] = useState<"continuous" | "pages">("pages");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const visiblePages = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const visiblePages = data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10];
   const currentPageIndex = visiblePages.indexOf(currentPage);
   const displayTotalPages = visiblePages.length;
 

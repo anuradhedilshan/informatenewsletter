@@ -15,12 +15,14 @@ export const initialNewsletterData: NewsletterData = {
     darkTextColor: "#ffffff",
     logoUrl: "",
     coverImageUrl: "",
-    ceoImageUrl: "",
+    ceoImageUrl: "/ceo_profile.jpg",
     ceoName: "Jehan Perinpanayagam",
     ceoTitle: "Chief Executive Officer, Infomate (Pvt) Ltd",
     ceoMessage: "As we enter the second half of 2026, Infomate continues to go from strength to strength. Our partnership is founded on trust, transparency, and a relentless pursuit of process excellence. The BPM landscape is in the midst of a profound shift—driven by agentic AI, automation, and a global quest for high-caliber talent. We are not just adapting to these changes; we are leading them. As the first Sri Lankan-origin BPO featured in the Everest Group FAO PEAK Matrix®, and backed by the financial strength of John Keells Holdings PLC, we stand ready to serve as your smart extended workforce. This newsletter highlights the macro environment in Sri Lanka, key insights in the global financial arena, JKH Group performance, and our latest technological investments and social initiatives."
   },
-  visiblePages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+  visiblePages: [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10],
+  useGlobalTheme: true,
+  pageStyles: {},
   stats: [
     {
       id: "sl-gdp",
@@ -387,7 +389,7 @@ export const initialNewsletterData: NewsletterData = {
     commitmentsTitle: "Carbon & Environment Commitments",
     commitmentsText: "John Keells Holdings' commitment to sustainability translates directly to Infomate. Across our combined operations, carbon footprint per million rupees of revenue declined by 8.3%, and water withdrawal declined by 9.5% over the fiscal quarters.",
     commitmentsTag: "Adhering to UN Global Compact values",
-    imageUrl: ""
+    imageUrl: "/johnkeels.png"
   },
   page6: {
     badge: "Historic Achievement in FAO BPM",
@@ -404,6 +406,10 @@ export const initialNewsletterData: NewsletterData = {
     imageWidth: 100,
     imagePosition: "bottom",
     imageFit: "contain"
+  },
+  page7: {
+    bgColor: "",
+    bgImageUrl: ""
   },
   page8: {
     subtitle: "05 · Extended Operations",
@@ -433,22 +439,61 @@ export const initialNewsletterData: NewsletterData = {
     imageUrl: ""
   },
   page11: {
-    subtitle: "08 · Employee Wellness",
-    title: "Wellness in Focus: A Holistic Approach to Health",
-    description: "Infomate recently conducted an insightful Wellness Program for our staff, focusing on building awareness and promoting healthier lifestyles.",
-    bullet1: "Non-Communicable Diseases (NCDs) such as diabetes and heart disease.",
-    bullet2: "Effective recovery modalities including rest, movement, and stress management.",
-    bullet3: "A 360-degree holistic approach to wellness, addressing physical, mental, emotional, and lifestyle aspects.",
-    tagline: "Inspiring everyone to prioritize their health and well-being.",
-    imageUrl: "",
+    subtitle: "08 · Wellness & Vibrancy",
+    title: "Wellness & Office Vibrancy in Focus",
+    description: "At Infomate, we believe in fostering a vibrant, supportive, and healthy workplace. Here is a look at some of our recent health, career, and community initiatives.",
+    bullet1: "Comprehensive wellness & NCD awareness workshops.",
+    bullet2: "Celebrating diversity, inclusion, and cultural unity.",
+    bullet3: "Empowering career growth and volunteer programs.",
+    tagline: "Inspiring our smart extended workforce to prioritize well-being and community.",
+    imageUrl: "/wellness_session.jpg",
     imageHeight: 192,
     imageWidth: 40,
     imagePosition: "right",
-    imageFit: "cover"
+    imageFit: "cover",
+    layoutMode: "grid",
+    wellnessItems: [
+      {
+        id: "w1",
+        title: "Employee Wellness Program",
+        description: "Insightful NCD prevention and stress recovery sessions promoting 360-degree holistic physical and mental health for our staff.",
+        imageUrl: "/wellness_session.jpg"
+      },
+      {
+        id: "w2",
+        title: "Valentine's Karaoke Night",
+        description: "Our team brought incredible energy to the stage, celebrating friendship and fun with power ballads and solo spotlights.",
+        imageUrl: "/office_karaoke.jpg"
+      },
+      {
+        id: "w3",
+        title: "Women's Career Growth",
+        description: "Celebrating International Women's Day 2026 with an inspiring panel on challenges, choices, and confidence.",
+        imageUrl: "/womens_day.jpg"
+      },
+      {
+        id: "w4",
+        title: "MATE Talk: Beyond the Ladder",
+        description: "Sharing advice on continuous learning, resilience, and personal growth to craft meaningful careers.",
+        imageUrl: "/mate_talk.jpg"
+      },
+      {
+        id: "w5",
+        title: "Vesak Decoration Competition",
+        description: "Creating beautiful displays of traditional paper and wood lanterns to transform our workspace in the spirit of Vesak.",
+        imageUrl: "/vesak_decoration.jpg"
+      },
+      {
+        id: "w6",
+        title: "Vesak Dansala Initiatives",
+        description: "Generous popsicle and kimbula bun dansalas hosted by Team Pagero and the Ultimate Finance Team.",
+        imageUrl: "/vesak_dansala.jpg"
+      }
+    ]
   },
   page12: {
     subtitle: "09 · Office Vibrancy",
-    title: "Valentine’s Day Karaoke Night – Event Write-Up",
+    title: "Valentine’s Day Karaoke Night",
     description: "Love was in the air everywhere we turned… and so were the high notes!",
     highlights: "Our Valentine’s Day Karaoke Evening at Infomate turned into a stage full of stars! From power ballads to classic sing-alongs and everyone’s all-time favorite hits, the evening was filled with laughter, music, and unforgettable performances. Whether hitting the high notes perfectly or just singing their hearts out, our team truly brought the energy and vibes.",
     tagline: "More than just karaoke - a celebration of fun, friendship, and fearless singing!",
@@ -456,7 +501,28 @@ export const initialNewsletterData: NewsletterData = {
     imageHeight: 200,
     imageWidth: 40,
     imagePosition: "left",
-    imageFit: "cover"
+    imageFit: "cover",
+    layoutMode: "grid",
+    wellnessItems: [
+      {
+        id: "k1",
+        title: "Power Ballads & Pop Duets",
+        description: "Teams paired up to perform legendary rock ballads and current chart-topping pop duets.",
+        imageUrl: ""
+      },
+      {
+        id: "k2",
+        title: "Group Sing-Alongs",
+        description: "Everyone joined in for massive group performances of classic hits, filling the room with laughter.",
+        imageUrl: ""
+      },
+      {
+        id: "k3",
+        title: "Solo Spotlights",
+        description: "Our hidden talents took center stage, delivering emotional, pitch-perfect solo performances.",
+        imageUrl: ""
+      }
+    ]
   },
   page13: {
     subtitle: "10 · Diversity & Inclusion",
@@ -469,7 +535,28 @@ export const initialNewsletterData: NewsletterData = {
     imageHeight: 192,
     imageWidth: 35,
     imagePosition: "right",
-    imageFit: "cover"
+    imageFit: "cover",
+    layoutMode: "grid",
+    wellnessItems: [
+      {
+        id: "d1",
+        title: "Navigating Career Choices",
+        description: "Exploring critical decision points, career pivots, and finding balance in corporate leadership.",
+        imageUrl: ""
+      },
+      {
+        id: "d2",
+        title: "Overcoming Challenges",
+        description: "Panelists shared personal strategies for handling career roadblocks, glass ceilings, and bias.",
+        imageUrl: ""
+      },
+      {
+        id: "d3",
+        title: "Confidence & Growth",
+        description: "Fostering assertiveness, self-advocacy, and empowering mentorship networks inside Infomate.",
+        imageUrl: ""
+      }
+    ]
   },
   page14: {
     subtitle: "11 · Learning & Development",
@@ -486,7 +573,28 @@ export const initialNewsletterData: NewsletterData = {
     imageHeight: 100,
     imageWidth: 35,
     imagePosition: "right",
-    imageFit: "cover"
+    imageFit: "cover",
+    layoutMode: "grid",
+    wellnessItems: [
+      {
+        id: "m1",
+        title: "Yolan Seimon: Octave Data Analytics",
+        description: "Highlighting career progression from intern to Head of Advanced Analytics at OCTAVE.",
+        imageUrl: ""
+      },
+      {
+        id: "m2",
+        title: "Yasasi Perera: Cinnamon Life Finance",
+        description: "Fostering professional dedication and moving from executive roles to Assistant Director of Finance.",
+        imageUrl: ""
+      },
+      {
+        id: "m3",
+        title: "Adaptability & Resilience",
+        description: "Reflecting on personal development, flexibility, and defining success outside traditional ladders.",
+        imageUrl: ""
+      }
+    ]
   },
   page15: {
     subtitle: "12 · Cultural Celebrations",
@@ -494,11 +602,32 @@ export const initialNewsletterData: NewsletterData = {
     description: "In celebration of Vesak, Infomate organized an engaging Vesak Decoration Competition across our office floors, encouraging teams to showcase their creativity while embracing the spirit of the season.",
     details: "The initiative brought employees together to design and decorate their respective spaces with meaningful Vesak themes, reflecting values of peace, compassion, and togetherness. From traditional lanterns and thematic displays to thoughtfully crafted decorations, each team contributed to making the celebration truly special and transforming their floors into vibrant displays of cultural artistry.",
     tagline: "Strengthening team spirit, collaboration, and cultural appreciation among employees.",
-    imageUrl: "",
+    imageUrl: "/vesak_decoration.jpg",
     imageHeight: 192,
     imageWidth: 40,
     imagePosition: "right",
-    imageFit: "cover"
+    imageFit: "cover",
+    layoutMode: "grid",
+    wellnessItems: [
+      {
+        id: "v1",
+        title: "Thematic Floor Designs",
+        description: "Floors decorated in traditional Vesak styles, highlighting peaceful cultural themes.",
+        imageUrl: "/vesak_decoration.jpg"
+      },
+      {
+        id: "v2",
+        title: "Lantern Crafting Workshops",
+        description: "Teams collaborated to craft handmade paper and wood lanterns to display in the main lobbies.",
+        imageUrl: ""
+      },
+      {
+        id: "v3",
+        title: "Cultural Artistry",
+        description: "Exhibiting traditional paintings and visual displays reflecting compassion and unity.",
+        imageUrl: ""
+      }
+    ]
   },
   page16: {
     subtitle: "13 · Community Spirit",
@@ -507,10 +636,31 @@ export const initialNewsletterData: NewsletterData = {
     teamPageroText: "Team Pagero organized a refreshing Popsicle Ice Cream Dansala, sharing refreshing treats to bring a festive and welcoming atmosphere.",
     teamFinanceText: "The Ultimate Finance Team hosted a traditional Kimbula Bun Dansala, creating opportunities for employees to experience the joy of giving and togetherness.",
     tagline: "A wonderful reminder of the importance of giving back and coming together as one Infomate family.",
-    imageUrl: "",
+    imageUrl: "/vesak_dansala.jpg",
     imageHeight: 192,
     imageWidth: 40,
     imagePosition: "right",
-    imageFit: "cover"
+    imageFit: "cover",
+    layoutMode: "grid",
+    wellnessItems: [
+      {
+        id: "d1",
+        title: "Popsicle Ice Cream Dansala",
+        description: "Hosted by Team Pagero, sharing refreshing treats to spread joy and build closer community bonds.",
+        imageUrl: "/vesak_dansala.jpg"
+      },
+      {
+        id: "d2",
+        title: "Kimbula Bun Dansala",
+        description: "Hosted by the Ultimate Finance Team, serving hot traditional buns to office building staff.",
+        imageUrl: ""
+      },
+      {
+        id: "d3",
+        title: "Community Spirit & Volunteering",
+        description: "Coming together to experience the joy of volunteering, generosity, and active sharing.",
+        imageUrl: ""
+      }
+    ]
   }
 };

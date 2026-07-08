@@ -18,7 +18,9 @@ import {
   Globe,
   Heart,
   Award,
-  BookOpen
+  BookOpen,
+  ArrowUp,
+  ArrowDown
 } from "lucide-react";
 
 interface CustomizerProps {
@@ -30,7 +32,7 @@ interface CustomizerProps {
 
 export function Customizer({ data, onChange, onReset, onApplyPreset }: CustomizerProps) {
   const [activeTab, setActiveTab] = useState<"general" | "branding" | "pages" | "content">("general");
-  const [selectedContentPage, setSelectedContentPage] = useState<"page2" | "page3" | "page4" | "page5" | "page6" | "page7" | "page8" | "page9" | "page10" | "page11" | "page12" | "page13" | "page14" | "page15" | "page16">("page2");
+  const [selectedContentPage, setSelectedContentPage] = useState<"page1" | "page2" | "page3" | "page4" | "page5" | "page6" | "page7" | "page8" | "page9" | "page10" | "page11" | "page12" | "page13" | "page14" | "page15" | "page16">("page1");
 
   const handleGeneralChange = (key: keyof NewsletterData["general"], value: string) => {
     onChange({
@@ -73,18 +75,46 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
   };
 
   const handlePageToggle = (pageNum: number) => {
-    const currentList = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+    const currentList = data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10];
     let newList: number[];
     if (currentList.includes(pageNum)) {
       if (pageNum === 1 || pageNum === 2) return;
       newList = currentList.filter((p) => p !== pageNum);
     } else {
-      newList = [...currentList, pageNum].sort((a, b) => a - b);
+      newList = [...currentList, pageNum];
     }
     onChange({
       ...data,
       visiblePages: newList,
     });
+  };
+
+  const movePageUp = (pageNum: number) => {
+    const currentList = [...(data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10])];
+    const idx = currentList.indexOf(pageNum);
+    if (idx > 0) {
+      const temp = currentList[idx];
+      currentList[idx] = currentList[idx - 1];
+      currentList[idx - 1] = temp;
+      onChange({
+        ...data,
+        visiblePages: currentList
+      });
+    }
+  };
+
+  const movePageDown = (pageNum: number) => {
+    const currentList = [...(data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10])];
+    const idx = currentList.indexOf(pageNum);
+    if (idx !== -1 && idx < currentList.length - 1) {
+      const temp = currentList[idx];
+      currentList[idx] = currentList[idx + 1];
+      currentList[idx + 1] = temp;
+      onChange({
+        ...data,
+        visiblePages: currentList
+      });
+    }
   };
 
   const handleImageUpload = (
@@ -177,6 +207,10 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
     onChange({ ...data, page6: { ...(data.page6 || {}), [key]: value } as any });
   };
 
+  const handlePage7Change = (key: keyof NonNullable<NewsletterData["page7"]>, value: any) => {
+    onChange({ ...data, page7: { ...(data.page7 || {}), [key]: value } as any });
+  };
+
   const handlePage8Change = (key: keyof NonNullable<NewsletterData["page8"]>, value: any) => {
     onChange({ ...data, page8: { ...(data.page8 || {}), [key]: value } as any });
   };
@@ -226,6 +260,585 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
   const handleSocialInitiativeChange = (id: string, field: "title" | "description" | "badge", value: string) => {
     const list = data.social.map((s) => s.id === id ? { ...s, [field]: value } : s);
     onChange({ ...data, social: list });
+  };
+
+  const logoPresets = ["#2596be", "#f39200", "#002f6c", "#1e293b", "#f8fafc", "#ffffff"];
+
+  const renderCustomColorPicker = (label: string, value: string, onColorChange: (val: string) => void) => {
+    return (
+      <div className="space-y-1.5 text-left">
+        <span className="text-[10px] text-slate-500 font-bold block uppercase">{label}</span>
+        <div className="flex gap-1.5 items-center">
+          <input 
+            type="color" 
+            value={value || "#ffffff"} 
+            onChange={(e) => onColorChange(e.target.value)} 
+            className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer shrink-0" 
+          />
+          <input 
+            type="text" 
+            value={value || ""} 
+            onChange={(e) => onColorChange(e.target.value)} 
+            className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" 
+          />
+        </div>
+        <div className="flex gap-1 pt-0.5">
+          {logoPresets.map((color) => (
+            <button
+              key={color}
+              type="button"
+              onClick={() => onColorChange(color)}
+              className="w-4 h-4 rounded-full border border-slate-200 transition-transform hover:scale-110 shadow-sm shrink-0"
+              style={{ backgroundColor: color }}
+              title={color}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const renderPageStylesOverrides = (pageNo: number) => {
+    const pageStyles = data.pageStyles || {};
+    const styles = pageStyles[pageNo] || {};
+
+    const handleStyleChange = (key: string, value: any) => {
+      onChange({
+        ...data,
+        pageStyles: {
+          ...pageStyles,
+          [pageNo]: {
+            ...styles,
+            [key]: value
+          }
+        }
+      });
+    };
+
+    return (
+      <div className="border border-slate-200 rounded-xl overflow-hidden mt-4 shadow-sm text-left">
+        <div className="bg-slate-50 px-3 py-2 flex items-center justify-between border-b">
+          <span className="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
+            <Sliders className="w-3.5 h-3.5 text-sky-600" />
+            Page Styling Overrides
+          </span>
+          <div className="flex items-center gap-1.5">
+            <input 
+              type="checkbox" 
+              id={`use-global-${pageNo}`}
+              checked={data.useGlobalTheme !== false}
+              onChange={(e) => onChange({ ...data, useGlobalTheme: e.target.checked })}
+              className="w-3.5 h-3.5 text-sky-600 border-slate-300 rounded focus:ring-sky-500 cursor-pointer"
+            />
+            <label htmlFor={`use-global-${pageNo}`} className="text-[10px] font-bold text-slate-500 cursor-pointer select-none">
+              Use Global Theme
+            </label>
+          </div>
+        </div>
+
+        {data.useGlobalTheme === false ? (
+          <div className="p-3 bg-white space-y-4">
+            <div className="space-y-2">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Custom Colors</span>
+              <div className="grid grid-cols-2 gap-3">
+                {renderCustomColorPicker("Primary Color", styles.primaryColor || data.general.primaryColor, (val) => handleStyleChange("primaryColor", val))}
+                {renderCustomColorPicker("Accent Color", styles.accentColor || data.general.accentColor, (val) => handleStyleChange("accentColor", val))}
+              </div>
+            </div>
+
+            <div className="space-y-2 border-t pt-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Background Mode</span>
+              <div className="grid grid-cols-3 gap-1">
+                {(["solid", "gradient", "image"] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => handleStyleChange("bgStyleMode", mode)}
+                    className={`py-1 text-[10px] font-bold uppercase rounded border transition-all ${
+                      (styles.bgStyleMode || (pageNo === 1 || pageNo === 6 ? "gradient" : "solid")) === mode
+                        ? "border-sky-500 bg-sky-50/50 text-sky-700"
+                        : "border-slate-200 bg-white text-slate-500 hover:bg-slate-50"
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+
+              {(styles.bgStyleMode === "solid" || !styles.bgStyleMode && pageNo !== 1 && pageNo !== 6) && (
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  {renderCustomColorPicker("Page Background", styles.pageBgColor || data.general.pageBgColor || "#ffffff", (val) => handleStyleChange("pageBgColor", val))}
+                  {renderCustomColorPicker("Text Color", styles.textColor || data.general.textColor || "#1e293b", (val) => handleStyleChange("textColor", val))}
+                  <div className="col-span-2">
+                    {renderCustomColorPicker("Card Background", styles.cardBgColor || data.general.cardBgColor || "#f8fafc", (val) => handleStyleChange("cardBgColor", val))}
+                  </div>
+                </div>
+              )}
+
+              {(styles.bgStyleMode === "gradient" || !styles.bgStyleMode && (pageNo === 1 || pageNo === 6)) && (
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  {renderCustomColorPicker("Gradient Start", styles.bgGradientStart || (pageNo === 6 ? (data.page6?.bgGradientStart || "#090d16") : (data.general.coverBgColor || "#020617")), (val) => handleStyleChange("bgGradientStart", val))}
+                  {renderCustomColorPicker("Gradient End", styles.bgGradientEnd || (pageNo === 6 ? (data.page6?.bgGradientEnd || "#020617") : "#000000"), (val) => handleStyleChange("bgGradientEnd", val))}
+                </div>
+              )}
+
+              {styles.bgStyleMode === "image" && (
+                <div className="space-y-2 mt-2">
+                  <div className="space-y-1">
+                    <span className="text-[10px] text-slate-500 font-bold block uppercase">Background Image URL</span>
+                    <input
+                      type="text"
+                      value={styles.bgImageUrl || ""}
+                      onChange={(e) => handleStyleChange("bgImageUrl", e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      className="w-full px-2 py-1 text-xs border border-slate-200 rounded animate-fade-in"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase">
+                      <span>Overlay Opacity (Darken)</span>
+                      <span>{styles.bgImageOverlayOpacity !== undefined ? styles.bgImageOverlayOpacity : 0}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={styles.bgImageOverlayOpacity !== undefined ? styles.bgImageOverlayOpacity : 0}
+                      onChange={(e) => handleStyleChange("bgImageOverlayOpacity", parseInt(e.target.value))}
+                      className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 border-t pt-3">
+              <div className="space-y-1">
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Font Size</span>
+                <select
+                  value={styles.fontSizeModifier || "medium"}
+                  onChange={(e) => handleStyleChange("fontSizeModifier", e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                >
+                  <option value="small">Small (Compact)</option>
+                  <option value="medium">Medium (Standard)</option>
+                  <option value="large">Large (Comfortable)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Page Padding</span>
+                <select
+                  value={styles.paddingSize || "normal"}
+                  onChange={(e) => handleStyleChange("paddingSize", e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                >
+                  <option value="compact">Compact (Narrow)</option>
+                  <option value="normal">Normal (Standard)</option>
+                  <option value="comfortable">Comfortable (Wide)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Title Font Family</span>
+                <select
+                  value={styles.fontFamilyTitle || "inter"}
+                  onChange={(e) => handleStyleChange("fontFamilyTitle", e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                >
+                  <option value="inter">Inter (Modern Sans)</option>
+                  <option value="outfit">Outfit (Geometric)</option>
+                  <option value="playfair">Playfair Display (Elegant Serif)</option>
+                  <option value="merriweather">Merriweather (Classic Serif)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Body Font Family</span>
+                <select
+                  value={styles.fontFamilyBody || "inter"}
+                  onChange={(e) => handleStyleChange("fontFamilyBody", e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                >
+                  <option value="inter">Inter (Sans)</option>
+                  <option value="outfit">Outfit (Modern)</option>
+                  <option value="sans">System Sans-Serif</option>
+                  <option value="serif">System Serif</option>
+                  <option value="merriweather">Merriweather (Classic Serif)</option>
+                  <option value="playfair">Playfair Display (Elegant Serif)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1 col-span-2">
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Layout Row Spacing (Gaps)</span>
+                <select
+                  value={styles.contentGapSize || "normal"}
+                  onChange={(e) => handleStyleChange("contentGapSize", e.target.value)}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                >
+                  <option value="compact">Compact (Tighter)</option>
+                  <option value="normal">Normal (Standard)</option>
+                  <option value="wide">Wide (Spacious)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Card Styles overrides */}
+            <div className="space-y-3 border-t pt-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Card Styles</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Card Corners</span>
+                  <select
+                    value={styles.cardRounded || "xl"}
+                    onChange={(e) => handleStyleChange("cardRounded", e.target.value)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value="none">Sharp Corners</option>
+                    <option value="sm">Small Rounding</option>
+                    <option value="md">Medium Rounding</option>
+                    <option value="lg">Large Rounding</option>
+                    <option value="xl">Extra Large (12px)</option>
+                    <option value="2xl">Double Extra Large (16px)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Card Shadow</span>
+                  <select
+                    value={styles.cardShadow || "none"}
+                    onChange={(e) => handleStyleChange("cardShadow", e.target.value)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value="none">No Shadow</option>
+                    <option value="sm">Subtle Shadow</option>
+                    <option value="md">Medium Shadow</option>
+                    <option value="lg">Strong Shadow</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Card Padding</span>
+                  <select
+                    value={styles.cardPaddingSize || "normal"}
+                    onChange={(e) => handleStyleChange("cardPaddingSize", e.target.value)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value="compact">Compact (Tighter)</option>
+                    <option value="normal">Normal (Standard)</option>
+                    <option value="comfortable">Comfortable (Roomy)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Card Border Thickness</span>
+                  <select
+                    value={styles.cardBorderWidth !== undefined ? styles.cardBorderWidth : 1}
+                    onChange={(e) => handleStyleChange("cardBorderWidth", parseInt(e.target.value))}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value={0}>No Border</option>
+                    <option value={1}>1px Border</option>
+                    <option value={2}>2px Border</option>
+                    <option value={4}>4px Border</option>
+                  </select>
+                </div>
+
+                <div className="col-span-2">
+                  {renderCustomColorPicker("Card Border Color", styles.cardBorderColor || "#cbd5e1", (val) => handleStyleChange("cardBorderColor", val))}
+                </div>
+              </div>
+            </div>
+
+            {/* Image Styles override */}
+            <div className="space-y-3 border-t pt-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Image Styles</span>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Corners</span>
+                  <select
+                    value={styles.imageRounded || "xl"}
+                    onChange={(e) => handleStyleChange("imageRounded", e.target.value)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value="none">Sharp Corners</option>
+                    <option value="sm">Small Rounding</option>
+                    <option value="md">Medium Rounding</option>
+                    <option value="lg">Large Rounding</option>
+                    <option value="xl">Extra Large (Default)</option>
+                    <option value="full">Circular Shape</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Shadow Depth</span>
+                  <select
+                    value={styles.imageShadow || "sm"}
+                    onChange={(e) => handleStyleChange("imageShadow", e.target.value)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value="none">No Shadow</option>
+                    <option value="sm">Subtle Shadow</option>
+                    <option value="md">Medium Shadow</option>
+                    <option value="lg">Strong Shadow</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Border Thickness</span>
+                  <select
+                    value={styles.imageBorderWidth !== undefined ? styles.imageBorderWidth : 0}
+                    onChange={(e) => handleStyleChange("imageBorderWidth", parseInt(e.target.value))}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value={0}>No Border</option>
+                    <option value={1}>1px</option>
+                    <option value={2}>2px</option>
+                    <option value={3}>3px</option>
+                    <option value={4}>4px</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Border Style</span>
+                  <select
+                    value={styles.imageBorderStyle || "solid"}
+                    onChange={(e) => handleStyleChange("imageBorderStyle", e.target.value)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value="solid">Solid Line</option>
+                    <option value="dashed">Dashed Line</option>
+                    <option value="dotted">Dotted Line</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Aspect Ratio Fit</span>
+                  <select
+                    value={styles.imageFit || "cover"}
+                    onChange={(e) => handleStyleChange("imageFit", e.target.value)}
+                    className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-semibold text-slate-700"
+                  >
+                    <option value="cover">Cover (Fill &amp; Crop)</option>
+                    <option value="contain">Contain (Show Entire Photo)</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-2 pt-4">
+                  <input
+                    type="checkbox"
+                    id={`img-gray-${pageNo}`}
+                    checked={styles.imageGrayscale || false}
+                    onChange={(e) => handleStyleChange("imageGrayscale", e.target.checked)}
+                    className="w-4 h-4 text-sky-600 border-slate-300 rounded focus:ring-sky-500 cursor-pointer"
+                  />
+                  <label htmlFor={`img-gray-${pageNo}`} className="text-[10px] font-bold text-slate-500 cursor-pointer select-none">
+                    Grayscale Filter (B&amp;W)
+                  </label>
+                </div>
+
+                <div className="col-span-2">
+                  {renderCustomColorPicker("Border Color", styles.imageBorderColor || "#cbd5e1", (val) => handleStyleChange("imageBorderColor", val))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4 bg-slate-50 text-center text-xs text-slate-400 italic">
+            This page is using the Global Theme colors and styles. Disable "Use Global Theme" above to customize this page individually.
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderMultipleEventsControls = (
+    pageKey: "page11" | "page12" | "page13" | "page14" | "page15" | "page16",
+    pageData: any,
+    handlePageChange: (key: any, value: any) => void
+  ) => {
+    const items = pageData?.wellnessItems || [];
+    
+    const handleItemChange = (id: string, key: "title" | "description" | "imageUrl", value: string) => {
+      const updated = items.map((item: any) => item.id === id ? { ...item, [key]: value } : item);
+      handlePageChange("wellnessItems", updated);
+    };
+
+    const handleItemImageUpload = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          handleItemChange(id, "imageUrl", reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    const addItem = () => {
+      const newItem = {
+        id: `item-${Date.now()}`,
+        title: "New Event / Card",
+        description: "Add event details here.",
+        imageUrl: ""
+      };
+      handlePageChange("wellnessItems", [...items, newItem]);
+    };
+
+    const deleteItem = (id: string) => {
+      handlePageChange("wellnessItems", items.filter((item: any) => item.id !== id));
+    };
+
+    const moveItem = (index: number, direction: "up" | "down") => {
+      const newList = [...items];
+      if (direction === "up" && index > 0) {
+        const temp = newList[index];
+        newList[index] = newList[index - 1];
+        newList[index - 1] = temp;
+      } else if (direction === "down" && index < newList.length - 1) {
+        const temp = newList[index];
+        newList[index] = newList[index + 1];
+        newList[index + 1] = temp;
+      }
+      handlePageChange("wellnessItems", newList);
+    };
+
+    return (
+      <div className="space-y-3 pt-3 border-t mt-3">
+        <div className="space-y-1">
+          <label className="text-[10px] text-slate-500 font-bold uppercase block">Layout Style Option</label>
+          <select 
+            value={pageData?.layoutMode || "grid"} 
+            onChange={(e) => handlePageChange("layoutMode", e.target.value)}
+            className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+          >
+            <option value="grid">Grid Card Layout</option>
+            <option value="list">Alternating List Layout</option>
+            <option value="three-col">Three-Column Spotlight</option>
+            <option value="hero-split">Hero Spotlight + Sidebar</option>
+          </select>
+        </div>
+
+        {/* Columns Layout Selection */}
+        {(pageData?.layoutMode === "grid" || pageData?.layoutMode === "three-col" || pageData?.layoutMode === "hero-split" || !pageData?.layoutMode) && (
+          <div className="space-y-1">
+            <label className="text-[10px] text-slate-500 font-bold uppercase block">Columns Layout</label>
+            <select 
+              value={pageData?.gridCols || 3} 
+              onChange={(e) => handlePageChange("gridCols", parseInt(e.target.value))}
+              className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+            >
+              <option value={2}>2 Columns</option>
+              <option value={3}>3 Columns</option>
+            </select>
+          </div>
+        )}
+
+        {/* Card Image Size Option */}
+        <div className="space-y-1">
+          <label className="text-[10px] text-slate-500 font-bold uppercase block">Image Size Option</label>
+          <select 
+            value={pageData?.cardImageSize || "medium"} 
+            onChange={(e) => handlePageChange("cardImageSize", e.target.value)}
+            className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+          >
+            <option value="small">Small (Compact)</option>
+            <option value="medium">Medium (Standard)</option>
+            <option value="large">Large (Prominent)</option>
+          </select>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex justify-between items-center bg-slate-100/50 p-1.5 rounded-lg border">
+            <span className="text-[10px] text-slate-500 font-bold uppercase">Spotlight Cards ({items.length})</span>
+            <button 
+              type="button"
+              onClick={addItem}
+              className="px-2 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded text-[9px] font-bold uppercase tracking-wider transition-colors"
+            >
+              + Add Card
+            </button>
+          </div>
+
+          <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+            {items.map((item: any, idx: number) => (
+              <div key={item.id} className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 relative">
+                <div className="flex justify-between items-center">
+                  <span className="text-[9px] font-black text-sky-700 uppercase">Card #{idx + 1}</span>
+                  <div className="flex gap-2 items-center">
+                    <button 
+                      type="button"
+                      onClick={() => moveItem(idx, "up")} 
+                      disabled={idx === 0}
+                      className="text-slate-400 hover:text-slate-600 disabled:opacity-30 text-[10px] font-bold"
+                    >
+                      ▲
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => moveItem(idx, "down")} 
+                      disabled={idx === items.length - 1}
+                      className="text-slate-400 hover:text-slate-600 disabled:opacity-30 text-[10px] font-bold"
+                    >
+                      ▼
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => deleteItem(item.id)}
+                      className="text-rose-500 hover:text-rose-700 text-[10px] font-bold"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                <input 
+                  type="text" 
+                  value={item.title || ""} 
+                  onChange={(e) => handleItemChange(item.id, "title", e.target.value)} 
+                  placeholder="Card Title"
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white font-bold" 
+                />
+
+                <textarea 
+                  value={item.description || ""} 
+                  onChange={(e) => handleItemChange(item.id, "description", e.target.value)} 
+                  placeholder="Card Description"
+                  rows={2}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white leading-normal" 
+                />
+
+                <div className="space-y-1">
+                  <label className="text-[9px] text-slate-400 font-bold block uppercase">Card Image (Optional)</label>
+                  {item.imageUrl ? (
+                    <div className="flex items-center justify-between bg-white p-1 rounded border border-slate-200">
+                      <img src={item.imageUrl} className="h-8 w-12 object-cover rounded" />
+                      <button 
+                        type="button"
+                        onClick={() => handleItemChange(item.id, "imageUrl", "")}
+                        className="text-[9px] text-rose-500 font-bold hover:underline"
+                      >
+                        Clear Image
+                      </button>
+                    </div>
+                  ) : (
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={(e) => handleItemImageUpload(e, item.id)} 
+                      className="text-[9px] w-full" 
+                    />
+                  )}
+                </div>
+              </div>
+            ))}
+            {items.length === 0 && (
+              <p className="text-[10px] text-slate-400 italic text-center py-2">No custom items. Falling back to the single layout template.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    );
   };
 
   const renderImageAdjustmentControls = (
@@ -293,6 +906,134 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
     );
   };
 
+  const renderBackgroundControls = (
+    pageData: { bgColor?: string; bgImageUrl?: string; bgGradientStart?: string; bgGradientEnd?: string } | undefined,
+    onFieldChange: (field: string, value: any) => void,
+    isPage6 = false
+  ) => {
+    return (
+      <div className="p-3 bg-slate-50 border rounded-lg space-y-3 mt-3 shadow-inner">
+        <h4 className="text-[10px] font-bold text-sky-800 uppercase tracking-wider">Page Background Settings</h4>
+        
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Bg Color</label>
+            <div className="flex gap-1">
+              <input 
+                type="color" 
+                value={pageData?.bgColor || "#ffffff"} 
+                onChange={(e) => onFieldChange("bgColor", e.target.value)} 
+                className="w-8 h-6 border rounded cursor-pointer p-0"
+              />
+              <input 
+                type="text" 
+                value={pageData?.bgColor || ""} 
+                onChange={(e) => onFieldChange("bgColor", e.target.value)} 
+                placeholder="#ffffff"
+                className="flex-1 px-1 py-0.5 text-[9px] border rounded bg-white text-slate-700 font-mono"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Bg Pattern</label>
+            {pageData?.bgImageUrl ? (
+              <button 
+                onClick={() => onFieldChange("bgImageUrl", "")} 
+                className="w-full py-0.5 text-[9px] border border-rose-200 text-rose-600 bg-rose-50 rounded hover:bg-rose-100 font-bold"
+              >
+                Remove Pattern
+              </button>
+            ) : (
+              <span className="text-[9px] text-slate-400 italic block mt-1">No overlay pattern</span>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Upload Overlay Pattern (Shadow/PNG)</label>
+          <input 
+            type="file" 
+            accept="image/*" 
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  onFieldChange("bgImageUrl", reader.result as string);
+                };
+                reader.readAsDataURL(file);
+              }
+            }} 
+            className="text-[10px] w-full" 
+          />
+        </div>
+
+        {isPage6 && (
+          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200">
+            <div>
+              <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Gradient Start</label>
+              <div className="flex gap-1">
+                <input 
+                  type="color" 
+                  value={pageData?.bgGradientStart || "#020617"} 
+                  onChange={(e) => onFieldChange("bgGradientStart", e.target.value)} 
+                  className="w-8 h-6 border rounded cursor-pointer p-0"
+                />
+                <input 
+                  type="text" 
+                  value={pageData?.bgGradientStart || ""} 
+                  onChange={(e) => onFieldChange("bgGradientStart", e.target.value)} 
+                  placeholder="#020617"
+                  className="flex-1 px-1 py-0.5 text-[9px] border rounded bg-white text-slate-700 font-mono"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-[9px] text-slate-500 font-semibold block mb-0.5">Gradient End</label>
+              <div className="flex gap-1">
+                <input 
+                  type="color" 
+                  value={pageData?.bgGradientEnd || "#0f172a"} 
+                  onChange={(e) => onFieldChange("bgGradientEnd", e.target.value)} 
+                  className="w-8 h-6 border rounded cursor-pointer p-0"
+                />
+                <input 
+                  type="text" 
+                  value={pageData?.bgGradientEnd || ""} 
+                  onChange={(e) => onFieldChange("bgGradientEnd", e.target.value)} 
+                  placeholder="#0f172a"
+                  className="flex-1 px-1 py-0.5 text-[9px] border rounded bg-white text-slate-700 font-mono"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderImageUploadControls = (
+    imageUrl: string | undefined,
+    field: "ceoImageUrl" | "coverImageUrl" | "page5Url" | "page6Url" | "page8Url" | "page9Url" | "page10Url" | "page11Url" | "page12Url" | "page13Url" | "page14Url" | "page15Url" | "page16Url",
+    label = "Page Graphic / Photo"
+  ) => {
+    return (
+      <div className="p-3 bg-slate-50 border rounded-lg space-y-1 mt-3">
+        <span className="text-[10px] font-bold text-sky-800 block uppercase tracking-wider">{label}</span>
+        {imageUrl ? (
+          <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
+            <img src={imageUrl} className="h-10 w-16 object-cover rounded" />
+            <button onClick={() => handleClearImage(field)} className="text-slate-400 hover:text-slate-600">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, field)} className="text-[11px] w-full" />
+        )}
+      </div>
+    );
+  };
+
   const colorPresets = [
     { name: "Default Teal", primary: "#2596be", accent: "#f39200" },
     { name: "Ocean Dark Blue", primary: "#0b2d5e", accent: "#f5a623" },
@@ -311,15 +1052,10 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
     { num: 8, title: "Back Office Excellence", description: "DRIVE workflow automations and integrations", required: false },
     { num: 9, title: "Team & Global Operations", description: "Qualified accountant ranks & geo coverage", required: false },
     { num: 10, title: "Value Propositions & ESG", description: "8-fold value statement and social initiatives", required: false },
-    { num: 11, title: "Staff Wellness", description: "Wellness in Focus & Holistic Health session", required: false },
-    { num: 12, title: "Office Vibrancy", description: "Valentine's Day Karaoke event write-up", required: false },
-    { num: 13, title: "Diversity & Inclusion", description: "Women's Career Growth panel discussion", required: false },
-    { num: 14, title: "MATE Talk Series", description: "Beyond the Ladder career path panel", required: false },
-    { num: 15, title: "Vesak Office Decoration", description: "Vesak office decoration competition highlights", required: false },
-    { num: 16, title: "Vesak Dansala Initiatives", description: "Popsicle & Kimbula Bun dansala community work", required: false },
+    { num: 11, title: "Wellness & Events", description: "Staff wellness and office vibrancy/social events", required: false },
   ];
 
-  const visiblePages = data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+  const visiblePages = data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10];
 
   return (
     <div id="customizer-panel" className="w-full bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col h-full overflow-hidden select-none">
@@ -445,49 +1181,33 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
               </div>
             </div>
 
+            {/* Global Theme Checkbox Toggle */}
+            <div className="flex items-center gap-2 p-3 bg-sky-50/50 rounded-xl border border-sky-100 text-left">
+              <input 
+                type="checkbox" 
+                id="global-theme-toggle"
+                checked={data.useGlobalTheme !== false} 
+                onChange={(e) => onChange({ ...data, useGlobalTheme: e.target.checked })} 
+                className="w-4 h-4 text-sky-600 rounded border-slate-300 focus:ring-sky-500 cursor-pointer animate-scale"
+              />
+              <label htmlFor="global-theme-toggle" className="text-xs font-bold text-slate-700 cursor-pointer select-none">
+                Use Global Theme for all pages
+              </label>
+            </div>
+
             <div className="space-y-3 pt-3 border-t border-slate-100">
-              <label className="text-xs font-bold text-slate-600 uppercase block">Custom Color Scheme</label>
+              <label className="text-xs font-bold text-slate-600 uppercase block text-left">Custom Color Scheme</label>
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Primary Color</span>
-                  <div className="flex gap-1.5 items-center">
-                    <input type="color" value={data.general.primaryColor} onChange={(e) => handleGeneralChange("primaryColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
-                    <input type="text" value={data.general.primaryColor} onChange={(e) => handleGeneralChange("primaryColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Accent Color</span>
-                  <div className="flex gap-1.5 items-center">
-                    <input type="color" value={data.general.accentColor} onChange={(e) => handleGeneralChange("accentColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
-                    <input type="text" value={data.general.accentColor} onChange={(e) => handleGeneralChange("accentColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
-                  </div>
-                </div>
+                {renderCustomColorPicker("Primary Color", data.general.primaryColor, (val) => handleGeneralChange("primaryColor", val))}
+                {renderCustomColorPicker("Accent Color", data.general.accentColor, (val) => handleGeneralChange("accentColor", val))}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Page Background</span>
-                  <div className="flex gap-1.5 items-center">
-                    <input type="color" value={data.general.pageBgColor || "#ffffff"} onChange={(e) => handleGeneralChange("pageBgColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
-                    <input type="text" value={data.general.pageBgColor || "#ffffff"} onChange={(e) => handleGeneralChange("pageBgColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <span className="text-[10px] text-slate-500 font-bold block uppercase">Text Color</span>
-                  <div className="flex gap-1.5 items-center">
-                    <input type="color" value={data.general.textColor || "#1e293b"} onChange={(e) => handleGeneralChange("textColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
-                    <input type="text" value={data.general.textColor || "#1e293b"} onChange={(e) => handleGeneralChange("textColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
-                  </div>
-                </div>
+                {renderCustomColorPicker("Page Background", data.general.pageBgColor || "#ffffff", (val) => handleGeneralChange("pageBgColor", val))}
+                {renderCustomColorPicker("Text Color", data.general.textColor || "#1e293b", (val) => handleGeneralChange("textColor", val))}
               </div>
 
-              <div className="space-y-1">
-                <span className="text-[10px] text-slate-500 font-bold block uppercase">Card Background</span>
-                <div className="flex gap-1.5 items-center">
-                  <input type="color" value={data.general.cardBgColor || "#f8fafc"} onChange={(e) => handleGeneralChange("cardBgColor", e.target.value)} className="w-8 h-8 rounded border border-slate-200 p-0 cursor-pointer" />
-                  <input type="text" value={data.general.cardBgColor || "#f8fafc"} onChange={(e) => handleGeneralChange("cardBgColor", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded font-mono" />
-                </div>
-              </div>
+              {renderCustomColorPicker("Card Background", data.general.cardBgColor || "#f8fafc", (val) => handleGeneralChange("cardBgColor", val))}
             </div>
 
             {/* Media Upload Section */}
@@ -506,162 +1226,6 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "logoUrl")} className="text-xs w-full" />
                 )}
               </div>
-
-              {/* Cover Bg */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Cover Background</span>
-                {data.general.coverImageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.general.coverImageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("coverImageUrl")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "coverImageUrl")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 5 Flagship */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 5: parent Flagship Image</span>
-                {data.page5?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page5.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page5Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page5Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 6 Recognition */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 6: PEAK Matrix Badge</span>
-                {data.page6?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page6.imageUrl} className="h-10 w-10 object-contain rounded" />
-                    <button onClick={() => handleClearImage("page6Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page6Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 8 Automation */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 8: Process/DRIVE Image</span>
-                {data.page8?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page8.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page8Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page8Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 9 Team */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 9: Team/Work Culture Photo</span>
-                {data.page9?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page9.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page9Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page9Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 10 Social */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 10: Social Responsibility Photo</span>
-                {data.page10?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page10.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page10Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page10Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 11 Wellness */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 11: Staff Wellness Photo</span>
-                {data.page11?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page11.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page11Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page11Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 12 Karaoke */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 12: Karaoke Night Photo</span>
-                {data.page12?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page12.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page12Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page12Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 13 Women's Growth */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 13: Women's Career Growth Photo</span>
-                {data.page13?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page13.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page13Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page13Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 14 MATE Talk */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 14: MATE Talk Photo</span>
-                {data.page14?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page14.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page14Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page14Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 15 Vesak Decoration */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 15: Vesak Decoration Photo</span>
-                {data.page15?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page15.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page15Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page15Url")} className="text-xs w-full" />
-                )}
-              </div>
-
-              {/* Page 16 Vesak Dansala */}
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1">
-                <span className="text-xs font-bold text-slate-700 block uppercase">Page 16: Vesak Dansala Photo</span>
-                {data.page16?.imageUrl ? (
-                  <div className="flex items-center justify-between bg-white p-2 rounded border border-slate-200">
-                    <img src={data.page16.imageUrl} className="h-10 w-16 object-cover rounded" />
-                    <button onClick={() => handleClearImage("page16Url")} className="text-slate-400 hover:text-slate-600"><X className="w-4 h-4" /></button>
-                  </div>
-                ) : (
-                  <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, "page16Url")} className="text-xs w-full" />
-                )}
-              </div>
             </div>
           </div>
         )}
@@ -669,27 +1233,78 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
         {/* Tab 3: Pages Block Visibility */}
         {activeTab === "pages" && (
           <div className="space-y-4">
-            <p className="text-xs text-slate-500 italic leading-relaxed">Show/Hide specific sections dynamically. Excluded pages won't be exported, and pagination numbers will automatically adjust.</p>
-            <div className="space-y-2">
+            <div className="space-y-1">
+              <span className="text-xs font-bold text-slate-700 block uppercase">Page Visibility Toggles</span>
+              <p className="text-[10px] text-slate-500 italic leading-relaxed">Show/Hide specific sections dynamically. Excluded pages won't be exported, and pagination numbers will automatically adjust.</p>
+            </div>
+            
+            <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
               {pagesConfig.map((page) => {
                 const isChecked = visiblePages.includes(page.num);
                 return (
                   <div 
                     key={page.num} 
                     onClick={() => !page.required && handlePageToggle(page.num)}
-                    className={`p-3 rounded-xl border flex items-start gap-3 transition-all ${page.required ? "bg-slate-50 border-slate-200 opacity-80 cursor-not-allowed" : isChecked ? "bg-sky-50/40 border-sky-200 hover:bg-sky-50/70 cursor-pointer" : "bg-white border-slate-200 hover:bg-slate-50 cursor-pointer"}`}
+                    className={`p-2.5 rounded-xl border flex items-start gap-2.5 transition-all ${page.required ? "bg-slate-50 border-slate-200 opacity-80 cursor-not-allowed" : isChecked ? "bg-sky-50/40 border-sky-200 hover:bg-sky-50/70 cursor-pointer" : "bg-white border-slate-200 hover:bg-slate-50 cursor-pointer"}`}
                   >
-                    <input type="checkbox" checked={isChecked} disabled={page.required} onChange={() => {}} className="mt-1 cursor-pointer accent-sky-600 shrink-0" />
+                    <input type="checkbox" checked={isChecked} disabled={page.required} onChange={() => {}} className="mt-0.5 cursor-pointer accent-sky-600 shrink-0" />
                     <div className="leading-tight">
                       <span className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
                         Page {page.num}: {page.title}
-                        {page.required && <span className="text-[9px] font-black text-slate-400 border border-slate-200 px-1 rounded uppercase tracking-wider scale-90">Required</span>}
+                        {page.required && <span className="text-[8px] font-black text-slate-400 border border-slate-200 px-1 rounded uppercase tracking-wider scale-90">Required</span>}
                       </span>
-                      <p className="text-[10px] text-slate-500 leading-normal mt-0.5">{page.description}</p>
+                      <p className="text-[9px] text-slate-500 leading-normal mt-0.5">{page.description}</p>
                     </div>
                   </div>
                 );
               })}
+            </div>
+
+            {/* Page Export Sequence */}
+            <div className="pt-4 border-t border-slate-200 mt-4 space-y-3">
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-slate-700 block uppercase">Arrange Page Order (Export Sequence)</span>
+                <p className="text-[10px] text-slate-500 italic">Use the arrow buttons to arrange pages in your preferred printing order.</p>
+              </div>
+              <div className="space-y-1.5 max-h-80 overflow-y-auto pr-1">
+                {visiblePages.map((pageNum, index) => {
+                  const pageConfig = pagesConfig.find(p => p.num === pageNum) || { title: `Page ${pageNum}`, description: "" };
+                  return (
+                    <div 
+                      key={pageNum}
+                      className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between gap-3 text-xs"
+                    >
+                      <div className="flex items-center gap-2 font-semibold">
+                        <span className="w-5 h-5 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-[10px]">
+                          {index + 1}
+                        </span>
+                        <div className="leading-tight">
+                          <span className="font-bold text-slate-800">Page {pageNum}: {pageConfig.title}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-1 shrink-0">
+                        <button
+                          onClick={(e) => { e.stopPropagation(); movePageUp(pageNum); }}
+                          disabled={index === 0}
+                          className="p-1 rounded bg-white hover:bg-slate-100 border border-slate-200 disabled:opacity-40 disabled:hover:bg-white text-slate-500 transition-colors"
+                          title="Move Page Up"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); movePageDown(pageNum); }}
+                          disabled={index === visiblePages.length - 1}
+                          className="p-1 rounded bg-white hover:bg-slate-100 border border-slate-200 disabled:opacity-40 disabled:hover:bg-white text-slate-500 transition-colors"
+                          title="Move Page Down"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
@@ -704,6 +1319,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                 onChange={(e) => setSelectedContentPage(e.target.value as any)}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white"
               >
+                <option value="page1">Page 1: Newsletter Cover Page</option>
                 <option value="page2">Page 2: CEO Corner &amp; Greeting</option>
                 <option value="page3">Page 3: Sri Lanka Macro Focus</option>
                 <option value="page4">Page 4: Global Finance Tectonics</option>
@@ -713,16 +1329,42 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                 <option value="page8">Page 8: Back Office &amp; automation</option>
                 <option value="page9">Page 9: Global Team Ranks</option>
                 <option value="page10">Page 10: Value Props &amp; Social</option>
-                <option value="page11">Page 11: Staff Wellness</option>
-                <option value="page12">Page 12: Valentine's Karaoke</option>
-                <option value="page13">Page 13: Women's Career Growth</option>
-                <option value="page14">Page 14: MATE Talk Series</option>
-                <option value="page15">Page 15: Vesak Decoration</option>
-                <option value="page16">Page 16: Vesak Dansala</option>
+                <option value="page11">Page 11: Wellness &amp; Events</option>
               </select>
             </div>
 
             <div className="border-t border-slate-100 pt-4 space-y-4">
+              {/* PAGE 1: COVER PAGE */}
+              {selectedContentPage === "page1" && (
+                <div className="space-y-3">
+                  <h3 className="text-xs font-bold text-sky-700 uppercase">Newsletter Cover Page</h3>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">Title</label>
+                    <input type="text" value={data.general.title} onChange={(e) => handleGeneralChange("title", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">Subtitle</label>
+                    <input type="text" value={data.general.subtitle} onChange={(e) => handleGeneralChange("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">Date Info</label>
+                    <input type="text" value={data.general.date} onChange={(e) => handleGeneralChange("date", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded" />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] text-slate-500 font-bold block uppercase">Edition Info</label>
+                    <input type="text" value={data.general.edition} onChange={(e) => handleGeneralChange("edition", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded" />
+                  </div>
+                  {renderImageUploadControls(data.general.coverImageUrl, "coverImageUrl", "Cover Background Image")}
+                  {renderBackgroundControls(
+                    { bgColor: data.general.coverBgColor, bgImageUrl: data.general.coverBgImageUrl },
+                    (field, value) => {
+                      const updatedField = field === "bgColor" ? "coverBgColor" : "coverBgImageUrl";
+                      onChange({ ...data, general: { ...data.general, [updatedField]: value } });
+                    }
+                  )}
+                </div>
+              )}
+
               {/* PAGE 2 CEO CORNER */}
               {selectedContentPage === "page2" && (
                 <div className="space-y-3">
@@ -760,6 +1402,14 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                       <textarea value={test.quote} onChange={(e) => handleTestimonialChange(test.id, "quote", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" />
                     </div>
                   ))}
+
+                  {renderBackgroundControls(
+                    { bgColor: data.general.ceoBgColor, bgImageUrl: data.general.ceoBgImageUrl },
+                    (field, value) => {
+                      const updatedField = field === "bgColor" ? "ceoBgColor" : "ceoBgImageUrl";
+                      onChange({ ...data, general: { ...data.general, [updatedField]: value } });
+                    }
+                  )}
                 </div>
               )}
 
@@ -804,6 +1454,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page3?.commentaryTitle || ""} onChange={(e) => handlePage3Change("commentaryTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" placeholder="Commentary title" />
                   <textarea value={data.page3?.commentaryText || ""} onChange={(e) => handlePage3Change("commentaryText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" placeholder="Commentary description" />
                   <input type="text" value={data.page3?.tagline || ""} onChange={(e) => handlePage3Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline text" />
+                  {renderBackgroundControls(data.page3, handlePage3Change)}
                 </div>
               )}
 
@@ -827,6 +1478,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page4?.takeawayTitle || ""} onChange={(e) => handlePage4Change("takeawayTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Takeaway title" />
                   <textarea value={data.page4?.takeawayText || ""} onChange={(e) => handlePage4Change("takeawayText", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded" placeholder="Takeaway text" />
                   <input type="text" value={data.page4?.takeawayLink || ""} onChange={(e) => handlePage4Change("takeawayLink", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Reference link page" />
+                  {renderBackgroundControls(data.page4, handlePage4Change)}
                 </div>
               )}
 
@@ -862,6 +1514,9 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page5?.commitmentsTitle || ""} onChange={(e) => handlePage5Change("commitmentsTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" />
                   <textarea value={data.page5?.commitmentsText || ""} onChange={(e) => handlePage5Change("commitmentsText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" />
                   <input type="text" value={data.page5?.commitmentsTag || ""} onChange={(e) => handlePage5Change("commitmentsTag", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-semibold" />
+                  
+                  {renderImageUploadControls(data.page5?.imageUrl, "page5Url", "Flagship Image")}
+                  {renderBackgroundControls(data.page5, handlePage5Change)}
                 </div>
               )}
 
@@ -883,7 +1538,9 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page6?.bullet1 || ""} onChange={(e) => handlePage6Change("bullet1", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
                   <input type="text" value={data.page6?.bullet2 || ""} onChange={(e) => handlePage6Change("bullet2", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
                   
+                  {renderImageUploadControls(data.page6?.imageUrl, "page6Url", "Everest Recognition Badge")}
                   {renderImageAdjustmentControls(data.page6, handlePage6Change)}
+                  {renderBackgroundControls(data.page6, handlePage6Change, true)}
                 </div>
               )}
 
@@ -908,6 +1565,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                       </div>
                     </div>
                   ))}
+                  {renderBackgroundControls(data.page7, handlePage7Change)}
                 </div>
               )}
 
@@ -931,6 +1589,9 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <h4 className="text-[11px] font-bold text-slate-600 uppercase pt-2 border-t">Automation DRIVE Settings</h4>
                   <input type="text" value={data.page8?.automationTitle || ""} onChange={(e) => handlePage8Change("automationTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" />
                   <input type="text" value={data.page8?.complianceText || ""} onChange={(e) => handlePage8Change("complianceText", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
+                  
+                  {renderImageUploadControls(data.page8?.imageUrl, "page8Url", "Process/DRIVE Image")}
+                  {renderBackgroundControls(data.page8, handlePage8Change)}
                 </div>
               )}
 
@@ -962,6 +1623,9 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                       <input type="text" value={row.qualifications} onChange={(e) => handleTeamRoleChange(idx, "qualifications", e.target.value)} className="w-full px-2 py-1 text-[10px] border rounded bg-white" />
                     </div>
                   ))}
+                  
+                  {renderImageUploadControls(data.page9?.imageUrl, "page9Url", "Team / Work Culture Photo")}
+                  {renderBackgroundControls(data.page9, handlePage9Change)}
                 </div>
               )}
 
@@ -992,6 +1656,9 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                       <textarea value={soc.description} onChange={(e) => handleSocialInitiativeChange(soc.id, "description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" />
                     </div>
                   ))}
+                  
+                  {renderImageUploadControls(data.page10?.imageUrl, "page10Url", "Social Responsibility Photo")}
+                  {renderBackgroundControls(data.page10, handlePage10Change)}
                 </div>
               )}
 
@@ -1002,11 +1669,21 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page11?.subtitle || ""} onChange={(e) => handlePage11Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
                   <input type="text" value={data.page11?.title || ""} onChange={(e) => handlePage11Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
                   <textarea value={data.page11?.description || ""} onChange={(e) => handlePage11Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
-                  <input type="text" value={data.page11?.bullet1 || ""} onChange={(e) => handlePage11Change("bullet1", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 1" />
-                  <input type="text" value={data.page11?.bullet2 || ""} onChange={(e) => handlePage11Change("bullet2", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 2" />
-                  <input type="text" value={data.page11?.bullet3 || ""} onChange={(e) => handlePage11Change("bullet3", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 3" />
                   <input type="text" value={data.page11?.tagline || ""} onChange={(e) => handlePage11Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
-                  {renderImageAdjustmentControls(data.page11, handlePage11Change)}
+                  
+                  {renderMultipleEventsControls("page11", data.page11, handlePage11Change)}
+
+                  {(!data.page11?.wellnessItems || data.page11.wellnessItems.length === 0) && (
+                    <>
+                      <input type="text" value={data.page11?.bullet1 || ""} onChange={(e) => handlePage11Change("bullet1", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 1" />
+                      <input type="text" value={data.page11?.bullet2 || ""} onChange={(e) => handlePage11Change("bullet2", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 2" />
+                      <input type="text" value={data.page11?.bullet3 || ""} onChange={(e) => handlePage11Change("bullet3", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Bullet 3" />
+                      {renderImageUploadControls(data.page11?.imageUrl, "page11Url", "Wellness Photo")}
+                      {renderImageAdjustmentControls(data.page11, handlePage11Change)}
+                    </>
+                  )}
+
+                  {renderBackgroundControls(data.page11, handlePage11Change)}
                 </div>
               )}
 
@@ -1017,9 +1694,19 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page12?.subtitle || ""} onChange={(e) => handlePage12Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
                   <input type="text" value={data.page12?.title || ""} onChange={(e) => handlePage12Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
                   <textarea value={data.page12?.description || ""} onChange={(e) => handlePage12Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
-                  <textarea value={data.page12?.highlights || ""} onChange={(e) => handlePage12Change("highlights", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Highlights" />
                   <input type="text" value={data.page12?.tagline || ""} onChange={(e) => handlePage12Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
-                  {renderImageAdjustmentControls(data.page12, handlePage12Change)}
+                  
+                  {renderMultipleEventsControls("page12", data.page12, handlePage12Change)}
+
+                  {(!data.page12?.wellnessItems || data.page12.wellnessItems.length === 0) && (
+                    <>
+                      <textarea value={data.page12?.highlights || ""} onChange={(e) => handlePage12Change("highlights", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Highlights" />
+                      {renderImageUploadControls(data.page12?.imageUrl, "page12Url", "Karaoke Photo")}
+                      {renderImageAdjustmentControls(data.page12, handlePage12Change)}
+                    </>
+                  )}
+
+                  {renderBackgroundControls(data.page12, handlePage12Change)}
                 </div>
               )}
 
@@ -1030,10 +1717,20 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page13?.subtitle || ""} onChange={(e) => handlePage13Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
                   <input type="text" value={data.page13?.title || ""} onChange={(e) => handlePage13Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
                   <textarea value={data.page13?.description || ""} onChange={(e) => handlePage13Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
-                  <input type="text" value={data.page13?.panelTitle || ""} onChange={(e) => handlePage13Change("panelTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" placeholder="Panel Title" />
-                  <textarea value={data.page13?.panelText || ""} onChange={(e) => handlePage13Change("panelText", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Panel discussion details" />
                   <input type="text" value={data.page13?.tagline || ""} onChange={(e) => handlePage13Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
-                  {renderImageAdjustmentControls(data.page13, handlePage13Change)}
+                  
+                  {renderMultipleEventsControls("page13", data.page13, handlePage13Change)}
+
+                  {(!data.page13?.wellnessItems || data.page13.wellnessItems.length === 0) && (
+                    <>
+                      <input type="text" value={data.page13?.panelTitle || ""} onChange={(e) => handlePage13Change("panelTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" placeholder="Panel Title" />
+                      <textarea value={data.page13?.panelText || ""} onChange={(e) => handlePage13Change("panelText", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Panel discussion details" />
+                      {renderImageUploadControls(data.page13?.imageUrl, "page13Url", "Women's Day Photo")}
+                      {renderImageAdjustmentControls(data.page13, handlePage13Change)}
+                    </>
+                  )}
+
+                  {renderBackgroundControls(data.page13, handlePage13Change)}
                 </div>
               )}
 
@@ -1045,22 +1742,31 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page14?.title || ""} onChange={(e) => handlePage14Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
                   <textarea value={data.page14?.description || ""} onChange={(e) => handlePage14Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
                   
-                  <div className="p-2.5 bg-slate-50 rounded border space-y-1.5">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">Panelist 1</span>
-                    <input type="text" value={data.page14?.speaker1Name || ""} onChange={(e) => handlePage14Change("speaker1Name", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold bg-white" placeholder="Name" />
-                    <input type="text" value={data.page14?.speaker1Title || ""} onChange={(e) => handlePage14Change("speaker1Title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Title" />
-                    <textarea value={data.page14?.speaker1Desc || ""} onChange={(e) => handlePage14Change("speaker1Desc", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" placeholder="Brief bio/points" />
-                  </div>
+                  {renderMultipleEventsControls("page14", data.page14, handlePage14Change)}
 
-                  <div className="p-2.5 bg-slate-50 rounded border space-y-1.5">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase">Panelist 2</span>
-                    <input type="text" value={data.page14?.speaker2Name || ""} onChange={(e) => handlePage14Change("speaker2Name", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold bg-white" placeholder="Name" />
-                    <input type="text" value={data.page14?.speaker2Title || ""} onChange={(e) => handlePage14Change("speaker2Title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Title" />
-                    <textarea value={data.page14?.speaker2Desc || ""} onChange={(e) => handlePage14Change("speaker2Desc", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" placeholder="Brief bio/points" />
-                  </div>
+                  {(!data.page14?.wellnessItems || data.page14.wellnessItems.length === 0) && (
+                    <>
+                      <div className="p-2.5 bg-slate-50 rounded border space-y-1.5">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase">Panelist 1</span>
+                        <input type="text" value={data.page14?.speaker1Name || ""} onChange={(e) => handlePage14Change("speaker1Name", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold bg-white" placeholder="Name" />
+                        <input type="text" value={data.page14?.speaker1Title || ""} onChange={(e) => handlePage14Change("speaker1Title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Title" />
+                        <textarea value={data.page14?.speaker1Desc || ""} onChange={(e) => handlePage14Change("speaker1Desc", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" placeholder="Brief bio/points" />
+                      </div>
 
-                  <textarea value={data.page14?.takeaway || ""} onChange={(e) => handlePage14Change("takeaway", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Takeaway message" />
-                  {renderImageAdjustmentControls(data.page14, handlePage14Change)}
+                      <div className="p-2.5 bg-slate-50 rounded border space-y-1.5">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase">Panelist 2</span>
+                        <input type="text" value={data.page14?.speaker2Name || ""} onChange={(e) => handlePage14Change("speaker2Name", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold bg-white" placeholder="Name" />
+                        <input type="text" value={data.page14?.speaker2Title || ""} onChange={(e) => handlePage14Change("speaker2Title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded bg-white" placeholder="Title" />
+                        <textarea value={data.page14?.speaker2Desc || ""} onChange={(e) => handlePage14Change("speaker2Desc", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded bg-white leading-normal" placeholder="Brief bio/points" />
+                      </div>
+
+                      <textarea value={data.page14?.takeaway || ""} onChange={(e) => handlePage14Change("takeaway", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Takeaway message" />
+                      {renderImageUploadControls(data.page14?.imageUrl, "page14Url", "MATE Talk Photo")}
+                      {renderImageAdjustmentControls(data.page14, handlePage14Change)}
+                    </>
+                  )}
+
+                  {renderBackgroundControls(data.page14, handlePage14Change)}
                 </div>
               )}
 
@@ -1071,9 +1777,19 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page15?.subtitle || ""} onChange={(e) => handlePage15Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
                   <input type="text" value={data.page15?.title || ""} onChange={(e) => handlePage15Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
                   <textarea value={data.page15?.description || ""} onChange={(e) => handlePage15Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
-                  <textarea value={data.page15?.details || ""} onChange={(e) => handlePage15Change("details", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Competition details" />
                   <input type="text" value={data.page15?.tagline || ""} onChange={(e) => handlePage15Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
-                  {renderImageAdjustmentControls(data.page15, handlePage15Change)}
+                  
+                  {renderMultipleEventsControls("page15", data.page15, handlePage15Change)}
+
+                  {(!data.page15?.wellnessItems || data.page15.wellnessItems.length === 0) && (
+                    <>
+                      <textarea value={data.page15?.details || ""} onChange={(e) => handlePage15Change("details", e.target.value)} rows={4} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Competition details" />
+                      {renderImageUploadControls(data.page15?.imageUrl, "page15Url", "Vesak Decoration Photo")}
+                      {renderImageAdjustmentControls(data.page15, handlePage15Change)}
+                    </>
+                  )}
+
+                  {renderBackgroundControls(data.page15, handlePage15Change)}
                 </div>
               )}
 
@@ -1084,11 +1800,26 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page16?.subtitle || ""} onChange={(e) => handlePage16Change("subtitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Subtitle" />
                   <input type="text" value={data.page16?.title || ""} onChange={(e) => handlePage16Change("title", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Title" />
                   <textarea value={data.page16?.description || ""} onChange={(e) => handlePage16Change("description", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Description" />
-                  <textarea value={data.page16?.teamPageroText || ""} onChange={(e) => handlePage16Change("teamPageroText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Team Pagero Popsicle Dansala details" />
-                  <textarea value={data.page16?.teamFinanceText || ""} onChange={(e) => handlePage16Change("teamFinanceText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Ultimate Finance Bun Dansala details" />
                   <input type="text" value={data.page16?.tagline || ""} onChange={(e) => handlePage16Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline" />
-                  {renderImageAdjustmentControls(data.page16, handlePage16Change)}
+                  
+                  {renderMultipleEventsControls("page16", data.page16, handlePage16Change)}
+
+                  {(!data.page16?.wellnessItems || data.page16.wellnessItems.length === 0) && (
+                    <>
+                      <textarea value={data.page16?.teamPageroText || ""} onChange={(e) => handlePage16Change("teamPageroText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Team Pagero Popsicle Dansala details" />
+                      <textarea value={data.page16?.teamFinanceText || ""} onChange={(e) => handlePage16Change("teamFinanceText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded leading-normal" placeholder="Ultimate Finance Bun Dansala details" />
+                      {renderImageUploadControls(data.page16?.imageUrl, "page16Url", "Vesak Dansala Photo")}
+                      {renderImageAdjustmentControls(data.page16, handlePage16Change)}
+                    </>
+                  )}
+
+                  {renderBackgroundControls(data.page16, handlePage16Change)}
                 </div>
+              )}
+
+              {/* Page Style Overrides rendered for the selected page */}
+              {selectedContentPage && (
+                renderPageStylesOverrides(parseInt(selectedContentPage.replace("page", "")))
               )}
             </div>
           </div>

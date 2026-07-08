@@ -16,6 +16,10 @@ export interface GeneralInfo {
   ceoName: string;
   ceoTitle: string;
   ceoMessage: string;
+  coverBgColor?: string;
+  coverBgImageUrl?: string;
+  ceoBgColor?: string;
+  ceoBgImageUrl?: string;
 }
 
 export interface StatCard {
@@ -79,6 +83,8 @@ export interface Page3Content {
   commentaryTitle: string;
   commentaryText: string;
   tagline: string;
+  bgColor?: string;
+  bgImageUrl?: string;
 }
 
 export interface Page4Content {
@@ -89,6 +95,8 @@ export interface Page4Content {
   takeawayTitle: string;
   takeawayText: string;
   takeawayLink: string;
+  bgColor?: string;
+  bgImageUrl?: string;
 }
 
 export interface Page5Content {
@@ -100,6 +108,8 @@ export interface Page5Content {
   commitmentsText: string;
   commitmentsTag: string;
   imageUrl?: string;
+  bgColor?: string;
+  bgImageUrl?: string;
 }
 
 export interface Page6Content {
@@ -117,6 +127,15 @@ export interface Page6Content {
   imageWidth?: number;
   imagePosition?: "top" | "bottom" | "left" | "right";
   imageFit?: "contain" | "cover";
+  bgColor?: string;
+  bgImageUrl?: string;
+  bgGradientStart?: string;
+  bgGradientEnd?: string;
+}
+
+export interface Page7Content {
+  bgColor?: string;
+  bgImageUrl?: string;
 }
 
 export interface Page8Content {
@@ -127,6 +146,8 @@ export interface Page8Content {
   automationTitle: string;
   complianceText: string;
   imageUrl?: string;
+  bgColor?: string;
+  bgImageUrl?: string;
 }
 
 export interface Page9Content {
@@ -136,12 +157,23 @@ export interface Page9Content {
   hubsTitle: string;
   hubs: { title: string; desc: string }[];
   imageUrl?: string;
+  bgColor?: string;
+  bgImageUrl?: string;
 }
 
 export interface Page10Content {
   title: string;
   subtitle: string;
   socialTitle: string;
+  imageUrl?: string;
+  bgColor?: string;
+  bgImageUrl?: string;
+}
+
+export interface WellnessItem {
+  id: string;
+  title: string;
+  description: string;
   imageUrl?: string;
 }
 
@@ -158,6 +190,12 @@ export interface Page11Content {
   imageWidth?: number;
   imagePosition?: "top" | "bottom" | "left" | "right";
   imageFit?: "contain" | "cover";
+  bgColor?: string;
+  bgImageUrl?: string;
+  layoutMode?: "grid" | "list" | "three-col" | "hero-split";
+  wellnessItems?: WellnessItem[];
+  gridCols?: 2 | 3;
+  cardImageSize?: "small" | "medium" | "large";
 }
 
 export interface Page12Content {
@@ -171,6 +209,10 @@ export interface Page12Content {
   imageWidth?: number;
   imagePosition?: "top" | "bottom" | "left" | "right";
   imageFit?: "contain" | "cover";
+  bgColor?: string;
+  bgImageUrl?: string;
+  layoutMode?: "grid" | "list" | "three-col" | "hero-split";
+  wellnessItems?: WellnessItem[];
 }
 
 export interface Page13Content {
@@ -185,6 +227,10 @@ export interface Page13Content {
   imageWidth?: number;
   imagePosition?: "top" | "bottom" | "left" | "right";
   imageFit?: "contain" | "cover";
+  bgColor?: string;
+  bgImageUrl?: string;
+  layoutMode?: "grid" | "list" | "three-col" | "hero-split";
+  wellnessItems?: WellnessItem[];
 }
 
 export interface Page14Content {
@@ -203,6 +249,10 @@ export interface Page14Content {
   imageWidth?: number;
   imagePosition?: "top" | "bottom" | "left" | "right";
   imageFit?: "contain" | "cover";
+  bgColor?: string;
+  bgImageUrl?: string;
+  layoutMode?: "grid" | "list" | "three-col" | "hero-split";
+  wellnessItems?: WellnessItem[];
 }
 
 export interface Page15Content {
@@ -216,6 +266,10 @@ export interface Page15Content {
   imageWidth?: number;
   imagePosition?: "top" | "bottom" | "left" | "right";
   imageFit?: "contain" | "cover";
+  bgColor?: string;
+  bgImageUrl?: string;
+  layoutMode?: "grid" | "list" | "three-col" | "hero-split";
+  wellnessItems?: WellnessItem[];
 }
 
 export interface Page16Content {
@@ -230,6 +284,10 @@ export interface Page16Content {
   imageWidth?: number;
   imagePosition?: "top" | "bottom" | "left" | "right";
   imageFit?: "contain" | "cover";
+  bgColor?: string;
+  bgImageUrl?: string;
+  layoutMode?: "grid" | "list" | "three-col" | "hero-split";
+  wellnessItems?: WellnessItem[];
 }
 
 export interface NewsletterData {
@@ -246,6 +304,7 @@ export interface NewsletterData {
   page4?: Page4Content;
   page5?: Page5Content;
   page6?: Page6Content;
+  page7?: Page7Content;
   page8?: Page8Content;
   page9?: Page9Content;
   page10?: Page10Content;
@@ -255,4 +314,36 @@ export interface NewsletterData {
   page14?: Page14Content;
   page15?: Page15Content;
   page16?: Page16Content;
+  useGlobalTheme?: boolean;
+  pageStyles?: { [pageNumber: number]: PageStyles };
+}
+
+export interface PageStyles {
+  primaryColor?: string;
+  accentColor?: string;
+  pageBgColor?: string;
+  textColor?: string;
+  cardBgColor?: string;
+  fontSizeModifier?: "small" | "medium" | "large";
+  paddingSize?: "compact" | "normal" | "comfortable";
+  imageRounded?: "none" | "sm" | "md" | "lg" | "xl" | "full";
+  imageShadow?: "none" | "sm" | "md" | "lg";
+  imageBorderWidth?: number;
+  imageBorderColor?: string;
+  bgGradientStart?: string;
+  bgGradientEnd?: string;
+  bgStyleMode?: "solid" | "gradient" | "image";
+  bgImageOverlayOpacity?: number;
+  bgImageUrl?: string;
+  cardPaddingSize?: "compact" | "normal" | "comfortable";
+  cardRounded?: "none" | "sm" | "md" | "lg" | "xl" | "2xl";
+  cardShadow?: "none" | "sm" | "md" | "lg";
+  cardBorderWidth?: number;
+  cardBorderColor?: string;
+  imageFit?: "cover" | "contain";
+  imageBorderStyle?: "solid" | "dashed" | "dotted";
+  imageGrayscale?: boolean;
+  contentGapSize?: "compact" | "normal" | "wide";
+  fontFamilyTitle?: "inter" | "outfit" | "playfair" | "merriweather";
+  fontFamilyBody?: "inter" | "outfit" | "sans" | "serif" | "merriweather" | "playfair";
 }
