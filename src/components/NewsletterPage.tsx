@@ -52,6 +52,9 @@ const renderDynamicEventContent = (
     imageBorderStyle?: "solid" | "dashed" | "dotted";
     imageGrayscale?: boolean;
     cardStyle?: React.CSSProperties;
+    pageNumber?: number;
+    selectedElement?: { type: "image" | "bg" | "card", pageNum: number, index?: number } | null;
+    onSelectElement?: (element: { type: "image" | "bg" | "card", pageNum: number, index?: number } | null) => void;
   }
 ) => {
   if (!items || items.length === 0) {
@@ -68,9 +71,15 @@ const renderDynamicEventContent = (
     ) : legacyBody;
   }
 
+  const pageNumber = configs?.pageNumber || 0;
+  const selectedElement = configs?.selectedElement || null;
+  const onSelectElement = configs?.onSelectElement;
+
   const count = items.length;
 
-  const getCardImageStyle = (isCircle: boolean = false): React.CSSProperties => {
+  const getCardImageStyle = (idx: number, isCircle: boolean = false): React.CSSProperties => {
+    const isSelected = selectedElement?.type === "image" && selectedElement?.pageNum === pageNumber && selectedElement?.index === idx;
+
     const rounded = configs?.imageRounded || "xl";
     const shadow = configs?.imageShadow || "sm";
     const borderWidth = configs?.imageBorderWidth !== undefined ? configs.imageBorderWidth : 0;
@@ -100,21 +109,40 @@ const renderDynamicEventContent = (
       case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"; break;
     }
 
-    return {
+    const baseStyle = {
       borderRadius,
       boxShadow,
       border: borderWidth > 0 ? `${borderWidth}px ${borderStyle} ${borderColor}` : "none",
       filter
     };
+
+    if (isSelected) {
+      return {
+        ...baseStyle,
+        boxShadow: "0 0 0 3px #0ea5e9, 0 10px 15px -3px rgba(14, 165, 233, 0.3)",
+        borderColor: "#0ea5e9"
+      };
+    }
+    return baseStyle;
   };
 
-  const getCardStyle = (): React.CSSProperties => {
-    return configs?.cardStyle || {
+  const getCardStyle = (idx: number): React.CSSProperties => {
+    const isSelected = selectedElement?.type === "card" && selectedElement?.pageNum === pageNumber && selectedElement?.index === idx;
+    const baseStyle = configs?.cardStyle || {
       backgroundColor: cardBgColor,
       borderColor: `${textColor}10`,
       borderRadius: "1rem",
       padding: "1rem"
     };
+
+    if (isSelected) {
+      return {
+        ...baseStyle,
+        boxShadow: "0 0 0 3px #0ea5e9, 0 10px 15px -3px rgba(14, 165, 233, 0.3)",
+        borderColor: "#0ea5e9"
+      };
+    }
+    return baseStyle;
   };
 
   if (layoutMode === "grid") {
@@ -140,15 +168,23 @@ const renderDynamicEventContent = (
         {items.map((item, idx) => (
           <div 
             key={item.id} 
-            className={`flex flex-col justify-between ${cardHeightClass} relative overflow-hidden group hover:border-sky-300 hover:shadow-md transition-all duration-300`}
-            style={getCardStyle()}
+            className={`flex flex-col justify-between ${cardHeightClass} relative overflow-hidden group hover:border-sky-300 hover:shadow-md transition-all duration-300 cursor-pointer`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectElement?.({ type: "card", pageNum: pageNumber, index: idx });
+            }}
+            style={getCardStyle(idx)}
           >
             <div className="space-y-1.5 h-full flex flex-col justify-between">
               <div>
                 {item.imageUrl && (
                   <div 
-                    className={`${imgHeightClass} w-full overflow-hidden mb-2 bg-slate-50 shrink-0`}
-                    style={getCardImageStyle()}
+                    className={`${imgHeightClass} w-full overflow-hidden mb-2 bg-slate-50 shrink-0 cursor-pointer`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectElement?.({ type: "image", pageNum: pageNumber, index: idx });
+                    }}
+                    style={getCardImageStyle(idx)}
                   >
                     <img 
                       src={item.imageUrl} 
@@ -194,8 +230,12 @@ const renderDynamicEventContent = (
           const isEven = idx % 2 === 0;
           const imgEl = item.imageUrl && (
             <div 
-              className={`${imgSizeClass} overflow-hidden shrink-0 bg-slate-50`} 
-              style={getCardImageStyle()}
+              className={`${imgSizeClass} overflow-hidden shrink-0 bg-slate-50 cursor-pointer`} 
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectElement?.({ type: "image", pageNum: pageNumber, index: idx });
+              }}
+              style={getCardImageStyle(idx)}
             >
               <img 
                 src={item.imageUrl} 
@@ -221,8 +261,12 @@ const renderDynamicEventContent = (
           return (
             <div 
               key={item.id} 
-              className="flex items-center gap-3 sm:gap-4 hover:border-sky-300 transition-all duration-300"
-              style={getCardStyle()}
+              className="flex items-center gap-3 sm:gap-4 hover:border-sky-300 transition-all duration-300 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectElement?.({ type: "card", pageNum: pageNumber, index: idx });
+              }}
+              style={getCardStyle(idx)}
             >
               {isEven ? (
                 <>
@@ -262,12 +306,16 @@ const renderDynamicEventContent = (
         {items.map((item, idx) => (
           <div 
             key={item.id} 
-            className="flex flex-col space-y-2 hover:scale-[1.01] transition-transform duration-300"
+            className="flex flex-col space-y-2 hover:scale-[1.01] transition-transform duration-300 cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectElement?.({ type: "image", pageNum: pageNumber, index: idx });
+            }}
           >
             {item.imageUrl ? (
               <div 
                 className={`${imgHeightClass} w-full overflow-hidden bg-slate-50`} 
-                style={getCardImageStyle()}
+                style={getCardImageStyle(idx)}
               >
                 <img 
                   src={item.imageUrl} 
@@ -279,7 +327,7 @@ const renderDynamicEventContent = (
             ) : (
               <div 
                 className={`${imgHeightClass} w-full border border-dashed flex items-center justify-center text-slate-300 bg-slate-50/50`} 
-                style={getCardImageStyle()}
+                style={getCardImageStyle(idx)}
               >
                 <span className="text-[9px] uppercase font-bold text-slate-400">Event Spotlight</span>
               </div>
@@ -328,8 +376,12 @@ const renderDynamicEventContent = (
     return (
       <div className="grid grid-cols-12 gap-4 sm:gap-5 my-auto items-stretch">
         <div 
-          className={`${leftColSpan} flex flex-col justify-between space-y-3 hover:border-sky-300 transition-all duration-300`}
-          style={getCardStyle()}
+          className={`${leftColSpan} flex flex-col justify-between space-y-3 hover:border-sky-300 transition-all duration-300 cursor-pointer`}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectElement?.({ type: "card", pageNum: pageNumber, index: 0 });
+          }}
+          style={getCardStyle(0)}
         >
           <div className="space-y-1.5">
             <span className="inline-block px-2 py-0.5 rounded-full text-[8px] font-black uppercase text-white" style={{ backgroundColor: primaryColor }}>
@@ -340,8 +392,12 @@ const renderDynamicEventContent = (
           </div>
           {heroItem?.imageUrl && (
             <div 
-              className={`${heroImgHeightClass} w-full overflow-hidden bg-slate-50 shrink-0`} 
-              style={getCardImageStyle()}
+              className={`${heroImgHeightClass} w-full overflow-hidden bg-slate-50 shrink-0 cursor-pointer`} 
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
+              }}
+              style={getCardImageStyle(0)}
             >
               <img 
                 src={heroItem.imageUrl} 
@@ -357,13 +413,21 @@ const renderDynamicEventContent = (
           {sidebarItems.map((item, idx) => (
             <div 
               key={item.id} 
-              className="flex-1 flex items-center gap-2 hover:border-sky-300 transition-all duration-300"
-              style={getCardStyle()}
+              className="flex-1 flex items-center gap-2 hover:border-sky-300 transition-all duration-300 cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectElement?.({ type: "card", pageNum: pageNumber, index: idx + 1 });
+              }}
+              style={getCardStyle(idx + 1)}
             >
               {item.imageUrl && (
                 <div 
-                  className={`${sidebarImgSizeClass} overflow-hidden shrink-0 bg-slate-50`} 
-                  style={getCardImageStyle()}
+                  className={`${sidebarImgSizeClass} overflow-hidden shrink-0 bg-slate-50 cursor-pointer`} 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectElement?.({ type: "image", pageNum: pageNumber, index: idx + 1 });
+                  }}
+                  style={getCardImageStyle(idx + 1)}
                 >
                   <img 
                     src={item.imageUrl} 
@@ -397,9 +461,11 @@ const renderDynamicEventContent = (
 interface NewsletterPageProps {
   pageNumber: number;
   data: NewsletterData;
+  selectedElement?: { type: "image" | "bg" | "card", pageNum: number, index?: number } | null;
+  onSelectElement?: (element: { type: "image" | "bg" | "card", pageNum: number, index?: number } | null) => void;
 }
 
-export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
+export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElement }: NewsletterPageProps) {
   // Resolve page-specific style overrides if global theme is disabled
   const pageStyle = !data.useGlobalTheme ? data.pageStyles?.[pageNumber] : undefined;
   
@@ -439,7 +505,9 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
   };
 
   // Extended Image Styling Helper
-  const getImageStyle = (isRoundedFull: boolean = false): React.CSSProperties => {
+  const getImageStyle = (isRoundedFull: boolean = false, idx: number = 0): React.CSSProperties => {
+    const isSelected = selectedElement?.type === "image" && selectedElement?.pageNum === pageNumber && selectedElement?.index === idx;
+
     const fit = pageStyle?.imageFit || "cover";
     const borderStyle = pageStyle?.imageBorderStyle || "solid";
     const filter = pageStyle?.imageGrayscale ? "grayscale(100%)" : "none";
@@ -465,13 +533,22 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
       case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"; break;
     }
 
-    return {
+    const baseStyle = {
       borderRadius,
       boxShadow,
       border: imgBorderWidth > 0 ? `${imgBorderWidth}px ${borderStyle} ${imgBorderColor}` : "none",
       objectFit: fit as any,
       filter
     };
+
+    if (isSelected) {
+      return {
+        ...baseStyle,
+        boxShadow: "0 0 0 3px #0ea5e9, 0 10px 15px -3px rgba(14, 165, 233, 0.3)",
+        borderColor: "#0ea5e9"
+      };
+    }
+    return baseStyle;
   };
 
   // Card Styling Helper
@@ -612,11 +689,15 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
 
     return (
       <div 
-        className={`h-full flex flex-col justify-between relative overflow-hidden select-none ${padding}`}
+        className={`h-full flex flex-col justify-between relative overflow-hidden select-none ${padding} cursor-pointer transition-all duration-200`}
+        onClick={(e) => {
+          onSelectElement?.({ type: "bg", pageNum: pageNumber });
+        }}
         style={{ 
           ...bgStyle,
           color: isDark ? (data.general.darkTextColor || "#ffffff") : textColor,
-          fontFamily: bodyFontFamily || undefined
+          fontFamily: bodyFontFamily || undefined,
+          boxShadow: selectedElement?.type === "bg" && selectedElement?.pageNum === pageNumber ? "0 0 0 4px #0ea5e9 inset" : undefined
         }}
       >
         {resolvedBgImageUrl && (
@@ -761,8 +842,12 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                   <img 
                     src={data.general.ceoImageUrl} 
                     alt={data.general.ceoName} 
-                    className="w-20 h-20 object-cover shrink-0" 
-                    style={getImageStyle()}
+                    className="w-20 h-20 object-cover shrink-0 cursor-pointer" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
+                    }}
+                    style={getImageStyle(false, 0)}
                   />
                 )}
                 <div className="relative pl-6 border-l-4" style={{ borderColor: primaryColor }}>
@@ -1108,8 +1193,12 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
 
       const p6Image = p6.imageUrl && (
         <div 
-          className="flex justify-center items-center shrink-0"
-          style={{ ...getImageStyle(), height: p6Height, width: p6Width }}
+          className="flex justify-center items-center shrink-0 cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
+          }}
+          style={{ ...getImageStyle(false, 0), height: p6Height, width: p6Width }}
         >
           <img src={p6.imageUrl} className="w-full h-full" style={{ objectFit: p6Fit, borderRadius: "inherit" }} alt="PEAK Matrix Recognition Badge" />
         </div>
@@ -1313,8 +1402,15 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                   <span className="text-[10px] font-black uppercase tracking-widest block" style={{ color: `${data.general.textColor}80` }}>{p8.automationTitle}</span>
                   
                   {p8.imageUrl ? (
-                    <div className="h-28 my-1 bg-white overflow-hidden" style={getImageStyle()}>
-                      <img src={p8.imageUrl} className="w-full h-full object-cover" alt="Process Work Culture" style={{ borderRadius: "inherit" }} />
+                    <div 
+                      className="h-28 my-1 bg-white overflow-hidden cursor-pointer" 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
+                      }}
+                      style={getImageStyle(false, 0)}
+                    >
+                      <img src={p8.imageUrl} className="w-full h-full" style={{ objectFit: pageStyle?.imageFit || "cover", borderRadius: "inherit" }} alt="Process Work Culture" />
                     </div>
                   ) : (
                     <div className="space-y-2 text-xs">
@@ -1417,8 +1513,15 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
 
                 {/* Diversity stats / Image display */}
                 {p9.imageUrl ? (
-                  <div className="h-24 relative bg-white overflow-hidden" style={getImageStyle()}>
-                    <img src={p9.imageUrl} className="w-full h-full object-cover" alt="Infomate work team culture" style={{ borderRadius: "inherit" }} />
+                  <div 
+                    className="h-24 relative bg-white overflow-hidden cursor-pointer" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
+                    }}
+                    style={getImageStyle(false, 0)}
+                  >
+                    <img src={p9.imageUrl} className="w-full h-full" style={{ objectFit: pageStyle?.imageFit || "cover", borderRadius: "inherit" }} alt="Infomate work team culture" />
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 gap-3">
@@ -1502,8 +1605,15 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
                   ))}
                 </div>
                 {p10.imageUrl && (
-                  <div className="col-span-3 relative h-full bg-white overflow-hidden" style={getImageStyle()}>
-                    <img src={p10.imageUrl} className="w-full h-full object-cover" alt="ESG Social Work" style={{ borderRadius: "inherit" }} />
+                  <div 
+                    className="col-span-3 relative h-full bg-white overflow-hidden cursor-pointer" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
+                    }}
+                    style={getImageStyle(false, 0)}
+                  >
+                    <img src={p10.imageUrl} className="w-full h-full" style={{ objectFit: pageStyle?.imageFit || "cover", borderRadius: "inherit" }} alt="ESG Social Work" />
                   </div>
                 )}
               </div>
@@ -1540,10 +1650,14 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
 
       const p11Image = p11.imageUrl && (
         <div 
-          className="overflow-hidden relative bg-white shrink-0" 
-          style={{ ...getImageStyle(), height: p11Height, width: p11Width }}
+          className="overflow-hidden relative bg-white shrink-0 cursor-pointer" 
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
+          }}
+          style={{ ...getImageStyle(false, 0), height: p11Height, width: p11Width }}
         >
-          <img src={p11.imageUrl} className="w-full h-full" style={{ objectFit: p11Fit, borderRadius: "inherit" }} alt="Wellness Program Session" />
+          <img src={p11.imageUrl} className="w-full h-full" style={{ objectFit: pageStyle?.imageFit || p11Fit, borderRadius: "inherit" }} alt="Wellness Program Session" />
         </div>
       );
 
@@ -1683,7 +1797,22 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               primaryColor,
               accentColor,
               data.general.textColor || "#1e293b",
-              data.general.cardBgColor || "#f8fafc"
+              data.general.cardBgColor || "#f8fafc",
+              {
+                gridCols: p12.gridCols,
+                cardImageSize: p12.cardImageSize,
+                imageRounded: imgRounded,
+                imageShadow: imgShadow,
+                imageBorderWidth: imgBorderWidth,
+                imageBorderColor: imgBorderColor,
+                imageFit: pageStyle?.imageFit,
+                imageBorderStyle: pageStyle?.imageBorderStyle,
+                imageGrayscale: pageStyle?.imageGrayscale,
+                cardStyle: getCardStyle(),
+                pageNumber: 12,
+                selectedElement,
+                onSelectElement
+              }
             )}
 
             <div className="p-3.5 rounded-2xl text-center text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2" style={{ backgroundColor: `${primaryColor}15`, color: primaryColor }}>
@@ -1768,7 +1897,22 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               primaryColor,
               accentColor,
               data.general.textColor || "#1e293b",
-              data.general.cardBgColor || "#f8fafc"
+              data.general.cardBgColor || "#f8fafc",
+              {
+                gridCols: p13.gridCols,
+                cardImageSize: p13.cardImageSize,
+                imageRounded: imgRounded,
+                imageShadow: imgShadow,
+                imageBorderWidth: imgBorderWidth,
+                imageBorderColor: imgBorderColor,
+                imageFit: pageStyle?.imageFit,
+                imageBorderStyle: pageStyle?.imageBorderStyle,
+                imageGrayscale: pageStyle?.imageGrayscale,
+                cardStyle: getCardStyle(),
+                pageNumber: 13,
+                selectedElement,
+                onSelectElement
+              }
             )}
 
             <div className="p-3 rounded-xl border text-center text-xs font-bold" style={{ backgroundColor: `${primaryColor}10`, color: primaryColor, borderColor: `${primaryColor}20` }}>
@@ -1875,7 +2019,22 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               primaryColor,
               accentColor,
               data.general.textColor || "#1e293b",
-              data.general.cardBgColor || "#f8fafc"
+              data.general.cardBgColor || "#f8fafc",
+              {
+                gridCols: p14.gridCols,
+                cardImageSize: p14.cardImageSize,
+                imageRounded: imgRounded,
+                imageShadow: imgShadow,
+                imageBorderWidth: imgBorderWidth,
+                imageBorderColor: imgBorderColor,
+                imageFit: pageStyle?.imageFit,
+                imageBorderStyle: pageStyle?.imageBorderStyle,
+                imageGrayscale: pageStyle?.imageGrayscale,
+                cardStyle: getCardStyle(),
+                pageNumber: 14,
+                selectedElement,
+                onSelectElement
+              }
             )}
           </div>
 
@@ -1951,7 +2110,22 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               primaryColor,
               accentColor,
               data.general.textColor || "#1e293b",
-              data.general.cardBgColor || "#f8fafc"
+              data.general.cardBgColor || "#f8fafc",
+              {
+                gridCols: p15.gridCols,
+                cardImageSize: p15.cardImageSize,
+                imageRounded: imgRounded,
+                imageShadow: imgShadow,
+                imageBorderWidth: imgBorderWidth,
+                imageBorderColor: imgBorderColor,
+                imageFit: pageStyle?.imageFit,
+                imageBorderStyle: pageStyle?.imageBorderStyle,
+                imageGrayscale: pageStyle?.imageGrayscale,
+                cardStyle: getCardStyle(),
+                pageNumber: 15,
+                selectedElement,
+                onSelectElement
+              }
             )}
 
             <div className="p-3.5 rounded-xl border text-center text-xs font-bold" style={{ backgroundColor: `${accentColor}10`, color: accentColor, borderColor: `${accentColor}25` }}>
@@ -2045,7 +2219,22 @@ export function NewsletterPage({ pageNumber, data }: NewsletterPageProps) {
               primaryColor,
               accentColor,
               data.general.textColor || "#1e293b",
-              data.general.cardBgColor || "#f8fafc"
+              data.general.cardBgColor || "#f8fafc",
+              {
+                gridCols: p16.gridCols,
+                cardImageSize: p16.cardImageSize,
+                imageRounded: imgRounded,
+                imageShadow: imgShadow,
+                imageBorderWidth: imgBorderWidth,
+                imageBorderColor: imgBorderColor,
+                imageFit: pageStyle?.imageFit,
+                imageBorderStyle: pageStyle?.imageBorderStyle,
+                imageGrayscale: pageStyle?.imageGrayscale,
+                cardStyle: getCardStyle(),
+                pageNumber: 16,
+                selectedElement,
+                onSelectElement
+              }
             )}
 
             <div className="p-3 rounded-xl border text-center text-xs font-bold" style={{ backgroundColor: `${primaryColor}10`, color: primaryColor, borderColor: `${primaryColor}20` }}>

@@ -213,6 +213,8 @@ export interface Page12Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
+  gridCols?: 2 | 3;
+  cardImageSize?: "small" | "medium" | "large";
 }
 
 export interface Page13Content {
@@ -231,6 +233,8 @@ export interface Page13Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
+  gridCols?: 2 | 3;
+  cardImageSize?: "small" | "medium" | "large";
 }
 
 export interface Page14Content {
@@ -253,6 +257,8 @@ export interface Page14Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
+  gridCols?: 2 | 3;
+  cardImageSize?: "small" | "medium" | "large";
 }
 
 export interface Page15Content {
@@ -270,6 +276,8 @@ export interface Page15Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
+  gridCols?: 2 | 3;
+  cardImageSize?: "small" | "medium" | "large";
 }
 
 export interface Page16Content {
@@ -288,6 +296,8 @@ export interface Page16Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
+  gridCols?: 2 | 3;
+  cardImageSize?: "small" | "medium" | "large";
 }
 
 export interface NewsletterData {
