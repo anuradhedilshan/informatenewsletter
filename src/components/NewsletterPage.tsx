@@ -533,12 +533,17 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"; break;
     }
 
+    const customWidth = pageStyle?.imageWidth;
+    const customHeight = pageStyle?.imageHeight;
+
     const baseStyle = {
       borderRadius,
       boxShadow,
       border: imgBorderWidth > 0 ? `${imgBorderWidth}px ${borderStyle} ${imgBorderColor}` : "none",
       objectFit: fit as any,
-      filter
+      filter,
+      width: customWidth !== undefined ? `${customWidth}%` : undefined,
+      height: customHeight !== undefined ? `${customHeight}px` : undefined
     };
 
     if (isSelected) {

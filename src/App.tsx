@@ -372,6 +372,36 @@ export default function App() {
       {/* Border Color */}
       <ColorPickerPopover label="Border Color" color={styles.imageBorderColor || "#cbd5e1"} onChange={(val) => handleStyleChange("imageBorderColor", val)} />
 
+      {/* Width slider */}
+      <div className="flex items-center gap-1 shrink-0">
+        <span className="text-[9px] font-black text-slate-400 uppercase">Width</span>
+        <input
+          type="range"
+          min="10"
+          max="100"
+          value={styles.imageWidth !== undefined ? styles.imageWidth : 100}
+          onChange={(e) => handleStyleChange("imageWidth", parseInt(e.target.value))}
+          className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+          title="Image Width (%)"
+        />
+        <span className="text-[9px] font-bold text-slate-500 w-6">{styles.imageWidth !== undefined ? styles.imageWidth : 100}%</span>
+      </div>
+
+      {/* Height slider */}
+      <div className="flex items-center gap-1 shrink-0">
+        <span className="text-[9px] font-black text-slate-400 uppercase">Height</span>
+        <input
+          type="range"
+          min="50"
+          max="350"
+          value={styles.imageHeight !== undefined ? styles.imageHeight : 180}
+          onChange={(e) => handleStyleChange("imageHeight", parseInt(e.target.value))}
+          className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+          title="Image Height (px)"
+        />
+        <span className="text-[9px] font-bold text-slate-500 w-8">{styles.imageHeight !== undefined ? styles.imageHeight : 180}px</span>
+      </div>
+
       {/* Grayscale filter */}
       <div className="flex items-center gap-1.5">
         <input
@@ -508,7 +538,7 @@ export default function App() {
 
   return (
     <div 
-      className="min-h-screen bg-slate-100 flex flex-col font-sans text-slate-800 antialiased print:p-0 print:bg-white overflow-x-hidden"
+      className="h-screen bg-slate-100 flex flex-col font-sans text-slate-800 antialiased print:h-auto print:p-0 print:bg-white overflow-hidden"
       style={{
         ['--primary-color' as any]: data.general.primaryColor,
         ['--accent-color' as any]: data.general.accentColor,
@@ -558,16 +588,6 @@ export default function App() {
         {/* Right Preview Canvas area */}
         <main className="flex-1 overflow-y-auto bg-slate-100/60 p-4 md:p-8 flex flex-col items-center justify-start min-h-0 print:p-0 print:bg-white relative">
           
-          {/* Quick instructions bar for web-view users */}
-          <div className="w-full max-w-[800px] mb-4 bg-amber-50 border border-amber-200 rounded-xl p-3 flex items-start gap-2.5 shadow-sm text-xs text-amber-800 print:hidden select-none">
-            <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold block">How to export this Newsletter as a clean PDF:</span>
-              <p className="mt-0.5 leading-relaxed text-amber-700/90">
-                This app is optimized for high-fidelity printing. Just click <strong className="font-bold">Export PDF</strong> in the header (or press <kbd className="bg-amber-100 px-1 border border-amber-300 rounded text-[10px]">Ctrl+P</kbd>), choose <strong className="font-bold">Save as PDF</strong>, enable <strong className="font-bold">Background Graphics</strong>, set margins to <strong className="font-bold">None</strong>, and hit Save.
-              </p>
-            </div>
-          </div>
 
           {/* RENDERING MODE: PAGES / BOOK LAYOUT */}
           {viewMode === "pages" && visiblePages.length > 0 && (

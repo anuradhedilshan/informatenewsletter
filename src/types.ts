@@ -356,4 +356,6 @@ export interface PageStyles {
   contentGapSize?: "compact" | "normal" | "wide";
   fontFamilyTitle?: "inter" | "outfit" | "playfair" | "merriweather";
   fontFamilyBody?: "inter" | "outfit" | "sans" | "serif" | "merriweather" | "playfair";
+  imageWidth?: number;
+  imageHeight?: number;
 }
