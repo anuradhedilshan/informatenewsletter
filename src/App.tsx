@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NewsletterData } from "./types";
+import { NewsletterData, getExpandedPages } from "./types";
 import { initialNewsletterData } from "./data";
 import { Header } from "./components/Header";
 import { Customizer } from "./components/Customizer";
@@ -575,18 +575,19 @@ export default function App() {
   );
 
   const visiblePages = data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10];
-  const currentPageIndex = visiblePages.indexOf(currentPage);
-  const displayTotalPages = visiblePages.length;
+  const expandedPages = getExpandedPages(visiblePages, data);
+  const currentPageIndex = expandedPages.indexOf(currentPage);
+  const displayTotalPages = expandedPages.length;
 
-  // Make sure currentPage is always inside visiblePages
+  // Make sure currentPage is always inside expandedPages
   useEffect(() => {
-    if (visiblePages.length > 0 && !visiblePages.includes(currentPage)) {
-      const closest = visiblePages.reduce((prev, curr) => 
+    if (expandedPages.length > 0 && !expandedPages.includes(currentPage)) {
+      const closest = expandedPages.reduce((prev, curr) => 
         Math.abs(curr - currentPage) < Math.abs(prev - currentPage) ? curr : prev
-      , visiblePages[0]);
+      , expandedPages[0]);
       setCurrentPage(closest);
     }
-  }, [visiblePages, currentPage]);
+  }, [expandedPages, currentPage]);
 
   // Sync keyboard arrow keys for book page navigation
   useEffect(() => {
@@ -594,19 +595,19 @@ export default function App() {
       if (viewMode !== "pages") return;
       if (e.key === "ArrowLeft") {
         setCurrentPage((prev) => {
-          const idx = visiblePages.indexOf(prev);
-          return idx > 0 ? visiblePages[idx - 1] : prev;
+          const idx = expandedPages.indexOf(prev);
+          return idx > 0 ? expandedPages[idx - 1] : prev;
         });
       } else if (e.key === "ArrowRight") {
         setCurrentPage((prev) => {
-          const idx = visiblePages.indexOf(prev);
-          return idx < visiblePages.length - 1 ? visiblePages[idx + 1] : prev;
+          const idx = expandedPages.indexOf(prev);
+          return idx < expandedPages.length - 1 ? expandedPages[idx + 1] : prev;
         });
       }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [viewMode, visiblePages]);
+  }, [viewMode, expandedPages]);
 
   // Reset to default
   const handleReset = () => {
@@ -746,14 +747,14 @@ export default function App() {
           
 
           {/* RENDERING MODE: PAGES / BOOK LAYOUT */}
-          {viewMode === "pages" && visiblePages.length > 0 && (
+          {viewMode === "pages" && expandedPages.length > 0 && (
             <div className="w-full flex flex-col items-center justify-center space-y-6 print:hidden">
               {/* Pagination controls */}
               <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-2xl border border-slate-200 shadow-sm select-none">
                 <button
                   onClick={() => {
                     if (currentPageIndex > 0) {
-                      setCurrentPage(visiblePages[currentPageIndex - 1]);
+                      setCurrentPage(expandedPages[currentPageIndex - 1]);
                     }
                   }}
                   disabled={currentPageIndex === 0}
@@ -768,11 +769,11 @@ export default function App() {
 
                 <button
                   onClick={() => {
-                    if (currentPageIndex < visiblePages.length - 1) {
-                      setCurrentPage(visiblePages[currentPageIndex + 1]);
+                    if (currentPageIndex < expandedPages.length - 1) {
+                      setCurrentPage(expandedPages[currentPageIndex + 1]);
                     }
                   }}
-                  disabled={currentPageIndex === visiblePages.length - 1}
+                  disabled={currentPageIndex === expandedPages.length - 1}
                   className="p-1.5 rounded-lg hover:bg-slate-50 border border-slate-200 text-slate-600 disabled:opacity-40 disabled:hover:bg-transparent cursor-pointer transition-colors"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -834,7 +835,7 @@ export default function App() {
 
               {/* Page Thumbnails Bar */}
               <div className="w-full max-w-[800px] flex items-center justify-center gap-1.5 flex-wrap pt-2 select-none">
-                {visiblePages.map((pageNum, i) => (
+                {expandedPages.map((pageNum, i) => (
                   <button
                     key={pageNum}
                     onClick={() => setCurrentPage(pageNum)}
@@ -855,7 +856,7 @@ export default function App() {
           {/* RENDERING MODE: CONTINUOUS SCROLL / FLOW LAYOUT */}
           {viewMode === "continuous" && (
             <div className="w-full flex flex-col items-center gap-8 print:gap-0 print:p-0">
-              {visiblePages.map((pageNum) => (
+              {expandedPages.map((pageNum) => (
                 <div
                   key={pageNum}
                   className="w-full max-w-[800px] aspect-[1/1.414] bg-white shadow-2xl rounded-2xl overflow-hidden border border-slate-200/60 print-page-container print:shadow-none print:border-none print:rounded-none relative"
@@ -869,7 +870,7 @@ export default function App() {
           {/* PRINT-ONLY ELEMENT */}
           {/* This renders all pages in a sequence, hidden in browser view but formatted cleanly when printing */}
           <div className="hidden print:block print:p-0">
-            {visiblePages.map((pageNum) => (
+            {expandedPages.map((pageNum) => (
               <div
                 key={pageNum}
                 className="print-page-container"

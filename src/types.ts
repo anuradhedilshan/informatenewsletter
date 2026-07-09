@@ -367,3 +367,24 @@ export interface PageStyles {
   imageLeft?: number;
   imageAlignSelf?: "auto" | "flex-start" | "center" | "flex-end";
 }
+
+export const getExpandedPages = (visiblePages: number[], data: any): number[] => {
+  const expanded: number[] = [];
+  visiblePages.forEach((pageNum) => {
+    expanded.push(pageNum);
+    
+    // Page 11 to 16 dynamic subpage expansion (each subpage gets capacity of 3 items)
+    if (pageNum >= 11 && pageNum <= 16) {
+      const pageKey = `page${pageNum}`;
+      const pageData = data[pageKey];
+      if (pageData?.wellnessItems) {
+        const itemsCount = pageData.wellnessItems.length;
+        const extraPages = Math.ceil(itemsCount / 3) - 1;
+        for (let i = 1; i <= extraPages; i++) {
+          expanded.push(pageNum + i * 100);
+        }
+      }
+    }
+  });
+  return expanded;
+};

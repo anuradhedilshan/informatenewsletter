@@ -1,5 +1,5 @@
 import React from "react";
-import { NewsletterData, StatCard, ServicePillar, BackOfficeService, TeamRole, SocialInitiative, ValueProposition, WellnessItem } from "../types";
+import { NewsletterData, StatCard, ServicePillar, BackOfficeService, TeamRole, SocialInitiative, ValueProposition, WellnessItem, getExpandedPages } from "../types";
 import { Logo } from "./Logo";
 import { 
   TrendingUp, 
@@ -683,7 +683,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
   // Common Footer of pages
   const PageFooter = ({ pageNo }: { pageNo: number }) => {
     const actualPages = data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10];
-    const displayPageNo = actualPages.indexOf(pageNo) + 1;
+    const expandedPages = getExpandedPages(actualPages, data);
+    const displayPageNo = expandedPages.indexOf(pageNo) + 1;
 
     return (
       <div className="flex items-center justify-between pt-4 border-t mt-auto text-[10px] font-bold select-none" style={{ borderColor: `${textColor}15`, color: `${textColor}60` }}>
@@ -777,7 +778,10 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
     );
   };
 
-  switch (pageNumber) {
+  const basePageNum = pageNumber % 100;
+  const chunkIndex = Math.floor(pageNumber / 100);
+
+  switch (basePageNum) {
     // ----------------------------------------------------
     // PAGE 1: COVER PAGE
     // ----------------------------------------------------
@@ -1248,15 +1252,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       const p6Pos = p6.imagePosition || "bottom";
 
       const p6Image = p6.imageUrl && (
-        <div 
-          className="flex justify-center items-center shrink-0 cursor-pointer"
-          onClick={(e) => {
-            e.stopPropagation();
-            onSelectElement?.({ type: "image", pageNum: pageNumber, index: 0 });
-          }}
-          style={{ ...getImageStyle(false, 0), height: p6Height, width: p6Width }}
-        >
-          <img src={p6.imageUrl} className="w-full h-full" style={{ objectFit: p6Fit, borderRadius: "inherit" }} alt="PEAK Matrix Recognition Badge" />
+        <div className="flex justify-center items-center shrink-0 cursor-pointer" style={{}}>
+          <img className="" alt="PEAK Matrix Recognition Badge" src={p6.imageUrl} style={{ objectFit: "contain", borderRadius: "inherit" }} />
         </div>
       );
 
@@ -1335,7 +1332,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
             <span className="flex items-center gap-1">
               <span>Page</span>
               <span className="flex items-center justify-center w-5 h-5 rounded-full text-slate-900 font-black text-[9px] bg-white">
-                {(data.visiblePages || [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]).indexOf(6) + 1}
+                {getExpandedPages(data.visiblePages || [1, 2, 3, 4, 5, 6, 11, 7, 8, 9, 10], data).indexOf(6) + 1}
               </span>
             </span>
           </div>
@@ -1733,7 +1730,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       );
 
       return renderPageContainer(
-        11,
+        pageNumber,
         p11.bgColor,
         p11.bgImageUrl,
         <>
@@ -1752,7 +1749,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
 
             {renderDynamicEventContent(
               p11.layoutMode || "grid",
-              p11.wellnessItems,
+              (p11.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
               p11Image,
               p11Body,
               p11Pos,
@@ -1834,7 +1831,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       );
 
       return renderPageContainer(
-        12,
+        pageNumber,
         p12.bgColor,
         p12.bgImageUrl,
         <>
@@ -1850,7 +1847,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
 
             {renderDynamicEventContent(
               p12.layoutMode || "grid",
-              p12.wellnessItems,
+              (p12.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
               p12Image,
               p12Body,
               p12Pos,
@@ -1936,7 +1933,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       );
 
       return renderPageContainer(
-        13,
+        pageNumber,
         p13.bgColor,
         p13.bgImageUrl,
         <>
@@ -1955,7 +1952,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
 
             {renderDynamicEventContent(
               p13.layoutMode || "grid",
-              p13.wellnessItems,
+              (p13.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
               p13Image,
               p13Body,
               p13Pos,
@@ -2063,7 +2060,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       );
 
       return renderPageContainer(
-        14,
+        pageNumber,
         p14.bgColor,
         p14.bgImageUrl,
         <>
@@ -2082,7 +2079,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
 
             {renderDynamicEventContent(
               p14.layoutMode || "grid",
-              p14.wellnessItems,
+              (p14.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
               p14Image,
               p14Body,
               p14Pos,
@@ -2159,7 +2156,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       );
 
       return renderPageContainer(
-        15,
+        pageNumber,
         p15.bgColor,
         p15.bgImageUrl,
         <>
@@ -2178,7 +2175,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
 
             {renderDynamicEventContent(
               p15.layoutMode || "grid",
-              p15.wellnessItems,
+              (p15.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
               p15Image,
               p15Body,
               p15Pos,
@@ -2273,7 +2270,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       );
 
       return renderPageContainer(
-        16,
+        pageNumber,
         p16.bgColor,
         p16.bgImageUrl,
         <>
@@ -2292,7 +2289,7 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
 
             {renderDynamicEventContent(
               p16.layoutMode || "grid",
-              p16.wellnessItems,
+              (p16.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
               p16Image,
               p16Body,
               p16Pos,
