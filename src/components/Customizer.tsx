@@ -307,7 +307,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
   ) => {
     const items = pageData?.wellnessItems || [];
     
-    const handleItemChange = (id: string, key: "title" | "description" | "imageUrl", value: string) => {
+    const handleItemChange = (id: string, key: string, value: any) => {
       const updated = items.map((item: any) => item.id === id ? { ...item, [key]: value } : item);
       handlePageChange("wellnessItems", updated);
     };
@@ -456,27 +456,70 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white leading-normal" 
                 />
 
-                <div className="space-y-1">
-                  <label className="text-[9px] text-slate-400 font-bold block uppercase">Card Image (Optional)</label>
-                  {item.imageUrl ? (
-                    <div className="flex items-center justify-between bg-white p-1 rounded border border-slate-200">
-                      <img src={item.imageUrl} className="h-8 w-12 object-cover rounded" />
-                      <button 
-                        type="button"
-                        onClick={() => handleItemChange(item.id, "imageUrl", "")}
-                        className="text-[9px] text-rose-500 font-bold hover:underline"
-                      >
-                        Clear Image
-                      </button>
-                    </div>
-                  ) : (
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={(e) => handleItemImageUpload(e, item.id)} 
-                      className="text-[9px] w-full" 
-                    />
-                  )}
+                {/* 3-Slot Image Collage Editor */}
+                <div className="space-y-1.5 pt-1">
+                  <label className="text-[9px] text-slate-400 font-bold block uppercase">Card Photos (Up to 3)</label>
+                  <div className="grid grid-cols-3 gap-1 bg-white p-1.5 rounded-lg border border-slate-200">
+                    {[0, 1, 2].map((slotIdx) => {
+                      const itemImages = item.imageUrls || (item.imageUrl ? [item.imageUrl] : []);
+                      const img = itemImages[slotIdx];
+                      
+                      const handleSetImageAtSlot = (val: string) => {
+                        const newImages = [...itemImages];
+                        if (val === "") {
+                          newImages.splice(slotIdx, 1);
+                        } else {
+                          newImages[slotIdx] = val;
+                        }
+                        const updated = items.map((it: any) => 
+                          it.id === item.id 
+                            ? { ...it, imageUrls: newImages, imageUrl: newImages[0] || "" } 
+                            : it
+                        );
+                        handlePageChange("wellnessItems", updated);
+                      };
+
+                      const handleUploadSlot = (e: React.ChangeEvent<HTMLInputElement>) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            handleSetImageAtSlot(reader.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      };
+
+                      return (
+                        <div key={slotIdx} className="relative aspect-video bg-slate-50 border border-slate-100 rounded overflow-hidden flex flex-col items-center justify-center">
+                          {img ? (
+                            <>
+                              <img src={img} className="w-full h-full object-cover" />
+                              <button
+                                type="button"
+                                onClick={() => handleSetImageAtSlot("")}
+                                className="absolute top-0.5 right-0.5 bg-rose-500 hover:bg-rose-600 text-white rounded-full w-3.5 h-3.5 flex items-center justify-center font-bold text-[8px] leading-none shrink-0"
+                                title="Remove photo"
+                              >
+                                ✕
+                              </button>
+                            </>
+                          ) : (
+                            <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer text-slate-400 hover:text-sky-500 hover:bg-slate-100/50 transition-colors">
+                              <span className="text-[10px] font-black leading-none">+</span>
+                              <span className="text-[7px] font-bold uppercase leading-none mt-0.5">Slot {slotIdx + 1}</span>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleUploadSlot}
+                                className="hidden"
+                              />
+                            </label>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ))}

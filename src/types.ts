@@ -175,6 +175,7 @@ export interface WellnessItem {
   title: string;
   description: string;
   imageUrl?: string;
+  imageUrls?: string[];
 }
 
 export interface Page11Content {

@@ -1,5 +1,5 @@
 import React from "react";
-import { NewsletterData, StatCard, ServicePillar, BackOfficeService, TeamRole, SocialInitiative, ValueProposition } from "../types";
+import { NewsletterData, StatCard, ServicePillar, BackOfficeService, TeamRole, SocialInitiative, ValueProposition, WellnessItem } from "../types";
 import { Logo } from "./Logo";
 import { 
   TrendingUp, 
@@ -145,6 +145,55 @@ const renderDynamicEventContent = (
     return baseStyle;
   };
 
+  const renderItemImages = (item: WellnessItem, idx: number) => {
+    const images = (item.imageUrls ? item.imageUrls.filter(Boolean) : []).length > 0 
+      ? item.imageUrls.filter(Boolean) 
+      : (item.imageUrl ? [item.imageUrl] : []);
+    
+    if (images.length === 0) return null;
+    
+    if (images.length === 1) {
+      return (
+        <img 
+          src={images[0]} 
+          className="w-full h-full" 
+          style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+          alt={item.title} 
+        />
+      );
+    }
+    
+    if (images.length === 2) {
+      return (
+        <div className="grid grid-cols-2 gap-0.5 w-full h-full">
+          {images.slice(0, 2).map((img, i) => (
+            <img 
+              key={i} 
+              src={img} 
+              className="w-full h-full" 
+              style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+              alt={`${item.title} ${i + 1}`} 
+            />
+          ))}
+        </div>
+      );
+    }
+    
+    return (
+      <div className="grid grid-cols-3 gap-0.5 w-full h-full">
+        {images.slice(0, 3).map((img, i) => (
+          <img 
+            key={i} 
+            src={img} 
+            className="w-full h-full" 
+            style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
+            alt={`${item.title} ${i + 1}`} 
+          />
+        ))}
+      </div>
+    );
+  };
+
   if (layoutMode === "grid") {
     const colsVal = configs?.gridCols || (count <= 2 ? 2 : 3);
     const gridColsClass = colsVal === 2 ? "grid-cols-2" : "grid-cols-3";
@@ -177,7 +226,7 @@ const renderDynamicEventContent = (
           >
             <div className="space-y-1.5 h-full flex flex-col justify-between">
               <div>
-                {item.imageUrl && (
+                {(item.imageUrl || (item.imageUrls && item.imageUrls.length > 0)) && (
                   <div 
                     className={`${imgHeightClass} w-full overflow-hidden mb-2 bg-slate-50 shrink-0 cursor-pointer`}
                     onClick={(e) => {
@@ -186,12 +235,7 @@ const renderDynamicEventContent = (
                     }}
                     style={getCardImageStyle(idx)}
                   >
-                    <img 
-                      src={item.imageUrl} 
-                      className="w-full h-full" 
-                      style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
-                      alt={item.title} 
-                    />
+                    {renderItemImages(item, idx)}
                   </div>
                 )}
                 <h4 className="font-extrabold text-[11px] sm:text-[12px] leading-tight flex items-center gap-1.5" style={{ color: textColor }}>
@@ -228,7 +272,7 @@ const renderDynamicEventContent = (
       <div className={`${spacingClass} my-auto`}>
         {items.map((item, idx) => {
           const isEven = idx % 2 === 0;
-          const imgEl = item.imageUrl && (
+          const imgEl = (item.imageUrl || (item.imageUrls && item.imageUrls.length > 0)) && (
             <div 
               className={`${imgSizeClass} overflow-hidden shrink-0 bg-slate-50 cursor-pointer`} 
               onClick={(e) => {
@@ -237,12 +281,7 @@ const renderDynamicEventContent = (
               }}
               style={getCardImageStyle(idx)}
             >
-              <img 
-                src={item.imageUrl} 
-                className="w-full h-full" 
-                style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
-                alt={item.title} 
-              />
+              {renderItemImages(item, idx)}
             </div>
           );
           const textEl = (
@@ -312,17 +351,12 @@ const renderDynamicEventContent = (
               onSelectElement?.({ type: "image", pageNum: pageNumber, index: idx });
             }}
           >
-            {item.imageUrl ? (
+            {(item.imageUrl || (item.imageUrls && item.imageUrls.length > 0)) ? (
               <div 
                 className={`${imgHeightClass} w-full overflow-hidden bg-slate-50`} 
                 style={getCardImageStyle(idx)}
               >
-                <img 
-                  src={item.imageUrl} 
-                  className="w-full h-full" 
-                  style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
-                  alt={item.title} 
-                />
+                {renderItemImages(item, idx)}
               </div>
             ) : (
               <div 
@@ -390,7 +424,7 @@ const renderDynamicEventContent = (
             <h3 className="text-xs sm:text-sm font-black tracking-tight" style={{ color: textColor }}>{heroItem?.title}</h3>
             <p className="text-[10px] leading-relaxed font-medium" style={{ color: `${textColor}cc` }}>{heroItem?.description}</p>
           </div>
-          {heroItem?.imageUrl && (
+          {(heroItem?.imageUrl || (heroItem?.imageUrls && heroItem.imageUrls.length > 0)) && (
             <div 
               className={`${heroImgHeightClass} w-full overflow-hidden bg-slate-50 shrink-0 cursor-pointer`} 
               onClick={(e) => {
@@ -399,12 +433,7 @@ const renderDynamicEventContent = (
               }}
               style={getCardImageStyle(0)}
             >
-              <img 
-                src={heroItem.imageUrl} 
-                className="w-full h-full" 
-                style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
-                alt={heroItem.title} 
-              />
+              {renderItemImages(heroItem, 0)}
             </div>
           )}
         </div>
@@ -420,7 +449,7 @@ const renderDynamicEventContent = (
               }}
               style={getCardStyle(idx + 1)}
             >
-              {item.imageUrl && (
+              {(item.imageUrl || (item.imageUrls && item.imageUrls.length > 0)) && (
                 <div 
                   className={`${sidebarImgSizeClass} overflow-hidden shrink-0 bg-slate-50 cursor-pointer`} 
                   onClick={(e) => {
@@ -429,12 +458,7 @@ const renderDynamicEventContent = (
                   }}
                   style={getCardImageStyle(idx + 1)}
                 >
-                  <img 
-                    src={item.imageUrl} 
-                    className="w-full h-full" 
-                    style={{ objectFit: configs?.imageFit || "cover", borderRadius: "inherit" }} 
-                    alt={item.title} 
-                  />
+                  {renderItemImages(item, idx + 1)}
                 </div>
               )}
               <div className="space-y-0.5 flex-1 min-w-0">
