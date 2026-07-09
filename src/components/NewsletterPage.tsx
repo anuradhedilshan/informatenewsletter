@@ -55,6 +55,11 @@ const renderDynamicEventContent = (
     pageNumber?: number;
     selectedElement?: { type: "image" | "bg" | "card", pageNum: number, index?: number } | null;
     onSelectElement?: (element: { type: "image" | "bg" | "card", pageNum: number, index?: number } | null) => void;
+    multiImageLayout?: "stacked" | "side-by-side";
+    imageWidth?: number;
+    imageHeight?: number;
+    imageWidthUnit?: "%" | "px";
+    imageHeightUnit?: "%" | "px";
   }
 ) => {
   if (!items || items.length === 0) {
@@ -74,6 +79,11 @@ const renderDynamicEventContent = (
   const pageNumber = configs?.pageNumber || 0;
   const selectedElement = configs?.selectedElement || null;
   const onSelectElement = configs?.onSelectElement;
+  const multiImageLayout = configs?.multiImageLayout || "side-by-side";
+  const imageWidth = configs?.imageWidth;
+  const imageHeight = configs?.imageHeight;
+  const imageWidthUnit = configs?.imageWidthUnit || "%";
+  const imageHeightUnit = configs?.imageHeightUnit || "px";
 
   const count = items.length;
 
@@ -109,11 +119,13 @@ const renderDynamicEventContent = (
       case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"; break;
     }
 
-    const baseStyle = {
+    const baseStyle: React.CSSProperties = {
       borderRadius,
       boxShadow,
       border: borderWidth > 0 ? `${borderWidth}px ${borderStyle} ${borderColor}` : "none",
-      filter
+      filter,
+      width: imageWidth !== undefined ? `${imageWidth}${imageWidthUnit}` : undefined,
+      height: imageHeight !== undefined ? `${imageHeight}${imageHeightUnit}` : undefined
     };
 
     if (isSelected) {
@@ -162,10 +174,14 @@ const renderDynamicEventContent = (
         />
       );
     }
+
+    // Force stacked layout if page layout is hero-split, otherwise respect custom style selection
+    const isStacked = layoutMode === "hero-split" || (multiImageLayout === "stacked");
     
     if (images.length === 2) {
+      const layoutClass = isStacked ? "grid-rows-2 h-full w-full" : "grid-cols-2 h-full w-full";
       return (
-        <div className="grid grid-cols-2 gap-0.5 w-full h-full">
+        <div className={`grid ${layoutClass} gap-0.5`}>
           {images.slice(0, 2).map((img, i) => (
             <img 
               key={i} 
@@ -179,8 +195,9 @@ const renderDynamicEventContent = (
       );
     }
     
+    const layoutClass = isStacked ? "grid-rows-3 h-full w-full" : "grid-cols-3 h-full w-full";
     return (
-      <div className="grid grid-cols-3 gap-0.5 w-full h-full">
+      <div className={`grid ${layoutClass} gap-0.5`}>
         {images.slice(0, 3).map((img, i) => (
           <img 
             key={i} 
@@ -217,34 +234,32 @@ const renderDynamicEventContent = (
         {items.map((item, idx) => (
           <div 
             key={item.id} 
-            className={`flex flex-col justify-between ${cardHeightClass} relative overflow-hidden group hover:border-sky-300 hover:shadow-md transition-all duration-300 cursor-pointer`}
+            className={`flex flex-col justify-start ${cardHeightClass} relative overflow-hidden group hover:border-sky-300 hover:shadow-md transition-all duration-300 cursor-pointer`}
             onClick={(e) => {
               e.stopPropagation();
               onSelectElement?.({ type: "card", pageNum: pageNumber, index: idx });
             }}
             style={getCardStyle(idx)}
           >
-            <div className="space-y-1.5 h-full flex flex-col justify-between">
-              <div>
-                {(item.imageUrl || (item.imageUrls && item.imageUrls.length > 0)) && (
-                  <div 
-                    className={`${imgHeightClass} w-full overflow-hidden mb-2 bg-slate-50 shrink-0 cursor-pointer`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectElement?.({ type: "image", pageNum: pageNumber, index: idx });
-                    }}
-                    style={getCardImageStyle(idx)}
-                  >
-                    {renderItemImages(item, idx)}
-                  </div>
-                )}
-                <h4 className="font-extrabold text-[11px] sm:text-[12px] leading-tight flex items-center gap-1.5" style={{ color: textColor }}>
-                  <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
-                    {idx + 1}
-                  </span>
-                  {item.title}
-                </h4>
-              </div>
+            <div className="space-y-2 h-full flex flex-col justify-start">
+              {(item.imageUrl || (item.imageUrls && item.imageUrls.length > 0)) && (
+                <div 
+                  className={`${imgHeightClass} w-full overflow-hidden bg-slate-50 shrink-0 cursor-pointer`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectElement?.({ type: "image", pageNum: pageNumber, index: idx });
+                  }}
+                  style={getCardImageStyle(idx)}
+                >
+                  {renderItemImages(item, idx)}
+                </div>
+              )}
+              <h4 className="font-extrabold text-[11px] sm:text-[12px] leading-tight flex items-center gap-1.5" style={{ color: textColor }}>
+                <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
+                  {idx + 1}
+                </span>
+                {item.title}
+              </h4>
               <p className="text-[10px] leading-normal font-medium line-clamp-3" style={{ color: `${textColor}99` }}>
                 {item.description}
               </p>
@@ -410,7 +425,7 @@ const renderDynamicEventContent = (
     return (
       <div className="grid grid-cols-12 gap-4 sm:gap-5 my-auto items-stretch">
         <div 
-          className={`${leftColSpan} flex flex-col justify-between space-y-3 hover:border-sky-300 transition-all duration-300 cursor-pointer`}
+          className={`${leftColSpan} flex flex-col justify-start space-y-3 hover:border-sky-300 transition-all duration-300 cursor-pointer`}
           onClick={(e) => {
             e.stopPropagation();
             onSelectElement?.({ type: "card", pageNum: pageNumber, index: 0 });
@@ -559,15 +574,27 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
 
     const customWidth = pageStyle?.imageWidth;
     const customHeight = pageStyle?.imageHeight;
+    const widthUnit = pageStyle?.imageWidthUnit || "%";
+    const heightUnit = pageStyle?.imageHeightUnit || "px";
+    
+    const position = pageStyle?.imagePositionType || "relative";
+    const top = pageStyle?.imageTop !== undefined ? `${pageStyle.imageTop}px` : undefined;
+    const left = pageStyle?.imageLeft !== undefined ? `${pageStyle.imageLeft}px` : undefined;
+    const alignSelf = pageStyle?.imageAlignSelf;
 
-    const baseStyle = {
+    const baseStyle: React.CSSProperties = {
       borderRadius,
       boxShadow,
       border: imgBorderWidth > 0 ? `${imgBorderWidth}px ${borderStyle} ${imgBorderColor}` : "none",
       objectFit: fit as any,
       filter,
-      width: customWidth !== undefined ? `${customWidth}%` : undefined,
-      height: customHeight !== undefined ? `${customHeight}px` : undefined
+      width: customWidth !== undefined ? `${customWidth}${widthUnit}` : undefined,
+      height: customHeight !== undefined ? `${customHeight}${heightUnit}` : undefined,
+      position: position as any,
+      top: top as any,
+      left: left as any,
+      alignSelf: alignSelf as any,
+      zIndex: position === "absolute" ? 10 : undefined
     };
 
     if (isSelected) {
@@ -1744,7 +1771,12 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imageFit: pageStyle?.imageFit,
                 imageBorderStyle: pageStyle?.imageBorderStyle,
                 imageGrayscale: pageStyle?.imageGrayscale,
-                cardStyle: getCardStyle()
+                cardStyle: getCardStyle(),
+                multiImageLayout: pageStyle?.multiImageLayout,
+                imageWidth: pageStyle?.imageWidth,
+                imageHeight: pageStyle?.imageHeight,
+                imageWidthUnit: pageStyle?.imageWidthUnit,
+                imageHeightUnit: pageStyle?.imageHeightUnit
               }
             )}
 
@@ -1840,7 +1872,12 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 cardStyle: getCardStyle(),
                 pageNumber: 12,
                 selectedElement,
-                onSelectElement
+                onSelectElement,
+                multiImageLayout: pageStyle?.multiImageLayout,
+                imageWidth: pageStyle?.imageWidth,
+                imageHeight: pageStyle?.imageHeight,
+                imageWidthUnit: pageStyle?.imageWidthUnit,
+                imageHeightUnit: pageStyle?.imageHeightUnit
               }
             )}
 
@@ -1940,7 +1977,12 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 cardStyle: getCardStyle(),
                 pageNumber: 13,
                 selectedElement,
-                onSelectElement
+                onSelectElement,
+                multiImageLayout: pageStyle?.multiImageLayout,
+                imageWidth: pageStyle?.imageWidth,
+                imageHeight: pageStyle?.imageHeight,
+                imageWidthUnit: pageStyle?.imageWidthUnit,
+                imageHeightUnit: pageStyle?.imageHeightUnit
               }
             )}
 
@@ -2062,7 +2104,12 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 cardStyle: getCardStyle(),
                 pageNumber: 14,
                 selectedElement,
-                onSelectElement
+                onSelectElement,
+                multiImageLayout: pageStyle?.multiImageLayout,
+                imageWidth: pageStyle?.imageWidth,
+                imageHeight: pageStyle?.imageHeight,
+                imageWidthUnit: pageStyle?.imageWidthUnit,
+                imageHeightUnit: pageStyle?.imageHeightUnit
               }
             )}
           </div>
@@ -2153,7 +2200,12 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 cardStyle: getCardStyle(),
                 pageNumber: 15,
                 selectedElement,
-                onSelectElement
+                onSelectElement,
+                multiImageLayout: pageStyle?.multiImageLayout,
+                imageWidth: pageStyle?.imageWidth,
+                imageHeight: pageStyle?.imageHeight,
+                imageWidthUnit: pageStyle?.imageWidthUnit,
+                imageHeightUnit: pageStyle?.imageHeightUnit
               }
             )}
 
@@ -2262,7 +2314,12 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 cardStyle: getCardStyle(),
                 pageNumber: 16,
                 selectedElement,
-                onSelectElement
+                onSelectElement,
+                multiImageLayout: pageStyle?.multiImageLayout,
+                imageWidth: pageStyle?.imageWidth,
+                imageHeight: pageStyle?.imageHeight,
+                imageWidthUnit: pageStyle?.imageWidthUnit,
+                imageHeightUnit: pageStyle?.imageHeightUnit
               }
             )}
 

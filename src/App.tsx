@@ -106,13 +106,21 @@ export default function App() {
   const styles = pageStyles[activePageNum] || {};
 
   const handleStyleChange = (key: string, value: any) => {
+    let styleUpdates = { [key]: value };
+    if (key === "imagePositionType") {
+      styleUpdates = {
+        ...styleUpdates,
+        imageTop: undefined as any,
+        imageLeft: undefined as any
+      };
+    }
     setData({
       ...data,
       pageStyles: {
         ...pageStyles,
         [activePageNum]: {
           ...styles,
-          [key]: value
+          ...styleUpdates
         }
       }
     });
@@ -372,35 +380,183 @@ export default function App() {
       {/* Border Color */}
       <ColorPickerPopover label="Border Color" color={styles.imageBorderColor || "#cbd5e1"} onChange={(val) => handleStyleChange("imageBorderColor", val)} />
 
-      {/* Width slider */}
+      {/* Width slider + Unit Toggle */}
       <div className="flex items-center gap-1 shrink-0">
         <span className="text-[9px] font-black text-slate-400 uppercase">Width</span>
         <input
           type="range"
           min="10"
-          max="100"
-          value={styles.imageWidth !== undefined ? styles.imageWidth : 100}
+          max={styles.imageWidthUnit === "px" ? 500 : 100}
+          value={styles.imageWidth !== undefined ? styles.imageWidth : (styles.imageWidthUnit === "px" ? 150 : 100)}
           onChange={(e) => handleStyleChange("imageWidth", parseInt(e.target.value))}
           className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
-          title="Image Width (%)"
+          title={`Image Width (${styles.imageWidthUnit || "%"})`}
         />
-        <span className="text-[9px] font-bold text-slate-500 w-6">{styles.imageWidth !== undefined ? styles.imageWidth : 100}%</span>
+        <input
+          type="number"
+          min="10"
+          max={styles.imageWidthUnit === "px" ? 500 : 100}
+          value={styles.imageWidth !== undefined ? styles.imageWidth : (styles.imageWidthUnit === "px" ? 150 : 100)}
+          onChange={(e) => {
+            const val = parseInt(e.target.value);
+            if (!isNaN(val)) handleStyleChange("imageWidth", val);
+          }}
+          className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+          title="Custom Image Width"
+        />
+        <span className="text-[9px] font-bold text-slate-500">{styles.imageWidthUnit || "%"}</span>
+        
+        {/* Width Unit button group */}
+        <div className="flex bg-slate-100 p-0.5 rounded border border-slate-200 text-[8px] font-black shrink-0">
+          {(["%", "px"] as const).map((unit) => (
+            <button
+              key={unit}
+              type="button"
+              onClick={() => handleStyleChange("imageWidthUnit", unit)}
+              className={`px-1 py-0.2 rounded transition-all cursor-pointer ${
+                (styles.imageWidthUnit || "%") === unit ? "bg-white text-sky-700 shadow-xs" : "text-slate-500"
+              }`}
+            >
+              {unit}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Height slider */}
+      {/* Height slider + Unit Toggle */}
       <div className="flex items-center gap-1 shrink-0">
         <span className="text-[9px] font-black text-slate-400 uppercase">Height</span>
         <input
           type="range"
-          min="50"
-          max="350"
-          value={styles.imageHeight !== undefined ? styles.imageHeight : 180}
+          min="10"
+          max={styles.imageHeightUnit === "%" ? 100 : 350}
+          value={styles.imageHeight !== undefined ? styles.imageHeight : (styles.imageHeightUnit === "%" ? 100 : 180)}
           onChange={(e) => handleStyleChange("imageHeight", parseInt(e.target.value))}
           className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
-          title="Image Height (px)"
+          title={`Image Height (${styles.imageHeightUnit || "px"})`}
         />
-        <span className="text-[9px] font-bold text-slate-500 w-8">{styles.imageHeight !== undefined ? styles.imageHeight : 180}px</span>
+        <input
+          type="number"
+          min="10"
+          max={styles.imageHeightUnit === "%" ? 100 : 350}
+          value={styles.imageHeight !== undefined ? styles.imageHeight : (styles.imageHeightUnit === "%" ? 100 : 180)}
+          onChange={(e) => {
+            const val = parseInt(e.target.value);
+            if (!isNaN(val)) handleStyleChange("imageHeight", val);
+          }}
+          className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+          title="Custom Image Height"
+        />
+        <span className="text-[9px] font-bold text-slate-500">{styles.imageHeightUnit || "px"}</span>
+        
+        {/* Height Unit button group */}
+        <div className="flex bg-slate-100 p-0.5 rounded border border-slate-200 text-[8px] font-black shrink-0">
+          {(["px", "%"] as const).map((unit) => (
+            <button
+              key={unit}
+              type="button"
+              onClick={() => handleStyleChange("imageHeightUnit", unit)}
+              className={`px-1 py-0.2 rounded transition-all cursor-pointer ${
+                (styles.imageHeightUnit || "px") === unit ? "bg-white text-sky-700 shadow-xs" : "text-slate-500"
+              }`}
+            >
+              {unit}
+            </button>
+          ))}
+        </div>
       </div>
+
+      {/* Position type */}
+      <select
+        value={styles.imagePositionType || "relative"}
+        onChange={(e) => handleStyleChange("imagePositionType", e.target.value)}
+        className="px-1 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+        title="Position Mode"
+      >
+        <option value="relative">Inline (Relative)</option>
+        <option value="absolute">Floating (Absolute)</option>
+      </select>
+
+      {/* Alignment */}
+      <select
+        value={styles.imageAlignSelf || "auto"}
+        onChange={(e) => handleStyleChange("imageAlignSelf", e.target.value)}
+        className="px-1 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+        title="Self Alignment"
+      >
+        <option value="auto">Align: Auto</option>
+        <option value="flex-start">Align: Left</option>
+        <option value="center">Align: Center</option>
+        <option value="flex-end">Align: Right</option>
+      </select>
+
+      {/* Floating Offset Sliders */}
+      {styles.imagePositionType === "absolute" && (
+        <>
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-[9px] font-black text-slate-400 uppercase">Top</span>
+            <input
+              type="range"
+              min="-150"
+              max="250"
+              value={styles.imageTop !== undefined ? styles.imageTop : 0}
+              onChange={(e) => handleStyleChange("imageTop", parseInt(e.target.value))}
+              className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+              title="Top Offset (px)"
+            />
+            <input
+              type="number"
+              min="-150"
+              max="250"
+              value={styles.imageTop !== undefined ? styles.imageTop : 0}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                if (!isNaN(val)) handleStyleChange("imageTop", val);
+              }}
+              className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+              title="Custom Top Offset"
+            />
+            <span className="text-[9px] font-bold text-slate-500">px</span>
+          </div>
+
+          <div className="flex items-center gap-1 shrink-0">
+            <span className="text-[9px] font-black text-slate-400 uppercase">Left</span>
+            <input
+              type="range"
+              min="-150"
+              max="250"
+              value={styles.imageLeft !== undefined ? styles.imageLeft : 0}
+              onChange={(e) => handleStyleChange("imageLeft", parseInt(e.target.value))}
+              className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+              title="Left Offset (px)"
+            />
+            <input
+              type="number"
+              min="-150"
+              max="250"
+              value={styles.imageLeft !== undefined ? styles.imageLeft : 0}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                if (!isNaN(val)) handleStyleChange("imageLeft", val);
+              }}
+              className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+              title="Custom Left Offset"
+            />
+            <span className="text-[9px] font-bold text-slate-500">px</span>
+          </div>
+        </>
+      )}
+
+      {/* Multi-Image Layout */}
+      <select
+        value={styles.multiImageLayout || "side-by-side"}
+        onChange={(e) => handleStyleChange("multiImageLayout", e.target.value)}
+        className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+        title="Multi-Photo Layout"
+      >
+        <option value="side-by-side">Collage: Side-by-Side (Horiz)</option>
+        <option value="stacked">Collage: Stacked (Vert)</option>
+      </select>
 
       {/* Grayscale filter */}
       <div className="flex items-center gap-1.5">

@@ -359,4 +359,11 @@ export interface PageStyles {
   fontFamilyBody?: "inter" | "outfit" | "sans" | "serif" | "merriweather" | "playfair";
   imageWidth?: number;
   imageHeight?: number;
+  multiImageLayout?: "stacked" | "side-by-side";
+  imageWidthUnit?: "%" | "px";
+  imageHeightUnit?: "%" | "px";
+  imagePositionType?: "static" | "relative" | "absolute";
+  imageTop?: number;
+  imageLeft?: number;
+  imageAlignSelf?: "auto" | "flex-start" | "center" | "flex-end";
 }
