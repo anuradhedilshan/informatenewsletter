@@ -307,6 +307,40 @@ export default function App() {
 
       {/* Border Color */}
       <ColorPickerPopover label="Border Color" color={styles.cardBorderColor || "#cbd5e1"} onChange={(val) => handleStyleChange("cardBorderColor", val)} />
+
+      {/* Cards Per Page (only for pages 11-16 or their subpages) */}
+      {(() => {
+        const basePage = activePageNum % 100;
+        if (basePage >= 11 && basePage <= 16) {
+          const pageKey = `page${basePage}`;
+          const pageData = data[pageKey as keyof NewsletterData] as any;
+          return (
+            <div className="flex items-center gap-1 shrink-0">
+              <span className="text-[9px] font-black text-slate-400 uppercase">Cards/Page</span>
+              <select
+                value={pageData?.cardsPerPage || 3}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value);
+                  setData((prev) => ({
+                    ...prev,
+                    [pageKey]: {
+                      ...prev[pageKey as keyof NewsletterData] as any,
+                      cardsPerPage: val
+                    }
+                  }));
+                }}
+                className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+                title="Max Cards per Page"
+              >
+                <option value={2}>2 Cards</option>
+                <option value={3}>3 Cards</option>
+                <option value={4}>4 Cards</option>
+              </select>
+            </div>
+          );
+        }
+        return null;
+      })()}
     </div>
   );
 

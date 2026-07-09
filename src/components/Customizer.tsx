@@ -396,6 +396,20 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
           </select>
         </div>
 
+        {/* Cards Per Page */}
+        <div className="space-y-1">
+          <label className="text-[10px] text-slate-500 font-bold uppercase block">Cards Per Page</label>
+          <select 
+            value={pageData?.cardsPerPage || 3} 
+            onChange={(e) => handlePageChange("cardsPerPage", parseInt(e.target.value))}
+            className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+          >
+            <option value={2}>2 Cards per Page</option>
+            <option value={3}>3 Cards per Page</option>
+            <option value={4}>4 Cards per Page</option>
+          </select>
+        </div>
+
         <div className="space-y-2">
           <div className="flex justify-between items-center bg-slate-100/50 p-1.5 rounded-lg border">
             <span className="text-[10px] text-slate-500 font-bold uppercase">Spotlight Cards ({items.length})</span>

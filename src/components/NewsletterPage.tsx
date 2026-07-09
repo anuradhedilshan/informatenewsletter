@@ -60,6 +60,10 @@ const renderDynamicEventContent = (
     imageHeight?: number;
     imageWidthUnit?: "%" | "px";
     imageHeightUnit?: "%" | "px";
+    imagePositionType?: "static" | "relative" | "absolute";
+    imageTop?: number;
+    imageLeft?: number;
+    imageAlignSelf?: "auto" | "flex-start" | "center" | "flex-end";
   }
 ) => {
   if (!items || items.length === 0) {
@@ -84,6 +88,10 @@ const renderDynamicEventContent = (
   const imageHeight = configs?.imageHeight;
   const imageWidthUnit = configs?.imageWidthUnit || "%";
   const imageHeightUnit = configs?.imageHeightUnit || "px";
+  const imagePositionType = configs?.imagePositionType || "relative";
+  const imageTop = configs?.imageTop;
+  const imageLeft = configs?.imageLeft;
+  const imageAlignSelf = configs?.imageAlignSelf;
 
   const count = items.length;
 
@@ -119,13 +127,21 @@ const renderDynamicEventContent = (
       case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)"; break;
     }
 
+    const top = imageTop !== undefined ? `${imageTop}px` : undefined;
+    const left = imageLeft !== undefined ? `${imageLeft}px` : undefined;
+
     const baseStyle: React.CSSProperties = {
       borderRadius,
       boxShadow,
       border: borderWidth > 0 ? `${borderWidth}px ${borderStyle} ${borderColor}` : "none",
       filter,
       width: imageWidth !== undefined ? `${imageWidth}${imageWidthUnit}` : undefined,
-      height: imageHeight !== undefined ? `${imageHeight}${imageHeightUnit}` : undefined
+      height: imageHeight !== undefined ? `${imageHeight}${imageHeightUnit}` : undefined,
+      position: imagePositionType as any,
+      top: top as any,
+      left: left as any,
+      alignSelf: imageAlignSelf as any,
+      zIndex: imagePositionType === "absolute" ? 10 : undefined
     };
 
     if (isSelected) {
@@ -1737,19 +1753,21 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           <PageHeader sectionName="Staff Wellness" />
 
           <div className="space-y-5 my-auto">
-            <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p11.subtitle}</span>
-              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
-                {p11.title}
-              </h2>
-              <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
-                {p11.description}
-              </p>
-            </div>
+            {chunkIndex === 0 && (
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p11.subtitle}</span>
+                <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                  {p11.title}
+                </h2>
+                <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
+                  {p11.description}
+                </p>
+              </div>
+            )}
 
             {renderDynamicEventContent(
               p11.layoutMode || "grid",
-              (p11.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
+              (p11.wellnessItems || []).slice(chunkIndex * (p11.cardsPerPage || 3), (chunkIndex + 1) * (p11.cardsPerPage || 3)),
               p11Image,
               p11Body,
               p11Pos,
@@ -1773,7 +1791,11 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imageWidth: pageStyle?.imageWidth,
                 imageHeight: pageStyle?.imageHeight,
                 imageWidthUnit: pageStyle?.imageWidthUnit,
-                imageHeightUnit: pageStyle?.imageHeightUnit
+                imageHeightUnit: pageStyle?.imageHeightUnit,
+                imagePositionType: pageStyle?.imagePositionType,
+                imageTop: pageStyle?.imageTop,
+                imageLeft: pageStyle?.imageLeft,
+                imageAlignSelf: pageStyle?.imageAlignSelf
               }
             )}
 
@@ -1838,16 +1860,18 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           <PageHeader sectionName="Office Vibrancy" />
 
           <div className="space-y-5 my-auto">
-            <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p12.subtitle}</span>
-              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
-                {p12.title}
-              </h2>
-            </div>
+            {chunkIndex === 0 && (
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p12.subtitle}</span>
+                <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                  {p12.title}
+                </h2>
+              </div>
+            )}
 
             {renderDynamicEventContent(
               p12.layoutMode || "grid",
-              (p12.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
+              (p12.wellnessItems || []).slice(chunkIndex * (p12.cardsPerPage || 3), (chunkIndex + 1) * (p12.cardsPerPage || 3)),
               p12Image,
               p12Body,
               p12Pos,
@@ -1874,7 +1898,11 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imageWidth: pageStyle?.imageWidth,
                 imageHeight: pageStyle?.imageHeight,
                 imageWidthUnit: pageStyle?.imageWidthUnit,
-                imageHeightUnit: pageStyle?.imageHeightUnit
+                imageHeightUnit: pageStyle?.imageHeightUnit,
+                imagePositionType: pageStyle?.imagePositionType,
+                imageTop: pageStyle?.imageTop,
+                imageLeft: pageStyle?.imageLeft,
+                imageAlignSelf: pageStyle?.imageAlignSelf
               }
             )}
 
@@ -1940,19 +1968,21 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           <PageHeader sectionName="Diversity & Inclusion" />
 
           <div className="space-y-5 my-auto">
-            <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p13.subtitle}</span>
-              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
-                {p13.title}
-              </h2>
-              <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
-                {p13.description}
-              </p>
-            </div>
+            {chunkIndex === 0 && (
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p13.subtitle}</span>
+                <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                  {p13.title}
+                </h2>
+                <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
+                  {p13.description}
+                </p>
+              </div>
+            )}
 
             {renderDynamicEventContent(
               p13.layoutMode || "grid",
-              (p13.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
+              (p13.wellnessItems || []).slice(chunkIndex * (p13.cardsPerPage || 3), (chunkIndex + 1) * (p13.cardsPerPage || 3)),
               p13Image,
               p13Body,
               p13Pos,
@@ -1979,7 +2009,11 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imageWidth: pageStyle?.imageWidth,
                 imageHeight: pageStyle?.imageHeight,
                 imageWidthUnit: pageStyle?.imageWidthUnit,
-                imageHeightUnit: pageStyle?.imageHeightUnit
+                imageHeightUnit: pageStyle?.imageHeightUnit,
+                imagePositionType: pageStyle?.imagePositionType,
+                imageTop: pageStyle?.imageTop,
+                imageLeft: pageStyle?.imageLeft,
+                imageAlignSelf: pageStyle?.imageAlignSelf
               }
             )}
 
@@ -2067,19 +2101,21 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           <PageHeader sectionName="MATE Talk Series" />
 
           <div className="space-y-4 my-auto">
-            <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p14.subtitle}</span>
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
-                {p14.title}
-              </h2>
-              <p className="text-[11px] leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
-                {p14.description}
-              </p>
-            </div>
+            {chunkIndex === 0 && (
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p14.subtitle}</span>
+                <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                  {p14.title}
+                </h2>
+                <p className="text-[11px] leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
+                  {p14.description}
+                </p>
+              </div>
+            )}
 
             {renderDynamicEventContent(
               p14.layoutMode || "grid",
-              (p14.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
+              (p14.wellnessItems || []).slice(chunkIndex * (p14.cardsPerPage || 3), (chunkIndex + 1) * (p14.cardsPerPage || 3)),
               p14Image,
               p14Body,
               p14Pos,
@@ -2106,7 +2142,11 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imageWidth: pageStyle?.imageWidth,
                 imageHeight: pageStyle?.imageHeight,
                 imageWidthUnit: pageStyle?.imageWidthUnit,
-                imageHeightUnit: pageStyle?.imageHeightUnit
+                imageHeightUnit: pageStyle?.imageHeightUnit,
+                imagePositionType: pageStyle?.imagePositionType,
+                imageTop: pageStyle?.imageTop,
+                imageLeft: pageStyle?.imageLeft,
+                imageAlignSelf: pageStyle?.imageAlignSelf
               }
             )}
           </div>
@@ -2163,19 +2203,21 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           <PageHeader sectionName="Vesak Festival" />
 
           <div className="space-y-4 my-auto">
-            <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p15.subtitle}</span>
-              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
-                {p15.title}
-              </h2>
-              <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
-                {p15.description}
-              </p>
-            </div>
+            {chunkIndex === 0 && (
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p15.subtitle}</span>
+                <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                  {p15.title}
+                </h2>
+                <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
+                  {p15.description}
+                </p>
+              </div>
+            )}
 
             {renderDynamicEventContent(
               p15.layoutMode || "grid",
-              (p15.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
+              (p15.wellnessItems || []).slice(chunkIndex * (p15.cardsPerPage || 3), (chunkIndex + 1) * (p15.cardsPerPage || 3)),
               p15Image,
               p15Body,
               p15Pos,
@@ -2202,7 +2244,11 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imageWidth: pageStyle?.imageWidth,
                 imageHeight: pageStyle?.imageHeight,
                 imageWidthUnit: pageStyle?.imageWidthUnit,
-                imageHeightUnit: pageStyle?.imageHeightUnit
+                imageHeightUnit: pageStyle?.imageHeightUnit,
+                imagePositionType: pageStyle?.imagePositionType,
+                imageTop: pageStyle?.imageTop,
+                imageLeft: pageStyle?.imageLeft,
+                imageAlignSelf: pageStyle?.imageAlignSelf
               }
             )}
 
@@ -2277,19 +2323,21 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           <PageHeader sectionName="Community Initiatives" />
 
           <div className="space-y-4 my-auto">
-            <div className="space-y-1">
-              <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p16.subtitle}</span>
-              <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
-                {p16.title}
-              </h2>
-              <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
-                {p16.description}
-              </p>
-            </div>
+            {chunkIndex === 0 && (
+              <div className="space-y-1">
+                <span className="text-xs font-bold uppercase tracking-widest block" style={{ color: primaryColor }}>{p16.subtitle}</span>
+                <h2 className="text-2xl font-black tracking-tight leading-none" style={{ color: data.general.textColor }}>
+                  {p16.title}
+                </h2>
+                <p className="text-xs leading-relaxed" style={{ color: `${data.general.textColor}99` }}>
+                  {p16.description}
+                </p>
+              </div>
+            )}
 
             {renderDynamicEventContent(
               p16.layoutMode || "grid",
-              (p16.wellnessItems || []).slice(chunkIndex * 3, (chunkIndex + 1) * 3),
+              (p16.wellnessItems || []).slice(chunkIndex * (p16.cardsPerPage || 3), (chunkIndex + 1) * (p16.cardsPerPage || 3)),
               p16Image,
               p16Body,
               p16Pos,
@@ -2316,7 +2364,11 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imageWidth: pageStyle?.imageWidth,
                 imageHeight: pageStyle?.imageHeight,
                 imageWidthUnit: pageStyle?.imageWidthUnit,
-                imageHeightUnit: pageStyle?.imageHeightUnit
+                imageHeightUnit: pageStyle?.imageHeightUnit,
+                imagePositionType: pageStyle?.imagePositionType,
+                imageTop: pageStyle?.imageTop,
+                imageLeft: pageStyle?.imageLeft,
+                imageAlignSelf: pageStyle?.imageAlignSelf
               }
             )}
 

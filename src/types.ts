@@ -197,6 +197,7 @@ export interface Page11Content {
   wellnessItems?: WellnessItem[];
   gridCols?: 2 | 3;
   cardImageSize?: "small" | "medium" | "large";
+  cardsPerPage?: number;
 }
 
 export interface Page12Content {
@@ -216,6 +217,7 @@ export interface Page12Content {
   wellnessItems?: WellnessItem[];
   gridCols?: 2 | 3;
   cardImageSize?: "small" | "medium" | "large";
+  cardsPerPage?: number;
 }
 
 export interface Page13Content {
@@ -236,6 +238,7 @@ export interface Page13Content {
   wellnessItems?: WellnessItem[];
   gridCols?: 2 | 3;
   cardImageSize?: "small" | "medium" | "large";
+  cardsPerPage?: number;
 }
 
 export interface Page14Content {
@@ -260,6 +263,7 @@ export interface Page14Content {
   wellnessItems?: WellnessItem[];
   gridCols?: 2 | 3;
   cardImageSize?: "small" | "medium" | "large";
+  cardsPerPage?: number;
 }
 
 export interface Page15Content {
@@ -279,6 +283,7 @@ export interface Page15Content {
   wellnessItems?: WellnessItem[];
   gridCols?: 2 | 3;
   cardImageSize?: "small" | "medium" | "large";
+  cardsPerPage?: number;
 }
 
 export interface Page16Content {
@@ -299,6 +304,7 @@ export interface Page16Content {
   wellnessItems?: WellnessItem[];
   gridCols?: 2 | 3;
   cardImageSize?: "small" | "medium" | "large";
+  cardsPerPage?: number;
 }
 
 export interface NewsletterData {
@@ -366,6 +372,7 @@ export interface PageStyles {
   imageTop?: number;
   imageLeft?: number;
   imageAlignSelf?: "auto" | "flex-start" | "center" | "flex-end";
+  cardsPerPage?: number;
 }
 
 export const getExpandedPages = (visiblePages: number[], data: any): number[] => {
@@ -373,13 +380,14 @@ export const getExpandedPages = (visiblePages: number[], data: any): number[] =>
   visiblePages.forEach((pageNum) => {
     expanded.push(pageNum);
     
-    // Page 11 to 16 dynamic subpage expansion (each subpage gets capacity of 3 items)
+    // Page 11 to 16 dynamic subpage expansion (each subpage gets capacity from pageStyles if overridden, default 3)
     if (pageNum >= 11 && pageNum <= 16) {
       const pageKey = `page${pageNum}`;
       const pageData = data[pageKey];
       if (pageData?.wellnessItems) {
         const itemsCount = pageData.wellnessItems.length;
-        const extraPages = Math.ceil(itemsCount / 3) - 1;
+        const cardsPerPage = pageData.cardsPerPage || 3;
+        const extraPages = Math.ceil(itemsCount / cardsPerPage) - 1;
         for (let i = 1; i <= extraPages; i++) {
           expanded.push(pageNum + i * 100);
         }
