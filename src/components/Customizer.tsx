@@ -368,18 +368,86 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
         </div>
 
         {/* Columns Layout Selection */}
-        {(pageData?.layoutMode === "grid" || pageData?.layoutMode === "three-col" || pageData?.layoutMode === "hero-split" || !pageData?.layoutMode) && (
-          <div className="space-y-1">
-            <label className="text-[10px] text-slate-500 font-bold uppercase block">Columns Layout</label>
-            <select 
-              value={pageData?.gridCols || 3} 
-              onChange={(e) => handlePageChange("gridCols", parseInt(e.target.value))}
-              className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
-            >
-              <option value={2}>2 Columns</option>
-              <option value={3}>3 Columns</option>
-            </select>
-          </div>
+        {(pageData?.layoutMode === "grid" || !pageData?.layoutMode) ? (
+          <>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-500 font-bold uppercase block">Grid Columns</label>
+                <select 
+                  value={pageData?.gridCols || 3} 
+                  onChange={(e) => {
+                    const cols = parseInt(e.target.value);
+                    const rows = pageData?.gridRows || Math.ceil((pageData?.cardsPerPage || 3) / (pageData?.gridCols || 3));
+                    handlePageChange("gridCols", cols);
+                    handlePageChange("cardsPerPage", cols * rows);
+                  }}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+                >
+                  <option value={2}>2 Columns</option>
+                  <option value={3}>3 Columns</option>
+                  <option value={4}>4 Columns</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-500 font-bold uppercase block">Grid Rows</label>
+                <select 
+                  value={pageData?.gridRows || Math.ceil((pageData?.cardsPerPage || 3) / (pageData?.gridCols || 3))} 
+                  onChange={(e) => {
+                    const rows = parseInt(e.target.value);
+                    const cols = pageData?.gridCols || 3;
+                    handlePageChange("gridRows", rows);
+                    handlePageChange("cardsPerPage", cols * rows);
+                  }}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+                >
+                  <option value={1}>1 Row</option>
+                  <option value={2}>2 Rows</option>
+                  <option value={3}>3 Rows</option>
+                  <option value={4}>4 Rows</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Read-only feedback on total cards per page */}
+            <div className="text-[10px] text-slate-400 font-medium">
+              Calculated cards per page: <span className="font-bold text-slate-600">{pageData?.cardsPerPage || 3}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Standard Columns selection for other layouts if relevant */}
+            {(pageData?.layoutMode === "three-col" || pageData?.layoutMode === "hero-split") && (
+              <div className="space-y-1">
+                <label className="text-[10px] text-slate-500 font-bold uppercase block">Columns Layout</label>
+                <select 
+                  value={pageData?.gridCols || 3} 
+                  onChange={(e) => handlePageChange("gridCols", parseInt(e.target.value))}
+                  className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+                >
+                  <option value={2}>2 Columns</option>
+                  <option value={3}>3 Columns</option>
+                  <option value={4}>4 Columns</option>
+                </select>
+              </div>
+            )}
+
+            {/* Cards Per Page for non-grid layouts */}
+            <div className="space-y-1">
+              <label className="text-[10px] text-slate-500 font-bold uppercase block">Cards Per Page</label>
+              <select 
+                value={pageData?.cardsPerPage || 3} 
+                onChange={(e) => handlePageChange("cardsPerPage", parseInt(e.target.value))}
+                className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
+              >
+                <option value={2}>2 Cards per Page</option>
+                <option value={3}>3 Cards per Page</option>
+                <option value={4}>4 Cards per Page</option>
+                <option value={6}>6 Cards per Page</option>
+                <option value={8}>8 Cards per Page</option>
+              </select>
+            </div>
+          </>
         )}
 
         {/* Card Image Size Option */}
@@ -393,20 +461,6 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
             <option value="small">Small (Compact)</option>
             <option value="medium">Medium (Standard)</option>
             <option value="large">Large (Prominent)</option>
-          </select>
-        </div>
-
-        {/* Cards Per Page */}
-        <div className="space-y-1">
-          <label className="text-[10px] text-slate-500 font-bold uppercase block">Cards Per Page</label>
-          <select 
-            value={pageData?.cardsPerPage || 3} 
-            onChange={(e) => handlePageChange("cardsPerPage", parseInt(e.target.value))}
-            className="w-full px-2 py-1 text-xs border border-slate-200 rounded-md bg-white font-semibold"
-          >
-            <option value={2}>2 Cards per Page</option>
-            <option value={3}>3 Cards per Page</option>
-            <option value={4}>4 Cards per Page</option>
           </select>
         </div>
 

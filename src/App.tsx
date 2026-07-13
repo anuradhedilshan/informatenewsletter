@@ -456,36 +456,98 @@ export default function App() {
         </div>
       </div>
 
-      {/* Cards Per Page (only for pages 11-16 or their subpages) */}
+      {/* Cards Per Page / Columns / Rows (only for pages 11-16 or their subpages) */}
       {(() => {
         const basePage = activePageNum % 100;
         if (basePage >= 11 && basePage <= 16) {
           const pageKey = `page${basePage}`;
           const pageData = data[pageKey as keyof NewsletterData] as any;
-          return (
-            <div className="flex items-center gap-1 shrink-0">
-              <span className="text-[9px] font-black text-slate-400 uppercase">Cards/Page</span>
-              <select
-                value={pageData?.cardsPerPage || 3}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value);
-                  setData((prev) => ({
-                    ...prev,
-                    [pageKey]: {
-                      ...prev[pageKey as keyof NewsletterData] as any,
-                      cardsPerPage: val
-                    }
-                  }));
-                }}
-                className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
-                title="Max Cards per Page"
-              >
-                <option value={2}>2 Cards</option>
-                <option value={3}>3 Cards</option>
-                <option value={4}>4 Cards</option>
-              </select>
-            </div>
-          );
+          
+          if (pageData?.layoutMode === "grid" || !pageData?.layoutMode) {
+            return (
+              <>
+                {/* Columns */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-[9px] font-black text-slate-400 uppercase">Cols</span>
+                  <select
+                    value={pageData?.gridCols || 3}
+                    onChange={(e) => {
+                      const cols = parseInt(e.target.value);
+                      const rows = pageData?.gridRows || Math.ceil((pageData?.cardsPerPage || 3) / (pageData?.gridCols || 3));
+                      setData((prev) => ({
+                        ...prev,
+                        [pageKey]: {
+                          ...prev[pageKey as keyof NewsletterData] as any,
+                          gridCols: cols,
+                          cardsPerPage: cols * rows
+                        }
+                      }));
+                    }}
+                    className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+                    title="Grid Columns"
+                  >
+                    <option value={2}>2 Cols</option>
+                    <option value={3}>3 Cols</option>
+                    <option value={4}>4 Cols</option>
+                  </select>
+                </div>
+
+                {/* Rows */}
+                <div className="flex items-center gap-1 shrink-0">
+                  <span className="text-[9px] font-black text-slate-400 uppercase">Rows</span>
+                  <select
+                    value={pageData?.gridRows || Math.ceil((pageData?.cardsPerPage || 3) / (pageData?.gridCols || 3))}
+                    onChange={(e) => {
+                      const rows = parseInt(e.target.value);
+                      const cols = pageData?.gridCols || 3;
+                      setData((prev) => ({
+                        ...prev,
+                        [pageKey]: {
+                          ...prev[pageKey as keyof NewsletterData] as any,
+                          gridRows: rows,
+                          cardsPerPage: cols * rows
+                        }
+                      }));
+                    }}
+                    className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+                    title="Grid Rows"
+                  >
+                    <option value={1}>1 Row</option>
+                    <option value={2}>2 Rows</option>
+                    <option value={3}>3 Rows</option>
+                    <option value={4}>4 Rows</option>
+                  </select>
+                </div>
+              </>
+            );
+          } else {
+            return (
+              <div className="flex items-center gap-1 shrink-0">
+                <span className="text-[9px] font-black text-slate-400 uppercase">Cards/Page</span>
+                <select
+                  value={pageData?.cardsPerPage || 3}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value);
+                    setData((prev) => ({
+                      ...prev,
+                      [pageKey]: {
+                        ...prev[pageKey as keyof NewsletterData] as any,
+                        cardsPerPage: val
+                      }
+                    }));
+                  }}
+                  className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+                  title="Max Cards per Page"
+                >
+                  <option value={2}>2 Cards</option>
+                  <option value={3}>3 Cards</option>
+                  <option value={4}>4 Cards</option>
+                  <option value={6}>6 Cards</option>
+                  <option value={8}>8 Cards</option>
+                </select>
+              </div>
+            );
+          }
         }
         return null;
       })()}
