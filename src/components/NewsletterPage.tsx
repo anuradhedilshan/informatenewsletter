@@ -64,6 +64,7 @@ const renderDynamicEventContent = (
     imageTop?: number;
     imageLeft?: number;
     imageAlignSelf?: "auto" | "flex-start" | "center" | "flex-end";
+    startIndex?: number;
   }
 ) => {
   if (!items || items.length === 0) {
@@ -92,6 +93,7 @@ const renderDynamicEventContent = (
   const imageTop = configs?.imageTop;
   const imageLeft = configs?.imageLeft;
   const imageAlignSelf = configs?.imageAlignSelf;
+  const startIndex = configs?.startIndex || 0;
 
   const count = items.length;
 
@@ -300,7 +302,7 @@ const renderDynamicEventContent = (
               )}
               <h4 className="font-extrabold text-[11px] sm:text-[12px] leading-tight flex items-center gap-1.5" style={{ color: textColor }}>
                 <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
-                  {idx + 1}
+                  {startIndex + idx + 1}
                 </span>
                 {item.title}
               </h4>
@@ -345,7 +347,7 @@ const renderDynamicEventContent = (
             <div className="space-y-0.5 flex-1">
               <h4 className="font-extrabold text-[11px] sm:text-xs flex items-center gap-1.5" style={{ color: textColor }}>
                 <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
-                  {idx + 1}
+                  {startIndex + idx + 1}
                 </span>
                 {item.title}
               </h4>
@@ -424,7 +426,7 @@ const renderDynamicEventContent = (
             <div className="space-y-0.5">
               <h4 className="font-extrabold text-[11px] sm:text-xs flex items-center gap-1.5" style={{ color: textColor }}>
                 <span className="w-4.5 h-4.5 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: primaryColor }}>
-                  {idx + 1}
+                  {startIndex + idx + 1}
                 </span>
                 {item.title}
               </h4>
@@ -517,7 +519,7 @@ const renderDynamicEventContent = (
               <div className="space-y-0.5 flex-1 min-w-0">
                 <h4 className="font-extrabold text-[11px] flex items-center gap-1.5 truncate" style={{ color: textColor }}>
                   <span className="w-4 h-4 rounded-full text-white font-extrabold text-[8px] flex items-center justify-center shrink-0" style={{ backgroundColor: accentColor }}>
-                    {idx + 2}
+                    {startIndex + idx + 2}
                   </span>
                   {item.title}
                 </h4>
@@ -1822,7 +1824,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imagePositionType: pageStyle?.imagePositionType,
                 imageTop: pageStyle?.imageTop,
                 imageLeft: pageStyle?.imageLeft,
-                imageAlignSelf: pageStyle?.imageAlignSelf
+                imageAlignSelf: pageStyle?.imageAlignSelf,
+                startIndex: chunkIndex * (p11.cardsPerPage || 3)
               }
             )}
 
@@ -1929,7 +1932,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imagePositionType: pageStyle?.imagePositionType,
                 imageTop: pageStyle?.imageTop,
                 imageLeft: pageStyle?.imageLeft,
-                imageAlignSelf: pageStyle?.imageAlignSelf
+                imageAlignSelf: pageStyle?.imageAlignSelf,
+                startIndex: chunkIndex * (p12.cardsPerPage || 3)
               }
             )}
 
@@ -2040,7 +2044,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imagePositionType: pageStyle?.imagePositionType,
                 imageTop: pageStyle?.imageTop,
                 imageLeft: pageStyle?.imageLeft,
-                imageAlignSelf: pageStyle?.imageAlignSelf
+                imageAlignSelf: pageStyle?.imageAlignSelf,
+                startIndex: chunkIndex * (p13.cardsPerPage || 3)
               }
             )}
 
@@ -2173,7 +2178,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imagePositionType: pageStyle?.imagePositionType,
                 imageTop: pageStyle?.imageTop,
                 imageLeft: pageStyle?.imageLeft,
-                imageAlignSelf: pageStyle?.imageAlignSelf
+                imageAlignSelf: pageStyle?.imageAlignSelf,
+                startIndex: chunkIndex * (p14.cardsPerPage || 3)
               }
             )}
           </div>
@@ -2275,7 +2281,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imagePositionType: pageStyle?.imagePositionType,
                 imageTop: pageStyle?.imageTop,
                 imageLeft: pageStyle?.imageLeft,
-                imageAlignSelf: pageStyle?.imageAlignSelf
+                imageAlignSelf: pageStyle?.imageAlignSelf,
+                startIndex: chunkIndex * (p15.cardsPerPage || 3)
               }
             )}
 
@@ -2395,7 +2402,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 imagePositionType: pageStyle?.imagePositionType,
                 imageTop: pageStyle?.imageTop,
                 imageLeft: pageStyle?.imageLeft,
-                imageAlignSelf: pageStyle?.imageAlignSelf
+                imageAlignSelf: pageStyle?.imageAlignSelf,
+                startIndex: chunkIndex * (p16.cardsPerPage || 3)
               }
             )}
 
