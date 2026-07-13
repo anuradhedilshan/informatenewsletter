@@ -1062,14 +1062,6 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     <label className="text-[10px] text-slate-500 font-bold block uppercase">Edition Info</label>
                     <input type="text" value={data.general.edition} onChange={(e) => handleGeneralChange("edition", e.target.value)} className="w-full px-2 py-1 text-xs border border-slate-200 rounded" />
                   </div>
-                  {renderImageUploadControls(data.general.coverImageUrl, "coverImageUrl", "Cover Background Image")}
-                  {renderBackgroundControls(
-                    { bgColor: data.general.coverBgColor, bgImageUrl: data.general.coverBgImageUrl },
-                    (field, value) => {
-                      const updatedField = field === "bgColor" ? "coverBgColor" : "coverBgImageUrl";
-                      onChange({ ...data, general: { ...data.general, [updatedField]: value } });
-                    }
-                  )}
                 </div>
               )}
 
@@ -1111,13 +1103,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     </div>
                   ))}
 
-                  {renderBackgroundControls(
-                    { bgColor: data.general.ceoBgColor, bgImageUrl: data.general.ceoBgImageUrl },
-                    (field, value) => {
-                      const updatedField = field === "bgColor" ? "ceoBgColor" : "ceoBgImageUrl";
-                      onChange({ ...data, general: { ...data.general, [updatedField]: value } });
-                    }
-                  )}
+
                 </div>
               )}
 
@@ -1162,7 +1148,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page3?.commentaryTitle || ""} onChange={(e) => handlePage3Change("commentaryTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-bold" placeholder="Commentary title" />
                   <textarea value={data.page3?.commentaryText || ""} onChange={(e) => handlePage3Change("commentaryText", e.target.value)} rows={3} className="w-full px-2 py-1 text-xs border rounded" placeholder="Commentary description" />
                   <input type="text" value={data.page3?.tagline || ""} onChange={(e) => handlePage3Change("tagline", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Tagline text" />
-                  {renderBackgroundControls(data.page3, handlePage3Change)}
+
                 </div>
               )}
 
@@ -1186,7 +1172,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page4?.takeawayTitle || ""} onChange={(e) => handlePage4Change("takeawayTitle", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Takeaway title" />
                   <textarea value={data.page4?.takeawayText || ""} onChange={(e) => handlePage4Change("takeawayText", e.target.value)} rows={2} className="w-full px-2 py-1 text-xs border rounded" placeholder="Takeaway text" />
                   <input type="text" value={data.page4?.takeawayLink || ""} onChange={(e) => handlePage4Change("takeawayLink", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" placeholder="Reference link page" />
-                  {renderBackgroundControls(data.page4, handlePage4Change)}
+
                 </div>
               )}
 
@@ -1224,7 +1210,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page5?.commitmentsTag || ""} onChange={(e) => handlePage5Change("commitmentsTag", e.target.value)} className="w-full px-2 py-1 text-xs border rounded font-semibold" />
                   
                   {renderImageUploadControls(data.page5?.imageUrl, "page5Url", "Flagship Image")}
-                  {renderBackgroundControls(data.page5, handlePage5Change)}
+
                 </div>
               )}
 
@@ -1248,7 +1234,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   
                   {renderImageUploadControls(data.page6?.imageUrl, "page6Url", "Everest Recognition Badge")}
                   {renderImageAdjustmentControls(data.page6, handlePage6Change)}
-                  {renderBackgroundControls(data.page6, handlePage6Change, true)}
+
                 </div>
               )}
 
@@ -1273,7 +1259,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                       </div>
                     </div>
                   ))}
-                  {renderBackgroundControls(data.page7, handlePage7Change)}
+
                 </div>
               )}
 
@@ -1299,7 +1285,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   <input type="text" value={data.page8?.complianceText || ""} onChange={(e) => handlePage8Change("complianceText", e.target.value)} className="w-full px-2 py-1 text-xs border rounded" />
                   
                   {renderImageUploadControls(data.page8?.imageUrl, "page8Url", "Process/DRIVE Image")}
-                  {renderBackgroundControls(data.page8, handlePage8Change)}
+
                 </div>
               )}
 
@@ -1333,7 +1319,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   ))}
                   
                   {renderImageUploadControls(data.page9?.imageUrl, "page9Url", "Team / Work Culture Photo")}
-                  {renderBackgroundControls(data.page9, handlePage9Change)}
+
                 </div>
               )}
 
@@ -1366,7 +1352,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                   ))}
                   
                   {renderImageUploadControls(data.page10?.imageUrl, "page10Url", "Social Responsibility Photo")}
-                  {renderBackgroundControls(data.page10, handlePage10Change)}
+
                 </div>
               )}
 
@@ -1391,7 +1377,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     </>
                   )}
 
-                  {renderBackgroundControls(data.page11, handlePage11Change)}
+
                 </div>
               )}
 
@@ -1414,7 +1400,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     </>
                   )}
 
-                  {renderBackgroundControls(data.page12, handlePage12Change)}
+
                 </div>
               )}
 
@@ -1438,7 +1424,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     </>
                   )}
 
-                  {renderBackgroundControls(data.page13, handlePage13Change)}
+
                 </div>
               )}
 
@@ -1474,7 +1460,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     </>
                   )}
 
-                  {renderBackgroundControls(data.page14, handlePage14Change)}
+
                 </div>
               )}
 
@@ -1497,7 +1483,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     </>
                   )}
 
-                  {renderBackgroundControls(data.page15, handlePage15Change)}
+
                 </div>
               )}
 
@@ -1521,7 +1507,7 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                     </>
                   )}
 
-                  {renderBackgroundControls(data.page16, handlePage16Change)}
+
                 </div>
               )}
 

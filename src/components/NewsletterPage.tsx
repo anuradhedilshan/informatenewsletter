@@ -828,34 +828,19 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
     // PAGE 1: COVER PAGE
     // ----------------------------------------------------
     case 1:
-      return (
-        <div 
-          className="h-full flex flex-col justify-between relative overflow-hidden p-12 select-none"
-          style={{ 
-            backgroundColor: data.general.coverBgColor || data.general.darkPageBgColor || "#020617",
-            color: data.general.darkTextColor || "#ffffff"
-          }}
-        >
-          {/* Subtle background overlays */}
-          {data.general.coverImageUrl ? (
-            <div 
-              className="absolute inset-0 bg-cover bg-center z-0" 
-              style={{ 
-                backgroundImage: `linear-gradient(to bottom, rgba(2, 6, 23, 0.75), rgba(2, 6, 23, 0.9)), url(${data.general.coverImageUrl})` 
-              }} 
-            />
-          ) : (
+      const resolvedCoverBgImageUrl = pageStyle?.bgImageUrl || data.general.coverBgImageUrl || data.general.coverImageUrl;
+      return renderPageContainer(
+        1,
+        data.general.coverBgColor,
+        resolvedCoverBgImageUrl,
+        <>
+          {/* Subtle background overlays (render only if no custom background and no bg image are set) */}
+          {!pageStyle && !resolvedCoverBgImageUrl && (
             <>
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-slate-900/60 via-slate-950 to-slate-950 z-0" />
               <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ backgroundColor: primaryColor }} />
               <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full blur-3xl opacity-20" style={{ backgroundColor: accentColor }} />
             </>
-          )}
-          {data.general.coverBgImageUrl && (
-            <div 
-              className="absolute inset-0 bg-cover bg-center pointer-events-none z-0"
-              style={{ backgroundImage: `url(${data.general.coverBgImageUrl})` }}
-            />
           )}
           
           {/* Brand Logo Grid Header */}
@@ -914,7 +899,8 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
               CONFIDENTIAL · Q2 2026
             </div>
           </div>
-        </div>
+        </>,
+        { isDark: true, paddingClass: "p-12" }
       );
 
     // ----------------------------------------------------

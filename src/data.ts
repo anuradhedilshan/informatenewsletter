@@ -13,6 +13,7 @@ export const initialNewsletterData: NewsletterData = {
     cardBgColor: "#f8fafc",
     darkPageBgColor: "#020617",
     darkTextColor: "#ffffff",
+    coverBgColor: "#2596be",
     logoUrl: "",
     coverImageUrl: "",
     ceoImageUrl: "/ceo_profile.jpg",
