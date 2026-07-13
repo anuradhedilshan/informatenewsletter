@@ -92,7 +92,7 @@ export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [viewMode, setViewMode] = useState<"continuous" | "pages">("pages");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedElement, setSelectedElement] = useState<{ type: "image" | "bg" | "card", pageNum: number, index?: number } | null>({ type: "bg", pageNum: 1 });
+  const [selectedElement, setSelectedElement] = useState<{ type: "image" | "bg" | "card" | "logo", pageNum: number, index?: number } | null>({ type: "bg", pageNum: 1 });
 
   // Sync selected element's page number when current page changes
   useEffect(() => {
@@ -124,6 +124,55 @@ export default function App() {
         }
       }
     });
+  };
+
+  const handleRemoveImage = () => {
+    if (!selectedElement || selectedElement.type !== "image") return;
+    const pageNum = selectedElement.pageNum;
+    const idx = selectedElement.index; // idx of the card/item
+
+    // 1. Resolve base page number (e.g. 11 for subpage 111)
+    const basePage = pageNum % 100;
+    const pageKey = `page${basePage}`;
+
+    setData((prev: any) => {
+      const pageData = prev[pageKey];
+      if (!pageData) return prev;
+
+      // 2. If it is one of the multiple-events pages (11-16) and a card index is selected:
+      if (basePage >= 11 && basePage <= 16 && idx !== undefined) {
+        const wellnessItems = [...(pageData.wellnessItems || [])];
+        if (wellnessItems[idx]) {
+          // Clear image from this wellness item (if it is using imageUrls, clear the first slot)
+          const newImages = [...(wellnessItems[idx].imageUrls || [])];
+          newImages.shift(); // remove the first image slot
+          wellnessItems[idx] = {
+            ...wellnessItems[idx],
+            imageUrls: newImages,
+            imageUrl: newImages[0] || ""
+          };
+        }
+        return {
+          ...prev,
+          [pageKey]: {
+            ...pageData,
+            wellnessItems
+          }
+        };
+      }
+
+      // 3. Otherwise, it is a single-image page (e.g., page 5, 6, 8, 9, 10, etc.)
+      return {
+        ...prev,
+        [pageKey]: {
+          ...pageData,
+          imageUrl: ""
+        }
+      };
+    });
+
+    // Clear selection so the toolbar closes
+    setSelectedElement(null);
   };
 
   const renderBgToolbar = () => (
@@ -170,6 +219,19 @@ export default function App() {
             placeholder="Image URL"
             className="px-2 py-1 text-[10px] font-semibold border border-slate-200 rounded w-28 bg-white"
           />
+          {styles.bgImageUrl && (
+            <button
+              type="button"
+              onClick={() => {
+                handleStyleChange("bgImageUrl", "");
+                handleStyleChange("bgStyleMode", "solid");
+              }}
+              className="px-1.5 py-1 text-[9px] font-black text-rose-600 bg-rose-50 hover:bg-rose-100 rounded cursor-pointer transition-colors"
+              title="Remove background image"
+            >
+              Remove Image
+            </button>
+          )}
           <div className="flex items-center gap-1">
             <span className="text-[9px] font-black text-slate-400 uppercase">Overlay</span>
             <input
@@ -757,6 +819,16 @@ export default function App() {
           Grayscale
         </label>
       </div>
+
+      {/* Remove Image Action */}
+      <button
+        type="button"
+        onClick={handleRemoveImage}
+        className="px-2 py-1 text-[10px] font-black text-rose-600 bg-rose-50 hover:bg-rose-100 rounded cursor-pointer transition-colors ml-auto flex items-center gap-1"
+        title="Remove this photo from page"
+      >
+        <span>🗑️</span> Remove Image
+      </button>
     </div>
   );
 
