@@ -430,6 +430,72 @@ export default function App() {
     </div>
   );
 
+  const renderLogoToolbar = () => {
+    if (!selectedElement || selectedElement.type !== "logo") return null;
+    const pageNum = selectedElement.pageNum;
+    const pageStyles = data.pageStyles || {};
+    const styles = pageStyles[pageNum] || {};
+
+    return (
+      <div className="flex items-center gap-3 flex-wrap">
+        {/* Background Color */}
+        <ColorPickerPopover 
+          label="Logo Bg" 
+          color={styles.logoBgColor || "#ffffff"} 
+          onChange={(val) => handleStyleChange("logoBgColor", val)} 
+        />
+
+        {/* Background Opacity */}
+        <div className="flex items-center gap-1 shrink-0">
+          <span className="text-[9px] font-black text-slate-400 uppercase">Bg Opacity</span>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={styles.logoBgOpacity !== undefined ? styles.logoBgOpacity : 5}
+            onChange={(e) => handleStyleChange("logoBgOpacity", parseInt(e.target.value))}
+            className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+            title="Logo Backdrop Opacity"
+          />
+          <input
+            type="number"
+            min="0"
+            max="100"
+            value={styles.logoBgOpacity !== undefined ? styles.logoBgOpacity : 5}
+            onChange={(e) => {
+              const val = parseInt(e.target.value);
+              if (!isNaN(val)) handleStyleChange("logoBgOpacity", val);
+            }}
+            className="w-9 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+            title="Custom Opacity %"
+          />
+          <span className="text-[9px] font-bold text-slate-500">%</span>
+        </div>
+
+        {/* Border Width */}
+        <select
+          value={styles.logoBorderWidth !== undefined ? styles.logoBorderWidth : 1}
+          onChange={(e) => handleStyleChange("logoBorderWidth", parseInt(e.target.value))}
+          className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+          title="Logo Border Width"
+        >
+          <option value={0}>No Border</option>
+          <option value={1}>1px Border</option>
+          <option value={2}>2px Border</option>
+          <option value={3}>3px Border</option>
+          <option value={4}>4px Border</option>
+        </select>
+
+        {/* Border Color */}
+        <ColorPickerPopover 
+          label="Border Color" 
+          color={styles.logoBorderColor || "#ffffff"} 
+          onChange={(val) => handleStyleChange("logoBorderColor", val)} 
+        />
+      </div>
+    );
+  };
+
   const renderImageToolbar = () => (
     <div className="flex items-center gap-3 flex-wrap">
       {/* Fit */}
@@ -905,7 +971,7 @@ export default function App() {
                 <div className="w-full max-w-[800px] bg-white border border-slate-200 shadow-md rounded-2xl p-2.5 flex items-center justify-between gap-4 select-none animate-fade-in relative z-20 flex-wrap">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-black px-2 py-1 bg-sky-100 text-sky-700 rounded-lg uppercase tracking-wider">
-                      {selectedElement.type === "bg" ? "🖼️ Page Background" : selectedElement.type === "card" ? "🎴 Card Frame" : "📷 Event Image"}
+                      {selectedElement.type === "bg" ? "🖼️ Page Background" : selectedElement.type === "card" ? "🎴 Card Frame" : selectedElement.type === "logo" ? "🏢 Brand Logo Container" : "📷 Event Image"}
                     </span>
                     {data.useGlobalTheme !== false ? (
                       <button
@@ -931,6 +997,7 @@ export default function App() {
                       {selectedElement.type === "bg" && renderBgToolbar()}
                       {selectedElement.type === "card" && renderCardToolbar()}
                       {selectedElement.type === "image" && renderImageToolbar()}
+                      {selectedElement.type === "logo" && renderLogoToolbar()}
                     </div>
                   ) : (
                     <span className="text-[10px] text-slate-400 italic">

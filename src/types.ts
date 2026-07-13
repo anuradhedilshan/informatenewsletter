@@ -377,6 +377,10 @@ export interface PageStyles {
   cardWidthUnit?: "%" | "px";
   cardHeight?: number;
   cardHeightUnit?: "%" | "px";
+  logoBgColor?: string;
+  logoBgOpacity?: number;
+  logoBorderColor?: string;
+  logoBorderWidth?: number;
 }
 
 export const getExpandedPages = (visiblePages: number[], data: any): number[] => {

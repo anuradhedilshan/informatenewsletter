@@ -845,7 +845,21 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           
           {/* Brand Logo Grid Header */}
           <div className="relative z-10 flex justify-between items-start">
-            <div className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 shadow-lg">
+            <div 
+              className="backdrop-blur-md p-5 rounded-2xl shadow-lg cursor-pointer transition-all duration-250"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectElement?.({ type: "logo" as any, pageNum: pageNumber });
+              }}
+              style={{
+                backgroundColor: pageStyle?.logoBgColor !== undefined ? `${pageStyle.logoBgColor}${Math.round((pageStyle.logoBgOpacity !== undefined ? pageStyle.logoBgOpacity : 5) * 2.55).toString(16).padStart(2, '0')}` : "rgba(255, 255, 255, 0.05)",
+                borderColor: pageStyle?.logoBorderColor !== undefined ? pageStyle.logoBorderColor : "rgba(255, 255, 255, 0.1)",
+                borderWidth: pageStyle?.logoBorderWidth !== undefined ? `${pageStyle.logoBorderWidth}px` : "1px",
+                borderStyle: (pageStyle?.logoBorderWidth !== 0) ? "solid" : "none",
+                // Highlight when selected
+                boxShadow: selectedElement?.type === ("logo" as any) && selectedElement?.pageNum === pageNumber ? "0 0 0 3px #0ea5e9, 0 10px 15px -3px rgba(14, 165, 233, 0.3)" : undefined
+              }}
+            >
               <Logo primaryColor="#FFFFFF" accentColor={accentColor} size="xl" logoUrl={data.general.logoUrl} />
             </div>
             <div className="text-right bg-white/5 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold">
