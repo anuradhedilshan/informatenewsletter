@@ -554,6 +554,19 @@ export default function App() {
           color={styles.logoBorderColor || "#ffffff"} 
           onChange={(val) => handleStyleChange("logoBorderColor", val)} 
         />
+
+        {/* Shadow */}
+        <select
+          value={styles.logoShadow || "lg"}
+          onChange={(e) => handleStyleChange("logoShadow", e.target.value)}
+          className="px-1.5 py-1 text-[10px] font-bold border border-slate-200 rounded bg-white text-slate-700 cursor-pointer"
+          title="Logo Container Shadow"
+        >
+          <option value="none">No Shadow</option>
+          <option value="sm">Subtle Shadow</option>
+          <option value="md">Medium Shadow</option>
+          <option value="lg">Strong Shadow</option>
+        </select>
       </div>
     );
   };

@@ -381,6 +381,7 @@ export interface PageStyles {
   logoBgOpacity?: number;
   logoBorderColor?: string;
   logoBorderWidth?: number;
+  logoShadow?: string;
 }
 
 export const getExpandedPages = (visiblePages: number[], data: any): number[] => {

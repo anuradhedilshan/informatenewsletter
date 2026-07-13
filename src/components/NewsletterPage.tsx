@@ -846,7 +846,11 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
           {/* Brand Logo Grid Header */}
           <div className="relative z-10 flex justify-between items-start">
             <div 
-              className="backdrop-blur-md p-5 rounded-2xl shadow-lg cursor-pointer transition-all duration-250"
+              className={`backdrop-blur-md p-5 rounded-2xl cursor-pointer transition-all duration-250 ${
+                pageStyle?.logoShadow === "none" ? "shadow-none" :
+                pageStyle?.logoShadow === "sm" ? "shadow-sm" :
+                pageStyle?.logoShadow === "md" ? "shadow-md" : "shadow-lg"
+              }`}
               onClick={(e) => {
                 e.stopPropagation();
                 onSelectElement?.({ type: "logo" as any, pageNum: pageNumber });
