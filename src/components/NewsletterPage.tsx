@@ -95,6 +95,34 @@ const renderDynamicEventContent = (
 
   const count = items.length;
 
+  const renderCardDescription = (desc: string, defaultColorOpacity: string = "cc") => {
+    if (!desc) return null;
+    const lines = desc.split("\n").map(l => l.trim()).filter(Boolean);
+    const hasBulletPrefix = lines.some(l => /^[-*•\d+\.]/.test(l));
+    const isMultiline = lines.length > 1;
+
+    if (hasBulletPrefix || isMultiline) {
+      return (
+        <ul className="list-disc pl-4 space-y-0.5 text-[9px] sm:text-[10px] leading-relaxed font-semibold text-left">
+          {lines.map((line, idx) => {
+            const cleanLine = line.replace(/^[-*•]\s*/, "").replace(/^\d+\.\s*/, "");
+            return (
+              <li key={idx} style={{ color: `${textColor}${defaultColorOpacity}` }}>
+                {cleanLine}
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+
+    return (
+      <p className="text-[9px] sm:text-[10px] leading-relaxed font-medium" style={{ color: `${textColor}${defaultColorOpacity}` }}>
+        {desc}
+      </p>
+    );
+  };
+
   const getCardImageStyle = (idx: number, isCircle: boolean = false): React.CSSProperties => {
     const isSelected = selectedElement?.type === "image" && selectedElement?.pageNum === pageNumber && selectedElement?.index === idx;
 
@@ -276,9 +304,7 @@ const renderDynamicEventContent = (
                 </span>
                 {item.title}
               </h4>
-              <p className="text-[10px] leading-normal font-medium line-clamp-3" style={{ color: `${textColor}99` }}>
-                {item.description}
-              </p>
+              {renderCardDescription(item.description, "99")}
             </div>
           </div>
         ))}
@@ -323,9 +349,7 @@ const renderDynamicEventContent = (
                 </span>
                 {item.title}
               </h4>
-              <p className="text-[10px] leading-normal font-medium line-clamp-2" style={{ color: `${textColor}cc` }}>
-                {item.description}
-              </p>
+              {renderCardDescription(item.description, "cc")}
             </div>
           );
           return (
@@ -404,9 +428,7 @@ const renderDynamicEventContent = (
                 </span>
                 {item.title}
               </h4>
-              <p className="text-[10px] leading-normal font-medium line-clamp-3" style={{ color: `${textColor}a0` }}>
-                {item.description}
-              </p>
+              {renderCardDescription(item.description, "a0")}
             </div>
           </div>
         ))}
@@ -453,7 +475,7 @@ const renderDynamicEventContent = (
               Spotlight Event
             </span>
             <h3 className="text-xs sm:text-sm font-black tracking-tight" style={{ color: textColor }}>{heroItem?.title}</h3>
-            <p className="text-[10px] leading-relaxed font-medium" style={{ color: `${textColor}cc` }}>{heroItem?.description}</p>
+            {heroItem && renderCardDescription(heroItem.description, "cc")}
           </div>
           {(heroItem?.imageUrl || (heroItem?.imageUrls && heroItem.imageUrls.length > 0)) && (
             <div 
@@ -499,9 +521,7 @@ const renderDynamicEventContent = (
                   </span>
                   {item.title}
                 </h4>
-                <p className="text-[9px] leading-tight font-medium line-clamp-2" style={{ color: `${textColor}a0` }}>
-                  {item.description}
-                </p>
+                {renderCardDescription(item.description, "a0")}
               </div>
             </div>
           ))}
@@ -623,7 +643,6 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
     return baseStyle;
   };
 
-  // Card Styling Helper
   const getCardStyle = (): React.CSSProperties => {
     const rounded = pageStyle?.cardRounded || "2xl";
     const shadow = pageStyle?.cardShadow || "none";
@@ -649,13 +668,18 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       case "md": boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"; break;
       case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"; break;
     }
+
+    const width = pageStyle?.cardWidth !== undefined ? `${pageStyle.cardWidth}${pageStyle.cardWidthUnit || "%"}` : undefined;
+    const height = pageStyle?.cardHeight !== undefined ? `${pageStyle.cardHeight}${pageStyle.cardHeightUnit || "px"}` : undefined;
     
     return {
       backgroundColor: cardBgColor,
       borderRadius,
       boxShadow,
       border: borderWidth > 0 ? `${borderWidth}px solid ${borderColor}` : "none",
-      padding
+      padding,
+      width,
+      height
     };
   };
 

@@ -465,10 +465,13 @@ export function Customizer({ data, onChange, onReset, onApplyPreset }: Customize
                 <textarea 
                   value={item.description || ""} 
                   onChange={(e) => handleItemChange(item.id, "description", e.target.value)} 
-                  placeholder="Card Description"
-                  rows={2}
+                  placeholder="Card Description (Enter lines starting with '-' for a bullet list)"
+                  rows={3}
                   className="w-full px-2 py-1 text-xs border border-slate-200 rounded bg-white leading-normal" 
                 />
+                <span className="text-[8px] text-slate-400 font-semibold block leading-tight">
+                  💡 Tip: Enter each bullet point on a new line starting with '-' or '•'
+                </span>
 
                 {/* 3-Slot Image Collage Editor */}
                 <div className="space-y-1.5 pt-1">

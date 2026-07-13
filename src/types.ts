@@ -373,6 +373,10 @@ export interface PageStyles {
   imageLeft?: number;
   imageAlignSelf?: "auto" | "flex-start" | "center" | "flex-end";
   cardsPerPage?: number;
+  cardWidth?: number;
+  cardWidthUnit?: "%" | "px";
+  cardHeight?: number;
+  cardHeightUnit?: "%" | "px";
 }
 
 export const getExpandedPages = (visiblePages: number[], data: any): number[] => {

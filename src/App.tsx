@@ -308,6 +308,92 @@ export default function App() {
       {/* Border Color */}
       <ColorPickerPopover label="Border Color" color={styles.cardBorderColor || "#cbd5e1"} onChange={(val) => handleStyleChange("cardBorderColor", val)} />
 
+      {/* Card Width slider + Unit Toggle */}
+      <div className="flex items-center gap-1 shrink-0">
+        <span className="text-[9px] font-black text-slate-400 uppercase">Width</span>
+        <input
+          type="range"
+          min="10"
+          max={styles.cardWidthUnit === "px" ? 800 : 100}
+          value={styles.cardWidth !== undefined ? styles.cardWidth : (styles.cardWidthUnit === "px" ? 300 : 100)}
+          onChange={(e) => handleStyleChange("cardWidth", parseInt(e.target.value))}
+          className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+          title={`Card Width (${styles.cardWidthUnit || "%"})`}
+        />
+        <input
+          type="number"
+          min="10"
+          max={styles.cardWidthUnit === "px" ? 800 : 100}
+          value={styles.cardWidth !== undefined ? styles.cardWidth : (styles.cardWidthUnit === "px" ? 300 : 100)}
+          onChange={(e) => {
+            const val = parseInt(e.target.value);
+            if (!isNaN(val)) handleStyleChange("cardWidth", val);
+          }}
+          className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+          title="Custom Card Width"
+        />
+        <span className="text-[9px] font-bold text-slate-500">{styles.cardWidthUnit || "%"}</span>
+        
+        {/* Width Unit button group */}
+        <div className="flex bg-slate-100 p-0.5 rounded border border-slate-200 text-[8px] font-black shrink-0">
+          {(["%", "px"] as const).map((unit) => (
+            <button
+              key={unit}
+              type="button"
+              onClick={() => handleStyleChange("cardWidthUnit", unit)}
+              className={`px-1 py-0.2 rounded transition-all cursor-pointer ${
+                (styles.cardWidthUnit || "%") === unit ? "bg-white text-sky-700 shadow-xs" : "text-slate-500"
+              }`}
+            >
+              {unit}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Card Height slider + Unit Toggle */}
+      <div className="flex items-center gap-1 shrink-0">
+        <span className="text-[9px] font-black text-slate-400 uppercase">Height</span>
+        <input
+          type="range"
+          min="50"
+          max={styles.cardHeightUnit === "%" ? 100 : 500}
+          value={styles.cardHeight !== undefined ? styles.cardHeight : (styles.cardHeightUnit === "%" ? 100 : 250)}
+          onChange={(e) => handleStyleChange("cardHeight", parseInt(e.target.value))}
+          className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+          title={`Card Height (${styles.cardHeightUnit || "px"})`}
+        />
+        <input
+          type="number"
+          min="50"
+          max={styles.cardHeightUnit === "%" ? 100 : 500}
+          value={styles.cardHeight !== undefined ? styles.cardHeight : (styles.cardHeightUnit === "%" ? 100 : 250)}
+          onChange={(e) => {
+            const val = parseInt(e.target.value);
+            if (!isNaN(val)) handleStyleChange("cardHeight", val);
+          }}
+          className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+          title="Custom Card Height"
+        />
+        <span className="text-[9px] font-bold text-slate-500">{styles.cardHeightUnit || "px"}</span>
+        
+        {/* Height Unit button group */}
+        <div className="flex bg-slate-100 p-0.5 rounded border border-slate-200 text-[8px] font-black shrink-0">
+          {(["px", "%"] as const).map((unit) => (
+            <button
+              key={unit}
+              type="button"
+              onClick={() => handleStyleChange("cardHeightUnit", unit)}
+              className={`px-1 py-0.2 rounded transition-all cursor-pointer ${
+                (styles.cardHeightUnit || "px") === unit ? "bg-white text-sky-700 shadow-xs" : "text-slate-500"
+              }`}
+            >
+              {unit}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Cards Per Page (only for pages 11-16 or their subpages) */}
       {(() => {
         const basePage = activePageNum % 100;
