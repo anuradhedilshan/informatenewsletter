@@ -42,7 +42,7 @@ const renderDynamicEventContent = (
   textColor: string,
   cardBgColor: string,
   configs?: {
-    gridCols?: 2 | 3;
+    gridCols?: number;
     cardImageSize?: "small" | "medium" | "large";
     imageRounded?: "none" | "sm" | "md" | "lg" | "xl" | "full";
     imageShadow?: "none" | "sm" | "md" | "lg";
@@ -685,6 +685,81 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
     };
   };
 
+  // Single Image Sizing & Border Helper (for non-card pages like Page 5 & 6)
+  const getSingleImageStyle = (pageNum: number): React.CSSProperties => {
+    const isSelected = selectedElement?.type === "image" && selectedElement?.pageNum === pageNum;
+    
+    // Resolve configurations
+    const imgRounded = pageStyle?.imageRounded || (pageNum === 6 ? "none" : "xl");
+    const imgShadow = pageStyle?.imageShadow || (pageNum === 6 ? "none" : "sm");
+    const imgBorderWidth = pageStyle?.imageBorderWidth !== undefined ? pageStyle.imageBorderWidth : 0;
+    const imgBorderColor = pageStyle?.imageBorderColor || `${textColor}15`;
+    const borderStyle = pageStyle?.imageBorderStyle || "solid";
+    
+    const fit = pageStyle?.imageFit || (pageNum === 6 ? "contain" : "cover");
+    const grayscale = pageStyle?.imageGrayscale;
+    const customWidth = pageStyle?.imageWidth;
+    const customHeight = pageStyle?.imageHeight;
+    const widthUnit = pageStyle?.imageWidthUnit || (pageNum === 6 ? "%" : "px");
+    const heightUnit = pageStyle?.imageHeightUnit || "px";
+    
+    const position = pageStyle?.imagePositionType || "relative";
+    const top = pageStyle?.imageTop !== undefined ? `${pageStyle.imageTop}px` : undefined;
+    const left = pageStyle?.imageLeft !== undefined ? `${pageStyle.imageLeft}px` : undefined;
+    const alignSelf = pageStyle?.imageAlignSelf;
+
+    const filter = grayscale ? "grayscale(100%)" : undefined;
+    
+    let borderRadius = "1rem";
+    switch (imgRounded as string) {
+      case "none": borderRadius = "0px"; break;
+      case "sm": borderRadius = "0.25rem"; break;
+      case "md": borderRadius = "0.375rem"; break;
+      case "lg": borderRadius = "0.5rem"; break;
+      case "xl": borderRadius = "0.75rem"; break;
+      case "2xl": borderRadius = "1rem"; break;
+      case "full": borderRadius = "9999px"; break;
+    }
+
+    let boxShadow = "none";
+    switch (imgShadow) {
+      case "sm": boxShadow = "0 1px 2px 0 rgba(0, 0, 0, 0.05)"; break;
+      case "md": boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)"; break;
+      case "lg": boxShadow = "0 10px 15px -3px rgba(0, 0, 0, 0.1)"; break;
+    }
+
+    // Standard default sizes for specific pages if not customized
+    const defaultWidth = pageNum === 5 ? 128 : pageNum === 6 ? 100 : undefined;
+    const defaultHeight = pageNum === 5 ? 80 : pageNum === 6 ? 180 : undefined;
+    const resolvedWidth = customWidth !== undefined ? `${customWidth}${widthUnit}` : (defaultWidth !== undefined ? `${defaultWidth}${widthUnit}` : undefined);
+    const resolvedHeight = customHeight !== undefined ? `${customHeight}${heightUnit}` : (defaultHeight !== undefined ? `${defaultHeight}${heightUnit}` : undefined);
+
+    const baseStyle: React.CSSProperties = {
+      borderRadius,
+      boxShadow,
+      border: imgBorderWidth > 0 ? `${imgBorderWidth}px ${borderStyle} ${imgBorderColor}` : "none",
+      objectFit: fit as any,
+      filter,
+      width: resolvedWidth,
+      height: resolvedHeight,
+      position: position as any,
+      top: top as any,
+      left: left as any,
+      alignSelf: alignSelf as any,
+      zIndex: position === "absolute" ? 10 : undefined,
+      transition: "all 0.2s"
+    };
+
+    if (isSelected) {
+      return {
+        ...baseStyle,
+        boxShadow: "0 0 0 3px #0ea5e9, 0 10px 15px -3px rgba(14, 165, 233, 0.3)",
+        borderColor: "#0ea5e9"
+      };
+    }
+    return baseStyle;
+  };
+
   // Content Layout Gap Helper
   const getContentGapClass = (isFlex: boolean = true) => {
     const gapSize = pageStyle?.contentGapSize || "normal";
@@ -864,7 +939,16 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 boxShadow: selectedElement?.type === ("logo" as any) && selectedElement?.pageNum === pageNumber ? "0 0 0 3px #0ea5e9, 0 10px 15px -3px rgba(14, 165, 233, 0.3)" : undefined
               }}
             >
-              <Logo primaryColor="#FFFFFF" accentColor={accentColor} size="xl" logoUrl={data.general.logoUrl} />
+              <Logo 
+                primaryColor="#FFFFFF" 
+                accentColor={accentColor} 
+                size="xl" 
+                logoUrl={data.general.logoUrl} 
+                style={{
+                  width: pageStyle?.logoWidth !== undefined ? `${pageStyle.logoWidth}${pageStyle.logoWidthUnit || "px"}` : undefined,
+                  height: pageStyle?.logoHeight !== undefined ? `${pageStyle.logoHeight}${pageStyle.logoHeightUnit || "px"}` : undefined
+                }}
+              />
             </div>
             <div className="text-right bg-white/5 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10 text-xs font-semibold">
               <span className="text-orange-400 uppercase tracking-widest font-extrabold block text-[10px] mb-0.5" style={{ color: accentColor }}>EXCLUSIVE PARTNER REVIEW</span>
@@ -1203,10 +1287,17 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
                 </p>
               </div>
               {p5.imageUrl && (
-                <div className="w-32 h-20 shrink-0 bg-white rounded-2xl border border-slate-100 flex items-center justify-center p-3 shadow-sm" style={{ borderColor: `${data.general.textColor}15` }}>
+                <div 
+                  className="shrink-0 bg-white flex items-center justify-center p-2 cursor-pointer transition-all duration-200" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectElement?.({ type: "image", pageNum: pageNumber });
+                  }}
+                  style={getSingleImageStyle(pageNumber)}
+                >
                   <img 
                     src={p5.imageUrl} 
-                    className="max-w-full max-h-full object-contain" 
+                    className="w-full h-full object-inherit rounded-inherit" 
                     alt="John Keells Holdings Logo" 
                   />
                 </div>
@@ -1298,8 +1389,19 @@ export function NewsletterPage({ pageNumber, data, selectedElement, onSelectElem
       const p6Pos = p6.imagePosition || "bottom";
 
       const p6Image = p6.imageUrl && (
-        <div className="flex justify-center items-center shrink-0 cursor-pointer" style={{}}>
-          <img className="" alt="PEAK Matrix Recognition Badge" src={p6.imageUrl} style={{ objectFit: "contain", borderRadius: "inherit" }} />
+        <div 
+          className="flex justify-center items-center shrink-0 cursor-pointer transition-all duration-200" 
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectElement?.({ type: "image", pageNum: pageNumber });
+          }}
+          style={getSingleImageStyle(pageNumber)}
+        >
+          <img 
+            className="w-full h-full object-inherit rounded-inherit" 
+            alt="PEAK Matrix Recognition Badge" 
+            src={p6.imageUrl} 
+          />
         </div>
       );
 

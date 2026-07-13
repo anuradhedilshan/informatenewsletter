@@ -195,7 +195,8 @@ export interface Page11Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
-  gridCols?: 2 | 3;
+  gridCols?: number;
+  gridRows?: number;
   cardImageSize?: "small" | "medium" | "large";
   cardsPerPage?: number;
 }
@@ -215,7 +216,8 @@ export interface Page12Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
-  gridCols?: 2 | 3;
+  gridCols?: number;
+  gridRows?: number;
   cardImageSize?: "small" | "medium" | "large";
   cardsPerPage?: number;
 }
@@ -236,7 +238,8 @@ export interface Page13Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
-  gridCols?: 2 | 3;
+  gridCols?: number;
+  gridRows?: number;
   cardImageSize?: "small" | "medium" | "large";
   cardsPerPage?: number;
 }
@@ -261,7 +264,8 @@ export interface Page14Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
-  gridCols?: 2 | 3;
+  gridCols?: number;
+  gridRows?: number;
   cardImageSize?: "small" | "medium" | "large";
   cardsPerPage?: number;
 }
@@ -281,7 +285,8 @@ export interface Page15Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
-  gridCols?: 2 | 3;
+  gridCols?: number;
+  gridRows?: number;
   cardImageSize?: "small" | "medium" | "large";
   cardsPerPage?: number;
 }
@@ -302,7 +307,8 @@ export interface Page16Content {
   bgImageUrl?: string;
   layoutMode?: "grid" | "list" | "three-col" | "hero-split";
   wellnessItems?: WellnessItem[];
-  gridCols?: 2 | 3;
+  gridCols?: number;
+  gridRows?: number;
   cardImageSize?: "small" | "medium" | "large";
   cardsPerPage?: number;
 }
@@ -382,6 +388,10 @@ export interface PageStyles {
   logoBorderColor?: string;
   logoBorderWidth?: number;
   logoShadow?: string;
+  logoWidth?: number;
+  logoWidthUnit?: "%" | "px";
+  logoHeight?: number;
+  logoHeightUnit?: "%" | "px";
 }
 
 export const getExpandedPages = (visiblePages: number[], data: any): number[] => {

@@ -6,6 +6,7 @@ interface LogoProps {
   accentColor?: string;
   size?: "sm" | "md" | "lg" | "xl";
   logoUrl?: string;
+  style?: React.CSSProperties;
 }
 
 const sizeMap = {
@@ -15,13 +16,13 @@ const sizeMap = {
   xl: "h-20",
 };
 
-export function Logo({ className = "", primaryColor, accentColor, size = "md", logoUrl }: LogoProps) {
+export function Logo({ className = "", primaryColor, accentColor, size = "md", logoUrl, style }: LogoProps) {
   return (
-    <div className={`flex items-center select-none ${className}`}>
+    <div className={`flex items-center select-none ${className}`} style={style}>
       <img
         src={logoUrl || "/Infomate-Logo2.png"}
         alt="Infomate — A John Keells Group Company"
-        className={`${sizeMap[size]} w-auto object-contain`}
+        className={`${style?.height ? "h-full" : sizeMap[size]} ${style?.width ? "w-full" : "w-auto"} object-contain`}
         draggable={false}
       />
     </div>

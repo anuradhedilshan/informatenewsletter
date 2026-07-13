@@ -567,6 +567,92 @@ export default function App() {
           <option value="md">Medium Shadow</option>
           <option value="lg">Strong Shadow</option>
         </select>
+
+        {/* Logo Width slider + Unit Toggle */}
+        <div className="flex items-center gap-1 shrink-0">
+          <span className="text-[9px] font-black text-slate-400 uppercase">Width</span>
+          <input
+            type="range"
+            min="10"
+            max={styles.logoWidthUnit === "%" ? 100 : 500}
+            value={styles.logoWidth !== undefined ? styles.logoWidth : (styles.logoWidthUnit === "%" ? 100 : 200)}
+            onChange={(e) => handleStyleChange("logoWidth", parseInt(e.target.value))}
+            className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+            title={`Logo Width (${styles.logoWidthUnit || "px"})`}
+          />
+          <input
+            type="number"
+            min="10"
+            max={styles.logoWidthUnit === "%" ? 100 : 500}
+            value={styles.logoWidth !== undefined ? styles.logoWidth : (styles.logoWidthUnit === "%" ? 100 : 200)}
+            onChange={(e) => {
+              const val = parseInt(e.target.value);
+              if (!isNaN(val)) handleStyleChange("logoWidth", val);
+            }}
+            className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+            title="Custom Logo Width"
+          />
+          <span className="text-[9px] font-bold text-slate-500">{styles.logoWidthUnit || "px"}</span>
+          
+          {/* Width Unit button group */}
+          <div className="flex bg-slate-100 p-0.5 rounded border border-slate-200 text-[8px] font-black shrink-0">
+            {(["px", "%"] as const).map((unit) => (
+              <button
+                key={unit}
+                type="button"
+                onClick={() => handleStyleChange("logoWidthUnit", unit)}
+                className={`px-1 py-0.2 rounded transition-all cursor-pointer ${
+                  (styles.logoWidthUnit || "px") === unit ? "bg-white text-sky-700 shadow-xs" : "text-slate-500"
+                }`}
+              >
+                {unit}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Logo Height slider + Unit Toggle */}
+        <div className="flex items-center gap-1 shrink-0">
+          <span className="text-[9px] font-black text-slate-400 uppercase">Height</span>
+          <input
+            type="range"
+            min="10"
+            max={styles.logoHeightUnit === "%" ? 100 : 300}
+            value={styles.logoHeight !== undefined ? styles.logoHeight : (styles.logoHeightUnit === "%" ? 100 : 80)}
+            onChange={(e) => handleStyleChange("logoHeight", parseInt(e.target.value))}
+            className="w-12 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
+            title={`Logo Height (${styles.logoHeightUnit || "px"})`}
+          />
+          <input
+            type="number"
+            min="10"
+            max={styles.logoHeightUnit === "%" ? 100 : 300}
+            value={styles.logoHeight !== undefined ? styles.logoHeight : (styles.logoHeightUnit === "%" ? 100 : 80)}
+            onChange={(e) => {
+              const val = parseInt(e.target.value);
+              if (!isNaN(val)) handleStyleChange("logoHeight", val);
+            }}
+            className="w-10 px-1 py-0.5 text-[9px] font-black border border-slate-200 rounded text-center bg-white"
+            title="Custom Logo Height"
+          />
+          <span className="text-[9px] font-bold text-slate-500">{styles.logoHeightUnit || "px"}</span>
+          
+          {/* Height Unit button group */}
+          <div className="flex bg-slate-100 p-0.5 rounded border border-slate-200 text-[8px] font-black shrink-0">
+            {(["px", "%"] as const).map((unit) => (
+              <button
+                key={unit}
+                type="button"
+                onClick={() => handleStyleChange("logoHeightUnit", unit)}
+                className={`px-1 py-0.2 rounded transition-all cursor-pointer ${
+                  (styles.logoHeightUnit || "px") === unit ? "bg-white text-sky-700 shadow-xs" : "text-slate-500"
+                }`}
+              >
+                {unit}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     );
   };
